@@ -390,19 +390,21 @@ async function loadCloud(){let d=null;
   d=await getDb();
   if(d){try{
     const rdc=async c=>((await tmo(d.collection(c).get(),12000)).docs||[]).map(x=>x.data());
-    await flushDel(d);const pdl=new Set(lget('pdel').map(x=>x.k+':'+x.id));const [ri0,rc0,rv0]=await Promise.all([rdc('items'),rdc('customers'),rdc('invoices')]);const fl=(k,a)=>a.filter(x=>!pdl.has(k+':'+x.id));const ri=fl('items',ri0),rc=fl('customers',rc0),rv=fl('invoices',rv0);
+    await flushDel(d);const pdl=new Set(lget('pdel').map(x=>x.k+':'+x.id));const [ri0,rc0,rv0,tb0]=await Promise.all([rdc('items'),rdc('customers'),rdc('invoices'),rdc('tomb')]);const tmb=new Map(tb0.map(t=>[t.k+':'+t.id,t.at||0])),dead=(k,x)=>{const a=tmb.get(k+':'+x.id);return a!==undefined&&a>=(x.u||0)},rm=[];const fl=(k,a)=>a.filter(x=>!pdl.has(k+':'+x.id));const ri=fl('items',ri0),rc=fl('customers',rc0),rv=fl('invoices',rv0);
     const la=await tmo(d.doc('app/items').get(),12000),lb=await tmo(d.doc('app/customers').get(),12000);
     const li=la.exists?(la.data().list||[]).map(i=>({...i,id:i.id||'i'+hs((i.type||'')+i.name),u:i.u||0})):[],lc=lb.exists?(lb.data().list||[]).map(c=>({...c,u:c.u||0})):[];
     const up=[];
-    [['items',[...ri,...li]],['customers',[...rc,...lc]],['invoices',rv]].forEach(([k,r])=>mergeK(k,r).forEach(o=>up.push([k,o])));
+    [['items',[...ri,...li]],['customers',[...rc,...lc]],['invoices',rv]].forEach(([k,r])=>{r.forEach(x=>{if(dead(k,x))rm.push([k,x.id])});S[k].forEach(x=>{if(dead(k,x))rm.push([k,x.id])});S[k]=S[k].filter(x=>!dead(k,x));mergeK(k,r.filter(x=>!dead(k,x))).forEach(o=>up.push([k,o]))});
     migrate();db=d;
+    try{await tmo(Promise.all(rm.map(([k,id])=>d.collection(k).doc(id).delete())),15000)}catch(e){}
+    tb0.filter(t=>(t.at||0)<Date.now()-180*864e5).forEach(t=>sf(()=>d.collection('tomb').doc(t.k+'_'+t.id).delete()));
     try{await tmo(Promise.all(up.map(([k,o])=>d.collection(k).doc(o.id).set(o))),20000)}catch(e){sfail()}
     if(la.exists)sf(()=>d.doc('app/items').delete());if(lb.exists)sf(()=>d.doc('app/customers').delete());
     $('stor').textContent='الحفظ: تخزين سحابي.';return true}catch(e){}}
   db=null;$('stor').textContent='الحفظ: على هذا الجهاز فقط.';return false}
 function put(k,o){o.u=Date.now();lset(k,S[k]);if(db)sf(()=>db.collection(k).doc(o.id).set(o))}
-async function flushDel(d){const l=lget('pdel');if(!l.length||!d)return;const left=[];for(const x of l){try{await d.collection(x.k).doc(x.id).delete()}catch(e){left.push(x)}}lset('pdel',left)}
-function del(k,id){S[k]=S[k].filter(x=>x.id!==id);lset(k,S[k]);const l=lget('pdel');l.push({k,id});lset('pdel',l);if(db)sf(()=>flushDel(db))}
+async function flushDel(d){const l=lget('pdel');if(!l.length||!d)return;const left=[];for(const x of l){try{await d.collection('tomb').doc(x.k+'_'+x.id).set({k:x.k,id:x.id,at:x.at||Date.now()});await d.collection(x.k).doc(x.id).delete()}catch(e){left.push(x)}}lset('pdel',left)}
+function del(k,id){S[k]=S[k].filter(x=>x.id!==id);lset(k,S[k]);const l=lget('pdel');l.push({k,id,at:Date.now()});lset('pdel',l);if(db)sf(()=>flushDel(db))}
 let tm;const dirty=new Map();
 function touch(k,o){dirty.set(k+o.id,[k,o]);clearTimeout(tm);tm=setTimeout(()=>{dirty.forEach(([k,o])=>put(k,o));dirty.clear()},500)}
 
@@ -705,7 +707,7 @@ async function fbStart(cfg,email,pass,google){
   if(!window.firebase){const b='https://www.gstatic.com/firebasejs/10.12.2/';await loadScript(b+'firebase-app-compat.js');await loadScript(b+'firebase-auth-compat.js');await loadScript(b+'firebase-firestore-compat.js')}
   if(!firebase.apps.length)firebase.initializeApp(cfg);
   const auth=firebase.auth();let user;
-  if(google){try{user=(await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())).user}catch(e){if(e&&e.code==='auth/popup-blocked'){await auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider());return false}throw e}}
+  if(google){try{user=(await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())).user}catch(e){if(e&&e.code==='auth/popup-blocked'){try{localStorage.setItem('fbOn','1')}catch(_){}await auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider());return false}throw e}}
   else if(email&&pass)user=(await auth.signInWithEmailAndPassword(email,pass)).user;
   else user=await new Promise(r=>{const u=auth.onAuthStateChanged(x=>{u();r(x)})});
   if(!user)throw new Error('no-user');
