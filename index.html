@@ -697,7 +697,7 @@ $('bkNow').onclick=()=>$('bkSave').click();
 $('bkLater').onclick=()=>{try{localStorage.setItem('bkSnooze',Date.now())}catch(e){}bkBan()};
 
 /* ---------- المزامنة السحابية (Firebase) ---------- */
-const FBCFG={apiKey:'AIzaSyCMwvziFU9hSuGMW8ygY1i-uTQoE12Q_J0',authDomain:'ezat-101.firebaseapp.com',projectId:'ezat-101',messagingSenderId:'338826432523',appId:'1:338826432523:web:d0d60e899c6ea0018b370e'};
+const FBCFG={apiKey:'AIzaSyAvchzv59RG69CvojaQ5SXBI8FlIUBR7XE',authDomain:'hamed-bfb86.firebaseapp.com',projectId:'hamed-bfb86',storageBucket:'hamed-bfb86.firebasestorage.app',messagingSenderId:'613615265484',appId:'1:613615265484:web:0bb9ad1c55c3c50c25c469'};
 let FBDB=null,lastSync=0;
 async function getDb(){if(window.claude){try{return await tmo(claude.use('db'),8000)}catch(e){return null}}return FBDB}
 const loadScript=src=>new Promise((res,rej)=>{const e=document.createElement('script');e.src=src;e.onload=res;e.onerror=()=>rej(new Error('load'));document.head.appendChild(e)});
@@ -714,7 +714,7 @@ async function fbStart(cfg,email,pass,google){
   return true}
 const fbCfg=()=>{try{return(localStorage.getItem('fbOn')==='1'||localStorage.getItem('fbCfg'))?FBCFG:null}catch(e){return null}};
 const fbStat=t=>{$('fbStat').textContent=t};
-const fbErr=e=>{const c=(e&&e.code)||'';if(/popup-closed|cancelled-popup/.test(c))return'اتلغى تسجيل الدخول. جرّب تاني.';if(/unauthorized-domain/.test(c))return'ضيف ezat101.github.io في Authentication ← Settings ← Authorized domains.';if(/operation-not-allowed/.test(c))return'فعّل Google (أو Email/Password) في Authentication ← Sign-in method.';if(/invalid-credential|wrong-password|user-not-found|invalid-email/.test(c))return'الإيميل أو كلمة السر غلط (لازم تكون أضفت المستخدم في Firebase).';if(/network/.test(c))return'مفيش إنترنت.';if(/operation-not-allowed/.test(c))return'فعّل Email/Password في Authentication.';if(e&&e.message==='no-user')return'سجّل الدخول من جديد.';if(e&&e.message==='load')return'تعذر تحميل مكتبة Firebase: تأكد من الإنترنت.';return'تعذر الربط: '+(c||(e&&e.message)||'')};
+const fbErr=e=>{const c=(e&&e.code)||'';if(/popup-closed|cancelled-popup/.test(c))return'اتلغى تسجيل الدخول. جرّب تاني.';if(/unauthorized-domain/.test(c))return'ضيف hamed-100.github.io في Authentication ← Settings ← Authorized domains.';if(/operation-not-allowed/.test(c))return'فعّل Google (أو Email/Password) في Authentication ← Sign-in method.';if(/invalid-credential|wrong-password|user-not-found|invalid-email/.test(c))return'الإيميل أو كلمة السر غلط (لازم تكون أضفت المستخدم في Firebase).';if(/network/.test(c))return'مفيش إنترنت.';if(/operation-not-allowed/.test(c))return'فعّل Email/Password في Authentication.';if(e&&e.message==='no-user')return'سجّل الدخول من جديد.';if(e&&e.message==='load')return'تعذر تحميل مكتبة Firebase: تأكد من الإنترنت.';return'تعذر الربط: '+(c||(e&&e.message)||'')};
 async function syncNow(){const ok=await loadCloud();lastSync=Date.now();if(ok){drawCusts();drawItems();custInput()}return ok}
 async function fbBoot(){const cfg=fbCfg();if(!cfg){await syncNow();return}
   fbStat('جاري الاتصال بالسحابة...');
