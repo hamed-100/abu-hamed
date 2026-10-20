@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <script>try{if(localStorage.getItem('lkOn')==='1')document.documentElement.classList.add('locked')}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ابو حامد لتجارة الاخشاب</title>
+<title>ابو حامد لتجارة الاخشاب بالمحلة الكبري</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#ffffff">
 <meta name="color-scheme" content="light">
@@ -182,17 +182,17 @@ details.card textarea{direction:rtl;text-align:right;font-size:14px;width:100%;m
 </head>
 <body>
 <div class="app-header">
-  <div><div class="app-title">ابو حامد لتجارة الاخشاب</div><div class="app-subtitle">إدارة محل الأخشاب</div></div>
+  <div><div class="app-title" id="appTitle">ابو حامد لتجارة الاخشاب بالمحلة الكبري</div><div class="app-subtitle">إدارة محل الأخشاب</div></div>
 </div>
 
-<div id="lock" class="lock"><div style="font-size:42px">🔒</div><b style="font-size:18px">ابو حامد لتجارة الاخشاب</b><div class="mute">اكتب الرقم السري</div>
+<div id="lock" class="lock"><div style="font-size:42px">🔒</div><b style="font-size:18px" id="lockTitle">ابو حامد لتجارة الاخشاب بالمحلة الكبري</b><div class="mute">اكتب الرقم السري</div>
   <input id="lkIn" type="password" inputmode="numeric" maxlength="6" autocomplete="off" style="max-width:200px;text-align:center;font-size:20px;letter-spacing:6px;height:44px">
   <div class="btns" style="width:200px"><button class="main" id="lkGo">فتح</button><button class="alt b-out hide" id="lkBioBtn">👆 بصمة</button></div><div class="info" id="lkErr" style="color:var(--danger)"></div></div>
 <div id="bulk" class="res-ov hide"><div class="card res-in"><div class="ro" style="color:var(--ink)"><b>📨 تذكير المديونين</b><button class="del" id="bulkX" aria-label="إغلاق">×</button></div><div class="mute" id="bulkInfo" style="margin:4px 0 6px"></div><div id="bulkList"></div></div></div>
 <div id="res" class="res-ov hide"><div class="card res-in">
   <div class="ro" style="color:var(--ink)"><b id="resm"></b><button class="del" id="resx" aria-label="إغلاق">×</button></div>
   <img id="resimg" alt="الصورة">
-  <div class="btns"><button class="main b-green" id="ressh">إرسال للعميل</button><a class="main b-green" id="reswa" target="_blank" rel="noopener" href="#">إرسال للعميل</a><button class="alt" id="resdl">حفظ الصورة</button></div>
+  <div class="btns"><button class="main b-green" id="ressh">إرسال للعميل</button><a class="main b-green" id="reswa" target="_blank" rel="noopener" href="#">إرسال للعميل</a><button class="alt" id="resdl">حفظ الصورة</button><button class="alt" id="resprint">🖨️ طباعة</button></div>
   <div class="btns" style="margin-top:2px"><a class="lnk hide" id="restx" target="_blank" rel="noopener" href="#">نص فقط</a><button class="lnk hide" id="resedit">✏️ تعديل</button><button class="lnk hide" id="resdup">🔁 تكرار</button><button class="lnk hide" id="resdel" style="color:var(--danger)">حذف</button></div>
   <div class="mute" id="reshint"></div>
 </div></div>
@@ -223,7 +223,7 @@ details.card textarea{direction:rtl;text-align:right;font-size:14px;width:100%;m
     <div class="info" id="cinfo"></div>
   </div>
   <div id="rows"></div>
-  <div class="addbar"><span class="mute" id="rhint">إضافة بند:</span><button class="alt b-blue" data-add="rd">+ جاهز</button><button class="alt b-amber" data-add="mq">+ ألواح</button></div>
+  <div class="addbar"><span class="mute" id="rhint">إضافة بند:</span><button class="alt b-blue" data-add="rd">+ جاهز</button><button class="alt b-amber" data-add="mq">+ مقطع</button></div>
   <div class="card isum">
     <div id="r_sub" class="sub hide"><span>إجمالي الإذن<span class="num" id="tqw"></span></span><b class="num" id="sub">0.00</b></div>
     <div class="xg">
@@ -263,7 +263,7 @@ details.card textarea{direction:rtl;text-align:right;font-size:14px;width:100%;m
 </section>
 
 <section id="t-it" class="hide">
-  <div class="seg s" style="max-width:220px" id="seg"><button data-it="rd">جاهز</button><button data-it="mq" class="on">ألواح</button></div>
+  <div class="seg s" style="max-width:220px" id="seg"><button data-it="rd">جاهز</button><button data-it="mq" class="on">مقطع</button></div>
   <div id="nform" class="it"></div>
   <div id="ihead" class="mute"></div><div id="items" style="margin-top:4px"></div>
 </section>
@@ -319,7 +319,7 @@ details.card textarea{direction:rtl;text-align:right;font-size:14px;width:100%;m
     <div class="g2" style="grid-template-columns:1fr 1fr 1fr">
       <div><label>الطول (سم)</label><input id="calc_h" type="number" inputmode="decimal" placeholder="0"></div>
       <div><label>العرض (سم)</label><input id="calc_w" type="number" inputmode="decimal" placeholder="0"></div>
-      <div><label>التخانة (مم)</label><input id="calc_t" type="number" inputmode="decimal" placeholder="0"></div>
+      <div><label>التخانة (سم)</label><input id="calc_t" type="number" inputmode="decimal" placeholder="0"></div>
     </div>
     <div class="g2">
       <div><label>العدد</label><input id="calc_c" type="number" inputmode="decimal" value="1"></div>
@@ -378,11 +378,10 @@ const getC=id=>S.customers.find(c=>c.id===id);
 /* ---------- التخزين ---------- */
 const hs=t=>{let h=0;for(const ch of t)h=(h*31+ch.charCodeAt(0))|0;return Math.abs(h).toString(36)};
 function migrate(){
-  S.items=S.items.map(i=>{const v=i.v||{};return{id:i.id||'i'+hs((i.type||'')+i.name),u:i.u||0,type:i.type==='rd'?'rd':'mq',name:i.name,p:v.p!==undefined?v.p:(i.price||i.p||0),w:v.w!==undefined?v.w:(i.w||0),h:v.h!==undefined?v.h:(i.h||0),t:v.t!==undefined?v.t:(i.t||0)}});
+  S.items=S.items.map(i=>{const v=i.v||{};return{id:i.id||'i'+hs((i.type||'')+i.name),u:i.u||0,type:i.type==='rd'?'rd':'mq',name:i.name,p:v.p!==undefined?v.p:(i.price||i.p||0),w:v.w!==undefined?v.w:(i.w||0),h:v.h!==undefined?v.h:(i.h||0)}});
   let ch=false;S.customers.forEach(c=>{if(c.open===undefined){const rs=ledger(c).sort((a,b)=>a.ts-b.ts);c.open=rs.length?(rs[0].prev||0):(c.balance||0);ch=true}});
   if(ch)lset('customers',S.customers)}
 function loadLocal(){S.items=lget('items');S.customers=lget('customers');S.invoices=lget('invoices');migrate()}
-const TMB=new Map;
 const tmo=(p,ms)=>Promise.race([p,new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),ms))]);
 function mergeK(k,remote){const m=new Map(S[k].map(x=>[x.id,x])),up=[],rid=new Set(remote.map(r=>r.id));
   remote.forEach(r=>{const l=m.get(r.id);if(!l)m.set(r.id,r);else if((r.u||0)>(l.u||0))m.set(r.id,r);else if((l.u||0)>(r.u||0))up.push(l)});
@@ -391,21 +390,19 @@ async function loadCloud(){let d=null;
   d=await getDb();
   if(d){try{
     const rdc=async c=>((await tmo(d.collection(c).get(),12000)).docs||[]).map(x=>x.data());
-    await flushDel(d);const pdl=new Set(lget('pdel').map(x=>x.k+':'+x.id));const [ri0,rc0,rv0,tb0]=await Promise.all([rdc('items'),rdc('customers'),rdc('invoices'),rdc('tomb')]);const tmb=new Map(tb0.map(t=>[t.k+':'+t.id,t.at||0])),dead=(k,x)=>{const a=tmb.get(k+':'+x.id);return a!==undefined&&a>=(x.u||0)},rm=[];tmb.forEach((v,k)=>TMB.set(k,v));const fl=(k,a)=>a.filter(x=>!pdl.has(k+':'+x.id));const ri=fl('items',ri0),rc=fl('customers',rc0),rv=fl('invoices',rv0);
+    await flushDel(d);const pdl=new Set(lget('pdel').map(x=>x.k+':'+x.id));const [ri0,rc0,rv0]=await Promise.all([rdc('items'),rdc('customers'),rdc('invoices')]);const fl=(k,a)=>a.filter(x=>!pdl.has(k+':'+x.id));const ri=fl('items',ri0),rc=fl('customers',rc0),rv=fl('invoices',rv0);
     const la=await tmo(d.doc('app/items').get(),12000),lb=await tmo(d.doc('app/customers').get(),12000);
     const li=la.exists?(la.data().list||[]).map(i=>({...i,id:i.id||'i'+hs((i.type||'')+i.name),u:i.u||0})):[],lc=lb.exists?(lb.data().list||[]).map(c=>({...c,u:c.u||0})):[];
     const up=[];
-    [['items',[...ri,...li]],['customers',[...rc,...lc]],['invoices',rv]].forEach(([k,r])=>{r.forEach(x=>{if(dead(k,x))rm.push([k,x.id])});S[k].forEach(x=>{if(dead(k,x))rm.push([k,x.id])});S[k]=S[k].filter(x=>!dead(k,x));mergeK(k,r.filter(x=>!dead(k,x))).forEach(o=>up.push([k,o]))});
+    [['items',[...ri,...li]],['customers',[...rc,...lc]],['invoices',rv]].forEach(([k,r])=>mergeK(k,r).forEach(o=>up.push([k,o])));
     migrate();db=d;
-    try{await tmo(Promise.all(rm.map(([k,id])=>d.collection(k).doc(id).delete())),15000)}catch(e){}
-    tb0.filter(t=>(t.at||0)<Date.now()-180*864e5).forEach(t=>sf(()=>d.collection('tomb').doc(t.k+'_'+t.id).delete()));
     try{await tmo(Promise.all(up.map(([k,o])=>d.collection(k).doc(o.id).set(o))),20000)}catch(e){sfail()}
     if(la.exists)sf(()=>d.doc('app/items').delete());if(lb.exists)sf(()=>d.doc('app/customers').delete());
     $('stor').textContent='الحفظ: تخزين سحابي.';return true}catch(e){}}
   db=null;$('stor').textContent='الحفظ: على هذا الجهاز فقط.';return false}
 function put(k,o){o.u=Date.now();lset(k,S[k]);if(db)sf(()=>db.collection(k).doc(o.id).set(o))}
-async function flushDel(d){const l=lget('pdel');if(!l.length||!d)return;const left=[];for(const x of l){try{await d.collection('tomb').doc(x.k+'_'+x.id).set({k:x.k,id:x.id,at:x.at||Date.now()});await d.collection(x.k).doc(x.id).delete()}catch(e){left.push(x)}}lset('pdel',left)}
-function del(k,id){S[k]=S[k].filter(x=>x.id!==id);lset(k,S[k]);const l=lget('pdel');l.push({k,id,at:Date.now()});lset('pdel',l);TMB.set(k+':'+id,Date.now());if(db)sf(()=>flushDel(db))}
+async function flushDel(d){const l=lget('pdel');if(!l.length||!d)return;const left=[];for(const x of l){try{await d.collection(x.k).doc(x.id).delete()}catch(e){left.push(x)}}lset('pdel',left)}
+function del(k,id){S[k]=S[k].filter(x=>x.id!==id);lset(k,S[k]);const l=lget('pdel');l.push({k,id});lset('pdel',l);if(db)sf(()=>flushDel(db))}
 let tm;const dirty=new Map();
 function touch(k,o){dirty.set(k+o.id,[k,o]);clearTimeout(tm);tm=setTimeout(()=>{dirty.forEach(([k,o])=>put(k,o));dirty.clear()},500)}
 
@@ -421,7 +418,7 @@ function sheet(o){
   const wrap=(t,w,font)=>{mc.font=font;mc.direction='rtl';const out=[];let cur='';for(const wd of String(t==null?'':t).split(/\s+/)){const tr=cur?cur+' '+wd:wd;if(!cur||mc.measureText(tr).width<=w)cur=tr;else{out.push(cur);cur=wd}}out.push(cur);return out};
   const paint=x=>{let y=10;x.direction='rtl';x.textBaseline='middle';
     const T=(s,px,py,al,font,col)=>{x.font=font;x.textAlign=al;x.fillStyle=col||'#000';x.fillText(String(s),px,py)};
-    x.direction='rtl';T(lsv('shop','ابو حامد لتجارة الاخشاب'),W-P,y+10,'right','bold 17px '+F,'#0f766e');x.direction='rtl';
+    x.direction='rtl';T(lsv('shop','ابو حامد لتجارة الاخشاب بالمحلة الكبري'),W-P,y+10,'right','bold 17px '+F,'#0f766e');x.direction='rtl';
     T(o.date,P,y+10,'left','13px '+F,'#555');y+=24;
     T(o.title||('العميل / '+o.name),W/2,y+13,'center','bold 24px '+F);y+=30;
     T(o.sub,W/2,y+7,'center','14px '+F,'#555');y+=22;
@@ -442,8 +439,8 @@ function sheet(o){
   cv.width=W*2;cv.height=H*2;const x=cv.getContext('2d');x.scale(2,2);x.fillStyle='#fff';x.fillRect(0,0,W,H);paint(x);return cv}
 function invSheet(r){const base={name:r.cname,date:stamp(r.ts),note:r.note};
   if(r.type==='pay')return{...base,sub:'إيصال دفعة',sum:[['الحساب قبل الدفعة',f(r.prev)],...(r.pfv?[['المبلغ المدفوع',f(r.amtRaw)],['خصم '+(r.pfWhy?r.pfWhy+' ':'')+f(r.pf)+'% من المدفوع',f(r.pfv)],['صافي الدفعة',f(r.amount),1]]:[['المبلغ المدفوع',f(r.amount),1]]),['الحساب بعد الدفعة',f(r.rest),1]]};
-  const pl=r.rows.filter(x=>!x.cols),sz=x=>x.w>0&&x.h>0,ar=pl.some(x=>x.q>0||sz(x)),tables=[];
-  if(pl.length)tables.push(ar?{th:['البيان','المقاس','العدد','الكمية','السعر','القيمة'],w:[.25,.21,.09,.15,.14,.16],rows:pl.map(x=>{const a=x.q>0,vo=x.u==='م³',s3=x.th>0;return[x.n,sz(x)?((vo||s3||x.t==='rd')?x.h+'/'+x.w+(s3?'/'+x.th:''):x.w+'/'+x.h):'-',x.c,a?(vo?fv(x.q)+' م³':fq(x.q)):'-',f(x.p),f(x.v)]})}
+  const pl=r.rows.filter(x=>!x.cols),ar=pl.some(x=>x.q>0),tables=[];
+  if(pl.length)tables.push(ar?{th:['البيان','المقاس','العدد','الكمية','السعر','القيمة'],w:[.25,.21,.09,.15,.14,.16],rows:pl.map(x=>{const a=x.q>0,vo=x.u==='م³';return[x.n,a?(vo?x.h+'/'+x.w+'/'+x.th:x.w+'/'+x.h):'-',x.c,a?(vo?fv(x.q)+' م³':fq(x.q)):'-',f(x.p),f(x.v)]})}
     :{th:['البيان','العدد','السعر','القيمة'],w:[.46,.14,.2,.2],rows:pl.map(x=>[x.n,x.c,f(x.p),f(x.v)])});
   const G={};r.rows.filter(x=>x.cols).forEach(x=>(G[x.t]=G[x.t]||[]).push(x));
   Object.values(G).forEach(g=>{const k=g[0].cols.length;tables.push({title:g[0].tn||'',th:['البيان',...g[0].cols.map(c=>c.l)],w:[.3,...g[0].cols.map(()=>.7/k)],rows:g.map(x=>[x.n,...x.cols.map(c=>c.v)])})});
@@ -468,6 +465,14 @@ async function showImg(cv,name,msg,auto,phone,rec){
   $('resimg').src=cv.toDataURL('image/png');$('resm').textContent=baseMsg;$('res').classList.remove('hide');
   try{$('res').scrollIntoView({block:'start'})}catch(e){}
   if(auto)await downloadCur()}
+function printCur(){const src=$('resimg').src;if(!src)return;
+  const f=document.createElement('iframe');f.setAttribute('aria-hidden','true');f.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0';
+  document.body.appendChild(f);const d=f.contentWindow.document;d.open();
+  d.write('<!DOCTYPE html><html dir="rtl"><head><meta charset="utf-8"><title>'+(curName||'فاتورة').replace(/[<>&]/g,'')+'</title><style>@page{size:A4;margin:10mm}html,body{margin:0;background:#fff}img{display:block;width:100%;max-width:190mm;margin:0 auto}</style></head><body><img src="'+src+'"></body></html>');d.close();
+  const img=d.querySelector('img');let done=false;
+  const go=()=>{if(done)return;done=true;try{f.contentWindow.focus();f.contentWindow.print()}catch(e){window.print()}setTimeout(()=>f.remove(),60000)};
+  if(img.complete)go();else{img.onload=go;img.onerror=()=>f.remove()}}
+$('resprint').onclick=printCur;
 $('resdl').onclick=downloadCur;$('resx').onclick=()=>$('res').classList.add('hide');
 $('resdel').onclick=()=>{if(!curRec)return;if(!delArm){delArm=true;$('resdel').textContent='اضغط تأكيد الحذف';return}
   trashPut(curRec);del('invoices',curRec.id);curRec=null;$('res').classList.add('hide');drawCusts();drawDash();drawTrash();if(lastC){$('prev').value=balOf(lastC)||'';calc()}};
@@ -477,7 +482,7 @@ $('ressh').onclick=async()=>{if(!curBlob)return;const file=new File([curBlob],cu
   const r=await dl(curBlob,curName);
   $('resm').textContent=baseMsg+({ok:' · تم حفظ الصورة: افتح واتساب وأرفقها من المعرض أو الملفات',anchor:' · تم تنزيل الصورة: أرفقها في واتساب',declined:' · تم الإلغاء',fail:' · اضغط مطولاً على الصورة وشاركها'}[r]||'')};
 const TPLD={inv:'{المحل}\nالعميل / {العميل}\n{الفاتورة} - {التاريخ}\nالإجمالي: {الإجمالي}\nالمدفوع: {المدفوع}\nالمتبقي: {المتبقي}',pay:'{المحل}\nالعميل / {العميل}\nإيصال دفعة: {المبلغ}\nالحساب بعد الدفعة: {الحساب}',rem:'السلام عليكم {العميل}\nحسابك عندنا في {المحل}: {الحساب} جنيه.\nبرجاء السداد في أقرب وقت. شكراً لتعاملك معنا.'};
-const tplOf=k=>{const v=lsv('tpl_'+k,'');return v.trim()?v:TPLD[k]},shopN=()=>lsv('shop','ابو حامد لتجارة الاخشاب'),docW=()=>lsv('docw','إذن صرف');
+const tplOf=k=>{const v=lsv('tpl_'+k,'');return v.trim()?v:TPLD[k]},shopN=()=>lsv('shop','ابو حامد لتجارة الاخشاب بالمحلة الكبري'),docW=()=>lsv('docw','إذن صرف');
 function fillTpl(k,m){return tplOf(k).split('\n').map(l=>{const had=/\{[^}]+\}/.test(l),o=l.replace(/\{([^}]+)\}/g,(x,key)=>key in m?m[key]:x);return{o,skip:had&&!o.trim()}}).filter(x=>!x.skip).map(x=>x.o).join('\n')}
 function txtOf(r){const m={'المحل':shopN(),'العميل':r.cname,'التاريخ':dshort(r.ts),'الخصم':r.pfv?f(r.pfv):'','سبب_الخصم':r.pfWhy||''};
   if(r.type==='pay'){m['المبلغ']=f(r.amount);m['الحساب']=f(r.rest);return fillTpl('pay',m)}
@@ -562,7 +567,7 @@ $('addCu').onclick=()=>{const name=$('nc_name').value.trim(),m=$('cuMsg');m.text
   S.customers.push(c);put('customers',c);['nc_name','nc_phone','nc_bal','nc_addr','nc_note'].forEach(i=>$(i).value='');$('cuAdd').classList.add('hide');drawCusts()};
 
 /* ---------- الأصناف ---------- */
-const COLS={mq:[['h','الطول'],['w','العرض'],['t','التخانة مم'],['p','السعر']],rd:[['h','الطول'],['w','العرض'],['t','التخانة مم'],['p','السعر']]};
+const COLS={mq:[['h','الطول'],['w','العرض'],['t','التخانة'],['p','السعر']],rd:[['h','الطول'],['w','العرض'],['p','السعر']]};
 let curIT='mq';
 function drawItems(){const cf=COLS[curIT],g='2fr '+cf.map(()=>'1fr').join(' ')+' 34px';
   $('nform').style.gridTemplateColumns=g;
@@ -586,7 +591,7 @@ function showDD(inp,tr){const q=nm(inp.value.trim()),t=tr.dataset.t;const l=S.it
   dd.innerHTML=l.map(it=>`<div data-k="${it.id}"><span style="flex:1">${esc(it.name)}</span><small class="num">${esc(szOf(it))}</small><b class="num">${it.p||''}</b></div>`).join('');
   dd.style.display='block';placeDD()}
 dd.addEventListener('mousedown',e=>{e.preventDefault();const cd=e.target.closest('div[data-c]');if(cd){const c=getC(cd.dataset.c);if(c&&ddInp){ddInp.value=c.name;ddInp.dispatchEvent(new Event('input',{bubbles:true}))}dd.style.display='none';return}const d=e.target.closest('div[data-k]');if(!d)return;const it=S.items.find(x=>x.id===d.dataset.k),rd=it.type==='rd';
-  ddInp.value=it.name;
+  ddInp.value=rd&&it.h&&it.w?`${it.name} ${it.h}×${it.w}`:it.name;
   const s=(c,v)=>{const x=ddRow.querySelector(c);if(x)x.value=v||''};s('.p',it.p);s('.w',it.w);s('.h',it.h);s('.t',it.t);
   dd.style.display='none';calc();const e0=[...ddRow.querySelectorAll('input.h,input.w,input.t,input.c,input.p')].find(i=>!i.value);if(e0)e0.focus()});
 function showCD(inp){if(inp.readOnly)return;const q=nm(inp.value.trim()),l=S.customers.filter(c=>!q||nm(c.name).includes(q)).sort((a,b)=>a.name.localeCompare(b.name,'ar')).slice(0,40);
@@ -599,9 +604,9 @@ addEventListener('scroll',e=>{if(dd.contains(e.target))return;placeDD()},true);i
 document.addEventListener('focusin',e=>{if(e.target.type==='number'&&!e.target.readOnly)try{e.target.select()}catch(_){}});
 
 /* ---------- الفاتورة ---------- */
-function addRow(t){const rd=t==='rd',d=document.createElement('div');d.className='row';d.dataset.t=t;
+function addRow(t){const rd=t==='rd',one=rd,d=document.createElement('div');d.className='row';d.dataset.t=t;
   const num=(c,l)=>`<div><label>${l}</label><input class="${c}" type="number" inputmode="decimal"></div>`;
-  d.innerHTML=`<div class="r1"><input class="n" placeholder="${rd?'اسم الصنف':'ابحث'}" autocomplete="off"><button class="del" aria-label="حذف">×</button></div><div class="rg a">${num('h','الطول')+num('w','العرض')+num('t','التخانة مم')+num('c','العدد')+num('p',rd?'السعر':'سعر م³')}</div><div class="ro"><span class="qq"></span><span>القيمة: <b class="val num">0.00</b></span></div>`;
+  d.innerHTML=one?`<div class="r1 one"><input class="n" placeholder="اسم الصنف" autocomplete="off"><input class="c" type="number" inputmode="decimal" placeholder="العدد"><input class="p" type="number" inputmode="decimal" placeholder="السعر"><button class="del" aria-label="حذف">×</button><span class="qq hide"></span><b class="val hide"></b></div>`:`<div class="r1"><input class="n" placeholder="ابحث" autocomplete="off"><button class="del" aria-label="حذف">×</button></div><div class="rg ${rd?'r':'a'}">${rd?'':num('h','الطول')+num('w','العرض')+num('t','التخانة')}${num('c','العدد')}${num('p','السعر')}</div><div class="ro"><span class="qq"></span><span>القيمة: <b class="val num">0.00</b></span></div>`;
   d.querySelector('.del').onclick=()=>{d.remove();calc()};d.querySelectorAll('input').forEach(i=>i.oninput=calc);
   const n=d.querySelector('.n');n.onfocus=()=>showDD(n,d);n.addEventListener('click',()=>showDD(n,d));n.addEventListener('input',()=>showDD(n,d));$('rows').appendChild(d);return d}
 let TOT={},editId=null;
@@ -609,8 +614,8 @@ function calc(){let sub=0,tq=0,tv=0;const rows=[];
   document.querySelectorAll('#rows .row').forEach(d=>{const g=c=>d.querySelector(c),gv=c=>nv(g(c)&&g(c).value),rd=d.dataset.t==='rd';
     const w=gv('.w'),h=gv('.h'),t=gv('.t'),c=gv('.c'),p=gv('.p');
     const vol=!rd&&w>0&&h>0&&t>0,area=!rd&&w>0&&h>0&&!vol;
-    /* متر مكعب = الطول (سم) × العرض (سم) × التخانة (مم) ÷ 10,000,000 × العدد */
-    const qraw=vol?w*h*t/1e7*c:area?w*h/1e4*c:0,q=vol?Math.round(qraw*1000)/1000:rd2(qraw);
+    /* متر مكعب = الطول × العرض × التخانة (سم) ÷ 1,000,000 × العدد */
+    const qraw=vol?w*h*t/1e6*c:area?w*h/1e4*c:0,q=vol?Math.round(qraw*1000)/1000:rd2(qraw);
     const v=rd2((vol?qraw:area?q:c)*p),u=vol?'م³':area?'م²':'';
     g('.qq').textContent=u?'الكمية: '+(vol?fv(q):fq(q))+' '+u:'';g('.val').textContent=f(v);
     if(c>0){rows.push({t:d.dataset.t,n:g('.n').value,w,h,th:t,u,c,q,p,v});sub+=v;if(vol)tv+=q;else tq+=q}});
@@ -700,7 +705,7 @@ $('bkNow').onclick=()=>$('bkSave').click();
 $('bkLater').onclick=()=>{try{localStorage.setItem('bkSnooze',Date.now())}catch(e){}bkBan()};
 
 /* ---------- المزامنة السحابية (Firebase) ---------- */
-const FBCFG={apiKey:'AIzaSyAvchzv59RG69CvojaQ5SXBI8FlIUBR7XE',authDomain:'hamed-bfb86.firebaseapp.com',projectId:'hamed-bfb86',storageBucket:'hamed-bfb86.firebasestorage.app',messagingSenderId:'613615265484',appId:'1:613615265484:web:0bb9ad1c55c3c50c25c469'};
+const FBCFG={apiKey:'AIzaSyCMwvziFU9hSuGMW8ygY1i-uTQoE12Q_J0',authDomain:'ezat-101.firebaseapp.com',projectId:'ezat-101',messagingSenderId:'338826432523',appId:'1:338826432523:web:d0d60e899c6ea0018b370e'};
 let FBDB=null,lastSync=0;
 async function getDb(){if(window.claude){try{return await tmo(claude.use('db'),8000)}catch(e){return null}}return FBDB}
 const loadScript=src=>new Promise((res,rej)=>{const e=document.createElement('script');e.src=src;e.onload=res;e.onerror=()=>rej(new Error('load'));document.head.appendChild(e)});
@@ -708,42 +713,32 @@ async function fbStart(cfg,email,pass,google){
   if(!window.firebase){const b='https://www.gstatic.com/firebasejs/10.12.2/';await loadScript(b+'firebase-app-compat.js');await loadScript(b+'firebase-auth-compat.js');await loadScript(b+'firebase-firestore-compat.js')}
   if(!firebase.apps.length)firebase.initializeApp(cfg);
   const auth=firebase.auth();let user;
-  if(google){try{user=(await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())).user}catch(e){if(e&&e.code==='auth/popup-blocked'){try{localStorage.setItem('fbOn','1')}catch(_){}await auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider());return false}throw e}}
+  if(google){try{user=(await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())).user}catch(e){if(e&&e.code==='auth/popup-blocked'){await auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider());return false}throw e}}
   else if(email&&pass)user=(await auth.signInWithEmailAndPassword(email,pass)).user;
   else user=await new Promise(r=>{const u=auth.onAuthStateChanged(x=>{u();r(x)})});
   if(!user)throw new Error('no-user');
   const base=firebase.firestore().collection('users').doc(user.uid);
   FBDB={collection:k=>({get:async()=>{const sn=await base.collection(k).get();return{docs:sn.docs.map(d=>({data:()=>d.data()}))}},doc:id=>({set:o=>base.collection(k).doc(id).set(o),delete:()=>base.collection(k).doc(id).delete()})}),doc:()=>({get:async()=>({exists:false}),delete:async()=>{}})};
-  FBDB.listen=(k,fld,since,cb)=>base.collection(k).where(fld,'>',since).onSnapshot(sn=>cb(sn.docChanges().filter(c=>c.type!=='removed').map(c=>c.doc.data())),()=>{});
   return true}
 const fbCfg=()=>{try{return(localStorage.getItem('fbOn')==='1'||localStorage.getItem('fbCfg'))?FBCFG:null}catch(e){return null}};
 const fbStat=t=>{$('fbStat').textContent=t};
-const fbErr=e=>{const c=(e&&e.code)||'';if(/popup-closed|cancelled-popup/.test(c))return'اتلغى تسجيل الدخول. جرّب تاني.';if(/unauthorized-domain/.test(c))return'ضيف hamed-100.github.io في Authentication ← Settings ← Authorized domains.';if(/operation-not-allowed/.test(c))return'فعّل Google (أو Email/Password) في Authentication ← Sign-in method.';if(/invalid-credential|wrong-password|user-not-found|invalid-email/.test(c))return'الإيميل أو كلمة السر غلط (لازم تكون أضفت المستخدم في Firebase).';if(/network/.test(c))return'مفيش إنترنت.';if(/operation-not-allowed/.test(c))return'فعّل Email/Password في Authentication.';if(e&&e.message==='no-user')return'سجّل الدخول من جديد.';if(e&&e.message==='load')return'تعذر تحميل مكتبة Firebase: تأكد من الإنترنت.';return'تعذر الربط: '+(c||(e&&e.message)||'')};
-async function syncNow(){const ok=await loadCloud();lastSync=Date.now();if(ok){drawCusts();drawItems();custInput();try{drawDash()}catch(e){}}return ok}
-/* اتصال حي: أي تعديل أو حذف من جهاز تاني يوصل هنا فوراً من غير ما تقفل وتفتح */
-let LIVE=[];
-const deadL=(k,x)=>{const a=TMB.get(k+':'+x.id);return a!==undefined&&a>=(x.u||0)};
-function liveRefresh(){drawCusts();drawItems();custInput();try{drawDash()}catch(e){}}
-function liveApply(k,r){let ch=false;r.forEach(x=>{if(!x||!x.id||deadL(k,x))return;const i=S[k].findIndex(y=>y.id===x.id);if(i<0){S[k].push(x);ch=true}else if((x.u||0)>(S[k][i].u||0)){S[k][i]=x;ch=true}});if(ch){lset(k,S[k]);liveRefresh()}}
-function liveTomb(r){let ch=false;r.forEach(t=>{if(!t||!t.id||!S[t.k])return;TMB.set(t.k+':'+t.id,t.at||0);const n=S[t.k].filter(y=>!(y.id===t.id&&(t.at||0)>=(y.u||0)));if(n.length!==S[t.k].length){S[t.k]=n;lset(t.k,n);ch=true}});if(ch)liveRefresh()}
-function liveOff(){LIVE.forEach(u=>{try{u&&u()}catch(e){}});LIVE=[]}
-function liveOn(){liveOff();if(!FBDB||!FBDB.listen)return;const since=Date.now()-6e5;
-  try{LIVE=[FBDB.listen('tomb','at',since,liveTomb),...['items','customers','invoices'].map(k=>FBDB.listen(k,'u',since,r=>liveApply(k,r)))]}catch(e){LIVE=[]}}
+const fbErr=e=>{const c=(e&&e.code)||'';if(/popup-closed|cancelled-popup/.test(c))return'اتلغى تسجيل الدخول. جرّب تاني.';if(/unauthorized-domain/.test(c))return'ضيف ezat101.github.io في Authentication ← Settings ← Authorized domains.';if(/operation-not-allowed/.test(c))return'فعّل Google (أو Email/Password) في Authentication ← Sign-in method.';if(/invalid-credential|wrong-password|user-not-found|invalid-email/.test(c))return'الإيميل أو كلمة السر غلط (لازم تكون أضفت المستخدم في Firebase).';if(/network/.test(c))return'مفيش إنترنت.';if(/operation-not-allowed/.test(c))return'فعّل Email/Password في Authentication.';if(e&&e.message==='no-user')return'سجّل الدخول من جديد.';if(e&&e.message==='load')return'تعذر تحميل مكتبة Firebase: تأكد من الإنترنت.';return'تعذر الربط: '+(c||(e&&e.message)||'')};
+async function syncNow(){const ok=await loadCloud();lastSync=Date.now();if(ok){drawCusts();drawItems();custInput()}return ok}
 async function fbBoot(){const cfg=fbCfg();if(!cfg){await syncNow();return}
   fbStat('جاري الاتصال بالسحابة...');
-  try{await fbStart(cfg);const ok=await syncNow();if(ok)liveOn();fbStat(ok?'متصل ✓ المزامنة والنسخ الاحتياطي تلقائيين.':'متصل بالحساب لكن القراءة فشلت: راجع قواعد Firestore.')}
+  try{await fbStart(cfg);const ok=await syncNow();fbStat(ok?'متصل ✓ المزامنة والنسخ الاحتياطي تلقائيين.':'متصل بالحساب لكن القراءة فشلت: راجع قواعد Firestore.')}
   catch(e){fbStat(e&&e.message==='no-user'?'سجّل الدخول من جديد.':'مفيش اتصال حالياً: بياناتك على الجهاز وهتتزامن لما النت يرجع.')}}
 function parseCfg(t){const o={};String(t).replace(/([A-Za-z]\w*)\s*:\s*["']([^"']*)["']/g,(m,k,v)=>{o[k]=v;return m});return o}
 async function fbLogin(email,pass,google){fbStat('جاري الربط...');
   try{const r=await fbStart(FBCFG,email,pass,google);if(r===false)return;try{localStorage.setItem('fbOn','1');localStorage.removeItem('fbCfg')}catch(e){}$('fbPass').value='';
-    const ok=await syncNow();if(ok)liveOn();fbStat(ok?'متصل ✓ المزامنة والنسخ الاحتياطي تلقائيين.':'تم تسجيل الدخول لكن القراءة فشلت: راجع قواعد Firestore.')}
+    const ok=await syncNow();fbStat(ok?'متصل ✓ المزامنة والنسخ الاحتياطي تلقائيين.':'تم تسجيل الدخول لكن القراءة فشلت: راجع قواعد Firestore.')}
   catch(e){fbStat(fbErr(e))}}
 $('fbGoogle').onclick=()=>fbLogin(null,null,true);
 $('fbConnect').onclick=()=>{const em=$('fbEmail').value.trim(),pw=$('fbPass').value;if(!em||!pw){fbStat('اكتب الإيميل وكلمة السر.');return}fbLogin(em,pw,false)};
 $('fbMore').onclick=e=>{e.preventDefault();$('fbMail').classList.toggle('hide')};
-$('fbOff').onclick=async()=>{liveOff();try{if(window.firebase&&firebase.auth)await firebase.auth().signOut()}catch(e){}try{localStorage.removeItem('fbCfg');localStorage.removeItem('fbOn')}catch(e){}FBDB=null;db=null;fbStat('تم الفصل. بياناتك باقية على الجهاز.');$('stor').textContent='الحفظ: على هذا الجهاز فقط.'};
+$('fbOff').onclick=async()=>{try{if(window.firebase&&firebase.auth)await firebase.auth().signOut()}catch(e){}try{localStorage.removeItem('fbCfg');localStorage.removeItem('fbOn')}catch(e){}FBDB=null;db=null;fbStat('تم الفصل. بياناتك باقية على الجهاز.');$('stor').textContent='الحفظ: على هذا الجهاز فقط.'};
 addEventListener('online',()=>{if(fbCfg())fbBoot()});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&FBDB&&Date.now()-lastSync>10000)syncNow()});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&FBDB&&Date.now()-lastSync>30000)syncNow()});
 
 /* ---------- تطبيق الموبايل (PWA) ---------- */
 if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(()=>{});
@@ -773,7 +768,8 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)autoBan()}
 /* رسائل الواتساب */
 const svk=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
 function loadMsgUI(){$('pfPreT').value=lsv('pfPre',DEFPRE);$('shopN').value=shopN();$('docW').value=docW();$('tplInv').value=tplOf('inv');$('tplPay').value=tplOf('pay');$('tplRem').value=tplOf('rem')}
-$('shopN').oninput=()=>svk('shop',$('shopN').value.trim());$('docW').oninput=()=>svk('docw',$('docW').value.trim());
+const applyBrand=()=>{const n=shopN()||'ابو حامد لتجارة الاخشاب بالمحلة الكبري';['appTitle','lockTitle'].forEach(i=>{const e=$(i);if(e)e.textContent=n});document.title=n};applyBrand();
+$('shopN').oninput=()=>{svk('shop',$('shopN').value.trim());applyBrand()};$('docW').oninput=()=>svk('docw',$('docW').value.trim());
 [['tplInv','tpl_inv'],['tplPay','tpl_pay'],['tplRem','tpl_rem']].forEach(([i,k])=>$(i).oninput=()=>svk(k,$(i).value));
 $('pfPreT').oninput=()=>{svk('pfPre',$('pfPreT').value);$('pfPre').innerHTML=preHtml()};
 $('tplReset').onclick=()=>{try{['shop','docw','tpl_inv','tpl_pay','tpl_rem','pfPre'].forEach(k=>localStorage.removeItem(k))}catch(e){}loadMsgUI()};
@@ -870,7 +866,7 @@ $('calcClose').onclick=toggleCalc;
 $('calcModal').addEventListener('click',e=>{if(e.target===$('calcModal'))toggleCalc()});
 function calcGlass(){
   const w=nv($('calc_w').value),h=nv($('calc_h').value),t=nv($('calc_t').value),c=nv($('calc_c').value)||1,p=nv($('calc_p').value);
-  const one=w*h*t/1e7,all=one*c,total=rd2(all*p);
+  const one=w*h*t/1e6,all=one*c,total=rd2(all*p);
   $('calc_area').textContent=fv(one)+' م³';
   $('calc_tarea').textContent=fv(all)+' م³';
   $('calc_total').textContent=f(total)+' جنيه'}
@@ -906,7 +902,7 @@ $('lkSave').onclick=async()=>{const a=$('lkP1').value,b=$('lkP2').value,m=$('lkM
   $('lkP1').value=$('lkP2').value='';$('lkSet').classList.add('hide');m.textContent='تم تفعيل القفل ✓';lkUI()};
 $('lkBio').onchange=async()=>{const m=$('lkMsg');m.textContent='';
   if(!$('lkBio').checked){lkSet('lkBio',null);return}
-  try{const cr=await navigator.credentials.create({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),rp:{name:'ابو حامد لتجارة الاخشاب'},user:{id:crypto.getRandomValues(new Uint8Array(16)),name:'owner',displayName:'صاحب المحل'},pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required',residentKey:'discouraged'},timeout:60000}});
+  try{const cr=await navigator.credentials.create({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),rp:{name:'ابو حامد لتجارة الاخشاب بالمحلة الكبري'},user:{id:crypto.getRandomValues(new Uint8Array(16)),name:'owner',displayName:'صاحب المحل'},pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required',residentKey:'discouraged'},timeout:60000}});
     lkSet('lkBio',b64(cr.rawId));m.textContent='تم تفعيل البصمة ✓'}
   catch(e){$('lkBio').checked=false;m.textContent='تعذر تفعيل البصمة على الجهاز ده'}};
 document.addEventListener('visibilitychange',()=>{if(document.hidden)hiddenAt=Date.now();else if(lkGet('lkOn')==='1'&&hiddenAt&&Date.now()-hiddenAt>60000){lockNow();if(lkGet('lkBio')&&bioOK)tryBio()}});
