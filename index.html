@@ -269,7 +269,11 @@ details.card textarea{direction:rtl;text-align:right;font-size:14px;width:100%;m
 </section>
 
 <section id="t-st" class="hide">
-  <div class="card"><b>ملاحظات الفاتورة</b><div class="mute" style="margin:4px 0 6px">اللي تكتبه هنا يظهر تحت الإجمالي في كل الفواتير الجديدة.</div><textarea id="gnote" rows="3" placeholder="اكتب الملاحظات هنا" style="direction:rtl;text-align:right;font-size:14px"></textarea></div>
+  <div class="card"><b>رسائل تحت الفاتورة</b><div class="mute" style="margin:4px 0 6px">تظهر تحت الإجمالي في صورة الفاتورة. الرسالة الحمراء الأول وبعدها العادية. الزرار بيشغّل أو يقفل كل رسالة.</div>
+    <label class="opt"><input type="checkbox" id="gnRedOn"> <b style="color:#dc2626">الرسالة الحمراء</b> (شغّالة)</label>
+    <textarea id="gnoteRed" rows="2" placeholder="اكتب الرسالة الحمراء هنا" style="direction:rtl;text-align:right;font-size:14px;color:#dc2626"></textarea>
+    <label class="opt"><input type="checkbox" id="gnOn"> <b>الرسالة العادية</b> (شغّالة)</label>
+    <textarea id="gnote" rows="3" placeholder="اكتب الرسالة العادية هنا" style="direction:rtl;text-align:right;font-size:14px"></textarea></div>
   <div class="card"><b>خيارات</b>
     <label class="opt"><input type="checkbox" id="calcOn"> إظهار الآلة الحاسبة</label>
     <label class="opt"><input type="checkbox" id="themeChk"> الوضع الليلي</label></div>
@@ -289,6 +293,10 @@ details.card textarea{direction:rtl;text-align:right;font-size:14px;width:100%;m
     <label style="margin-top:6px">رسالة الدفعة</label><textarea id="tplPay" rows="4"></textarea><div class="mute">{المحل} {العميل} {المبلغ} {الحساب} {التاريخ} {الخصم}</div>
     <label style="margin-top:6px">رسالة تذكير الدين</label><textarea id="tplRem" rows="4"></textarea><div class="mute">{المحل} {العميل} {الحساب}</div>
     <div class="btns"><button class="alt b-red" id="tplReset">رجوع للصيغ الأصلية</button></div></details>
+  <details class="card" id="ivD"><summary>🧾 شكل الفاتورة والمكتوب</summary>
+    <div class="mute" style="margin:6px 0">أي تغيير بيظهر في المعاينة تحت، وبيتطبق على كل الصور اللي تتعمل بعد كده (الألوان والأحجام بتأثر كمان على كشف الحساب والتقارير).</div>
+    <div id="ivBody"></div><div id="ivPrev"></div>
+    <div class="btns"><button class="alt b-red" id="ivReset">رجوع للشكل الأصلي</button></div></details>
   <details class="card" id="trD"><summary>🗑 سلة المحذوفات <span id="trCnt"></span></summary>
     <div class="mute" style="margin:6px 0">الفواتير المحذوفة بتتحفظ 30 يوم على الجهاز ده. اضغطي استرجاع ترجّعيها.</div>
     <div id="trList"></div><div class="info" id="trMsg"></div></details>
@@ -317,9 +325,9 @@ details.card textarea{direction:rtl;text-align:right;font-size:14px;width:100%;m
       <button class="del" id="calcClose" aria-label="إغلاق">×</button>
     </div>
     <div class="g2" style="grid-template-columns:1fr 1fr 1fr">
-      <div><label>الطول (سم)</label><input id="calc_h" type="number" inputmode="decimal" placeholder="0"></div>
-      <div><label>العرض (سم)</label><input id="calc_w" type="number" inputmode="decimal" placeholder="0"></div>
       <div><label>التخانة (مم)</label><input id="calc_t" type="number" inputmode="decimal" placeholder="0"></div>
+      <div><label>العرض (سم)</label><input id="calc_w" type="number" inputmode="decimal" placeholder="0"></div>
+      <div><label>الطول (سم)</label><input id="calc_h" type="number" inputmode="decimal" placeholder="0"></div>
     </div>
     <div class="g2">
       <div><label>العدد</label><input id="calc_c" type="number" inputmode="decimal" value="1"></div>
@@ -417,41 +425,50 @@ $('bnav').onclick=e=>{const b=e.target.closest('button[data-t]');if(!b)return;co
   if(t==='dash')drawDash();if(t==='cu')drawCusts();if(t==='new'&&lastC&&!editId){$('prev').value=balOf(lastC)||'';calc()}};
 
 /* ---------- رسم الصورة (بدون مكتبات) ---------- */
+const IVD={ttl:'العميل /',nPre:'ملاحظة:',hBayan:'البيان',hSize:'المقاس',hCnt:'العدد',hQty:'الكمية',hPrice:'السعر',hVal:'القيمة',
+  lSub:'إجمالي الإذن',lNyl:'نولون',lDisc:'خصم',lPrev:'رصيد سابق',lTot:'الإجمالي',lPaid:'المدفوع',lRest:'المتبقي',
+  showShop:1,showDate:1,showSub:1,showPrev:1,
+  cShop:'#0f766e',cHead:'#eeeeee',cTot:'#e2f1ef',cRed:'#dc2626',cText:'#000000',cLine:'#444444',
+  fs:15,ts:24,shs:17,w:700};
+let _iv=null;
+const IV=()=>{if(!_iv){let c={};try{c=JSON.parse(lsv('ivcfg','{}'))||{}}catch(e){}_iv={...IVD,...c}}return _iv};
 function sheet(o){
-  const W=700,P=20,IW=W-2*P,LH=22,F='Tahoma, Arial, "Noto Naskh Arabic", sans-serif',mc=document.createElement('canvas').getContext('2d');
+  const V=IV(),fs=+V.fs||15,W=+V.w||700,P=20,IW=W-2*P,LH=Math.round(fs*1.47),F='Tahoma, Arial, "Noto Naskh Arabic", sans-serif',mc=document.createElement('canvas').getContext('2d');
+  const BD=fs+'px '+F,RH=Math.round(fs*2);
   const wrap=(t,w,font)=>{mc.font=font;mc.direction='rtl';const out=[];let cur='';for(const wd of String(t==null?'':t).split(/\s+/)){const tr=cur?cur+' '+wd:wd;if(!cur||mc.measureText(tr).width<=w)cur=tr;else{out.push(cur);cur=wd}}out.push(cur);return out};
   const paint=x=>{let y=10;x.direction='rtl';x.textBaseline='middle';
-    const T=(s,px,py,al,font,col)=>{x.font=font;x.textAlign=al;x.fillStyle=col||'#000';x.fillText(String(s),px,py)};
-    x.direction='rtl';T(lsv('shop','ابو حامد لتجارة الاخشاب'),W-P,y+10,'right','bold 17px '+F,'#0f766e');x.direction='rtl';
-    T(o.date,P,y+10,'left','13px '+F,'#555');y+=24;
-    T(o.title||('العميل / '+o.name),W/2,y+13,'center','bold 24px '+F);y+=30;
-    T(o.sub,W/2,y+7,'center','14px '+F,'#555');y+=22;
-    (o.meta||[]).forEach(s=>{T(s,W-P,y+10,'right','15px '+F);y+=24});y+=4;
+    const T=(s,px,py,al,font,col)=>{x.font=font;x.textAlign=al;x.fillStyle=col||V.cText;x.fillText(String(s),px,py)};
+    x.direction='rtl';if(+V.showShop)T(lsv('shop','ابو حامد لتجارة الاخشاب'),W-P,y+10,'right','bold '+V.shs+'px '+F,V.cShop);x.direction='rtl';
+    if(+V.showDate)T(o.date,P,y+10,'left','13px '+F,'#555');y+=Math.max(24,(+V.shs)+6);
+    T(o.title||((V.ttl?V.ttl+' ':'')+o.name),W/2,y+13,'center','bold '+V.ts+'px '+F);y+=(+V.ts)+6;
+    if(o.sub){T(o.sub,W/2,y+7,'center','14px '+F,'#555');y+=22}
+    (o.meta||[]).forEach(s=>{T(s,W-P,y+10,'right',BD);y+=LH+2});y+=4;
     (o.tables||[]).forEach(tb=>{
-      if(tb.title){T(tb.title,W-P,y+10,'right','bold 15px '+F);y+=24}
-      const ws=tb.w.map(v=>v*IW),hh=30;let xr=W-P;x.fillStyle='#eee';x.fillRect(P,y,IW,hh);x.strokeStyle='#444';
-      tb.th.forEach((h,i)=>{T(h,xr-ws[i]/2,y+hh/2,'center','bold 14px '+F);x.strokeRect(xr-ws[i],y,ws[i],hh);xr-=ws[i]});y+=hh;
-      tb.rows.forEach(row=>{const ln=row.map((c,i)=>wrap(c,ws[i]-10,'15px '+F)),n=Math.max(...ln.map(l=>l.length)),rh=n*LH+10;let xr=W-P;
-        row.forEach((c,i)=>{ln[i].forEach((s,k)=>T(s,xr-ws[i]/2,y+5+LH*k+LH/2,'center','15px '+F));x.strokeRect(xr-ws[i],y,ws[i],rh);xr-=ws[i]});y+=rh});
+      if(tb.title){T(tb.title,W-P,y+10,'right','bold '+BD);y+=LH+2}
+      const ws=tb.w.map(v=>v*IW),hh=RH;let xr=W-P;x.fillStyle=V.cHead;x.fillRect(P,y,IW,hh);x.strokeStyle=V.cLine;
+      tb.th.forEach((h,i)=>{T(h,xr-ws[i]/2,y+hh/2,'center','bold '+(fs-1)+'px '+F);x.strokeRect(xr-ws[i],y,ws[i],hh);xr-=ws[i]});y+=hh;
+      tb.rows.forEach(row=>{const ln=row.map((c,i)=>wrap(c,ws[i]-10,BD)),n=Math.max(...ln.map(l=>l.length)),rh=n*LH+10;let xr=W-P;
+        row.forEach((c,i)=>{ln[i].forEach((s,k)=>T(s,xr-ws[i]/2,y+5+LH*k+LH/2,'center',BD));x.strokeRect(xr-ws[i],y,ws[i],rh);xr-=ws[i]});y+=rh});
       y+=8});
-    if(o.sum){const lw=IW*.68,vw=IW-lw,rh=30;o.sum.forEach(([a,b,bold])=>{if(bold){x.fillStyle='#e2f1ef';x.fillRect(P,y,IW,rh)}
-      const fo=(bold?'bold ':'')+'15px '+F;T(a,W-P-8,y+rh/2,'right',fo);T(b,P+vw/2,y+rh/2,'center',fo);x.strokeStyle='#444';x.strokeRect(W-P-lw,y,lw,rh);x.strokeRect(P,y,vw,rh);y+=rh});y+=6}
-    if(o.note){y+=6;wrap('ملاحظة: '+o.note,IW,'15px '+F).forEach(s=>{T(s,W-P,y+11,'right','15px '+F);y+=LH})}
-    if(o.gnote){y+=8;String(o.gnote).split('\n').forEach(ln=>wrap(ln.trim()||' ',IW,'15px '+F).forEach(s=>{T(s,W-P,y+11,'right','15px '+F);y+=LH}))}
+    if(o.sum){const lw=IW*.68,vw=IW-lw,rh=RH;o.sum.forEach(([a,b,bold])=>{if(bold){x.fillStyle=V.cTot;x.fillRect(P,y,IW,rh)}
+      const fo=(bold?'bold ':'')+BD;T(a,W-P-8,y+rh/2,'right',fo);T(b,P+vw/2,y+rh/2,'center',fo);x.strokeStyle=V.cLine;x.strokeRect(W-P-lw,y,lw,rh);x.strokeRect(P,y,vw,rh);y+=rh});y+=6}
+    if(o.note){y+=6;wrap((V.nPre?V.nPre+' ':'')+o.note,IW,BD).forEach(s=>{T(s,W-P,y+11,'right',BD);y+=LH})}
+    if(o.gnoteRed){y+=8;String(o.gnoteRed).split('\n').forEach(ln=>wrap(ln.trim()||' ',IW,'bold '+BD).forEach(s=>{T(s,W-P,y+11,'right','bold '+BD,V.cRed);y+=LH}))}
+    if(o.gnote){y+=8;String(o.gnote).split('\n').forEach(ln=>wrap(ln.trim()||' ',IW,BD).forEach(s=>{T(s,W-P,y+11,'right',BD);y+=LH}))}
     return y+10};
   const H=Math.ceil(paint(mc)),cv=document.createElement('canvas');
   cv.width=W*2;cv.height=H*2;const x=cv.getContext('2d');x.scale(2,2);x.fillStyle='#fff';x.fillRect(0,0,W,H);paint(x);return cv}
-function invSheet(r){const base={name:r.cname,date:stamp(r.ts),note:r.note};
+function invSheet(r){const V=IV(),base={name:r.cname,date:stamp(r.ts),note:r.note};
   if(r.type==='pay')return{...base,sub:'إيصال دفعة',sum:[['الحساب قبل الدفعة',f(r.prev)],...(r.pfv?[['المبلغ المدفوع',f(r.amtRaw)],['خصم '+(r.pfWhy?r.pfWhy+' ':'')+f(r.pf)+'% من المدفوع',f(r.pfv)],['صافي الدفعة',f(r.amount),1]]:[['المبلغ المدفوع',f(r.amount),1]]),['الحساب بعد الدفعة',f(r.rest),1]]};
   const pl=r.rows.filter(x=>!x.cols),sz=x=>x.w>0&&x.h>0,ar=pl.some(x=>x.q>0||sz(x)),tables=[];
-  if(pl.length)tables.push(ar?{th:['البيان','المقاس','العدد','الكمية','السعر','القيمة'],w:[.25,.21,.09,.15,.14,.16],rows:pl.map(x=>{const a=x.q>0,vo=x.u==='م³',s3=x.th>0;return[x.n,sz(x)?((vo||s3||x.t==='rd')?x.h+'/'+x.w+(s3?'/'+x.th:''):x.w+'/'+x.h):'-',x.c,a?(vo?fv(x.q)+' م³':fq(x.q)):'-',f(x.p),f(x.v)]})}
-    :{th:['البيان','العدد','السعر','القيمة'],w:[.46,.14,.2,.2],rows:pl.map(x=>[x.n,x.c,f(x.p),f(x.v)])});
+  if(pl.length)tables.push(ar?{th:[V.hBayan,V.hSize,V.hCnt,V.hQty,V.hPrice,V.hVal],w:[.25,.21,.09,.15,.14,.16],rows:pl.map(x=>{const a=x.q>0,vo=x.u==='م³',s3=x.th>0;return[x.n,sz(x)?((s3?x.th+'/':'')+x.w+'/'+x.h):'-',x.c,a?(vo?fv(x.q)+' م³':fq(x.q)):'-',f(x.p),f(x.v)]})}
+    :{th:[V.hBayan,V.hCnt,V.hPrice,V.hVal],w:[.46,.14,.2,.2],rows:pl.map(x=>[x.n,x.c,f(x.p),f(x.v)])});
   const G={};r.rows.filter(x=>x.cols).forEach(x=>(G[x.t]=G[x.t]||[]).push(x));
   Object.values(G).forEach(g=>{const k=g[0].cols.length;tables.push({title:g[0].tn||'',th:['البيان',...g[0].cols.map(c=>c.l)],w:[.3,...g[0].cols.map(()=>.7/k)],rows:g.map(x=>[x.n,...x.cols.map(c=>c.v)])})});
-  const sum=[['إجمالي الإذن'+qtyTxt(r.tq,r.tv),f(r.sub)]];(r.sums||[]).forEach(x=>sum.push(['إجمالي '+x.l,f(x.v)]));
-  if(r.nylon)sum.push(['نولون',f(r.nylon)]);if(r.disc)sum.push(['خصم',f(r.disc)]);if(r.dpv)sum.push(['خصم '+f(r.dp)+'%',f(r.dpv)]);
-  sum.push(['رصيد سابق',f(r.prev)],['الإجمالي',f(r.total),1]);if(r.pfv)sum.push(['المبلغ المدفوع',f(r.paidRaw)],['خصم '+(r.pfWhy?r.pfWhy+' ':'')+f(r.pf)+'% من المدفوع',f(r.pfv)],['صافي المدفوع',f(r.paid)]);else sum.push(['المدفوع',f(r.paid)]);sum.push(['المتبقي',f(r.rest),1]);
-  return{...base,sub:((lsv('docw','إذن صرف')?lsv('docw','إذن صرف')+' ':'')+'رقم '+r.no),tables,sum,gnote:r.gnote||''}}
+  const sum=[[V.lSub+qtyTxt(r.tq,r.tv),f(r.sub)]];(r.sums||[]).forEach(x=>sum.push(['إجمالي '+x.l,f(x.v)]));
+  if(r.nylon)sum.push([V.lNyl,f(r.nylon)]);if(r.disc)sum.push([V.lDisc,f(r.disc)]);if(r.dpv)sum.push([V.lDisc+' '+f(r.dp)+'%',f(r.dpv)]);
+  if(+V.showPrev)sum.push([V.lPrev,f(r.prev)]);sum.push([V.lTot,f(r.total),1]);if(r.pfv)sum.push(['المبلغ المدفوع',f(r.paidRaw)],['خصم '+(r.pfWhy?r.pfWhy+' ':'')+f(r.pf)+'% من المدفوع',f(r.pfv)],['صافي المدفوع',f(r.paid)]);else sum.push([V.lPaid,f(r.paid)]);sum.push([V.lRest,f(r.rest),1]);
+  return{...base,sub:+V.showSub?((lsv('docw','إذن صرف')?lsv('docw','إذن صرف')+' ':'')+'رقم '+r.no):'',tables,sum,gnote:pget('gnOn',true)?(r.gnote||''):'',gnoteRed:pget('gnRedOn',true)?(r.gnoteRed||''):''}}
 
 /* ---------- عرض/حفظ/مشاركة الصورة ---------- */
 let curBlob=null,curName='',curPhone='',baseMsg='',curRec=null,delArm=false;
@@ -585,7 +602,7 @@ $('items').addEventListener('click',e=>{const k=e.target.dataset.d;if(!k)return;
 
 /* ---------- بحث الأصناف ---------- */
 const dd=$('dd');let ddInp=null,ddRow=null;
-const szOf=it=>it.h&&it.w?it.w+'×'+it.h:'';
+const szOf=it=>it.h&&it.w?(it.t?it.t+'×':'')+it.w+'×'+it.h:'';
 function placeDD(){if(dd.style.display==='none'||!ddInp)return;const r=ddInp.getBoundingClientRect(),vh=window.visualViewport?visualViewport.height:innerHeight,h=Math.min(dd.scrollHeight,220);
   let top=r.bottom+2;if(top+h>vh-4&&r.top-h-2>4)top=r.top-h-2;
   dd.style.top=top+'px';dd.style.right=Math.max(4,innerWidth-r.right)+'px';dd.style.width=Math.max(230,r.width)+'px'}
@@ -609,7 +626,7 @@ document.addEventListener('focusin',e=>{if(e.target.type==='number'&&!e.target.r
 /* ---------- الفاتورة ---------- */
 function addRow(t){const rd=t==='rd',d=document.createElement('div');d.className='row';d.dataset.t=t;
   const num=(c,l)=>`<div><label>${l}</label><input class="${c}" type="number" inputmode="decimal"></div>`;
-  d.innerHTML=`<div class="r1"><input class="n" placeholder="${rd?'اسم الصنف':'ابحث'}" autocomplete="off"><button class="del" aria-label="حذف">×</button></div><div class="rg a">${num('h','الطول')+num('w','العرض')+num('t','التخانة مم')+num('c','العدد')+num('p',rd?'السعر':'سعر م³')}</div><div class="ro"><span class="qq"></span><span>القيمة: <b class="val num">0.00</b></span></div>`;
+  d.innerHTML=`<div class="r1"><input class="n" placeholder="${rd?'اسم الصنف':'ابحث'}" autocomplete="off"><button class="del" aria-label="حذف">×</button></div><div class="rg a">${num('t','التخانة مم')+num('w','العرض')+num('h','الطول')+num('c','العدد')+num('p',rd?'السعر':'سعر م³')}</div><div class="ro"><span class="qq"></span><span>القيمة: <b class="val num">0.00</b></span></div>`;
   d.querySelector('.del').onclick=()=>{d.remove();calc()};d.querySelectorAll('input').forEach(i=>i.oninput=calc);
   const n=d.querySelector('.n');n.onfocus=()=>showDD(n,d);n.addEventListener('click',()=>showDD(n,d));n.addEventListener('input',()=>showDD(n,d));$('rows').appendChild(d);return d}
 let TOT={},editId=null;
@@ -660,7 +677,7 @@ async function doSave(img){const m=$('msg');m.textContent='';
     else if(ph&&ph!==c.phone){c.phone=ph;put('customers',c)}
     const prev=balOf(c);let r;
     if(hasRows){const total=rd2(TOT.sub+nyl-dsc+prev);
-      r={id:uid(),type:'inv',cid:c.id,cname:name,phone:c.phone,no:nextNo(c),ts:Date.now(),rows:TOT.rows,tq:TOT.tq,tv:TOT.tv,sub:TOT.sub,nylon:nyl,disc:dsc,paidRaw:TOT.paidRaw,pf:TOT.pf,pfv:TOT.pfv,pfWhy:TOT.pfWhy,prev,total,paid:TOT.paid,rest:rd2(total-TOT.paid),note,gnote:getGN()}}
+      r={id:uid(),type:'inv',cid:c.id,cname:name,phone:c.phone,no:nextNo(c),ts:Date.now(),rows:TOT.rows,tq:TOT.tq,tv:TOT.tv,sub:TOT.sub,nylon:nyl,disc:dsc,paidRaw:TOT.paidRaw,pf:TOT.pf,pfv:TOT.pfv,pfWhy:TOT.pfWhy,prev,total,paid:TOT.paid,rest:rd2(total-TOT.paid),note,gnote:getGN(),gnoteRed:getGR()}}
     else r={id:uid(),type:'pay',cid:c.id,cname:name,phone:c.phone,ts:Date.now(),amount:TOT.paid,amtRaw:TOT.paidRaw,pf:TOT.pf,pfv:TOT.pfv,pfWhy:TOT.pfWhy,prev,rest:rd2(prev-TOT.paid),note};
     S.invoices.push(r);put('invoices',r);clearInv();drawCusts();drawDash();
     await showRec(r,img,hasRows?'تم حفظ الفاتورة ✓':'تم تسجيل الدفعة ✓');if(!img&&$('autoWa').checked){let can=false;try{can=!!(navigator.canShare&&navigator.canShare({files:[new File([curBlob],curName,{type:'image/png'})]}))}catch(e){}if(can)$('ressh').click();else if(waNum(r.phone))$('reswa').click()}}
@@ -785,10 +802,41 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)autoBan()}
 /* رسائل الواتساب */
 const svk=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
 function loadMsgUI(){$('pfPreT').value=lsv('pfPre',DEFPRE);$('shopN').value=shopN();$('docW').value=docW();$('tplInv').value=tplOf('inv');$('tplPay').value=tplOf('pay');$('tplRem').value=tplOf('rem')}
-$('shopN').oninput=()=>svk('shop',$('shopN').value.trim());$('docW').oninput=()=>svk('docw',$('docW').value.trim());
+$('shopN').oninput=()=>{svk('shop',$('shopN').value.trim());ivSync()};$('docW').oninput=()=>{svk('docw',$('docW').value.trim());ivSync()};
 [['tplInv','tpl_inv'],['tplPay','tpl_pay'],['tplRem','tpl_rem']].forEach(([i,k])=>$(i).oninput=()=>svk(k,$(i).value));
 $('pfPreT').oninput=()=>{svk('pfPre',$('pfPreT').value);$('pfPre').innerHTML=preHtml()};
 $('tplReset').onclick=()=>{try{['shop','docw','tpl_inv','tpl_pay','tpl_rem','pfPre'].forEach(k=>localStorage.removeItem(k))}catch(e){}loadMsgUI()};
+/* رسائل تحت الفاتورة + شكل الفاتورة */
+const getGR=()=>lsv('gnoteRed','');
+$('gnoteRed').value=getGR();$('gnoteRed').oninput=()=>{svk('gnoteRed',$('gnoteRed').value);ivPrev()};
+$('gnote').addEventListener('input',()=>ivPrev());
+$('gnRedOn').checked=pget('gnRedOn',true);$('gnRedOn').onchange=()=>{pset('gnRedOn',$('gnRedOn').checked);ivPrev()};
+$('gnOn').checked=pget('gnOn',true);$('gnOn').onchange=()=>{pset('gnOn',$('gnOn').checked);ivPrev()};
+function ivBuild(){const V=IV(),tx=(k,l)=>`<div><label>${l}</label><input data-iv="${k}" value="${esc(V[k])}"></div>`,
+  ck=(k,l)=>`<label class="opt"><input type="checkbox" data-ivc="${k}"${+V[k]?' checked':''}> ${l}</label>`,
+  co=(k,l)=>`<div><label>${l}</label><input type="color" data-iv="${k}" value="${V[k]}" style="height:38px;padding:2px"></div>`,
+  se=(k,l,o)=>`<div><label>${l}</label><select data-iv="${k}">${o.map(([v,t])=>`<option value="${v}"${+V[k]===v?' selected':''}>${t}</option>`).join('')}</select></div>`,
+  h=t=>`<b style="display:block;margin:12px 0 4px">${t}</b>`,g=a=>`<div class="g2">${a.join('')}</div>`;
+  $('ivBody').innerHTML=h('الاسم والعنوان')+
+   g([`<div><label>اسم المحل</label><input data-ivs="shop" value="${esc(shopN())}"></div>`,`<div><label>كلمة الفاتورة</label><input data-ivs="docw" value="${esc(docW())}"></div>`,tx('ttl','قبل اسم العميل'),tx('nPre','كلمة الملاحظة')])+
+   ck('showShop','إظهار اسم المحل')+ck('showDate','إظهار التاريخ')+ck('showSub','إظهار سطر رقم الفاتورة')+ck('showPrev','إظهار صف الرصيد السابق')+
+   h('عناوين أعمدة الجدول')+g([tx('hBayan','البيان'),tx('hSize','المقاس'),tx('hCnt','العدد'),tx('hQty','الكمية'),tx('hPrice','السعر'),tx('hVal','القيمة')])+
+   h('كلمات الإجماليات')+g([tx('lSub','إجمالي الإذن'),tx('lNyl','نولون'),tx('lDisc','خصم'),tx('lPrev','رصيد سابق'),tx('lTot','الإجمالي'),tx('lPaid','المدفوع'),tx('lRest','المتبقي')])+
+   h('الألوان')+g([co('cShop','اسم المحل'),co('cHead','خلفية عناوين الجدول'),co('cTot','خلفية الإجمالي والمتبقي'),co('cRed','الرسالة الحمراء'),co('cText','لون الكتابة'),co('cLine','لون الخطوط')])+
+   h('الأحجام')+g([se('fs','حجم الكتابة',[[14,'صغير'],[15,'عادي'],[17,'كبير'],[19,'كبير جداً']]),se('ts','حجم اسم العميل',[[20,'صغير'],[24,'عادي'],[28,'كبير'],[32,'كبير جداً']]),se('shs','حجم اسم المحل',[[15,'صغير'],[17,'عادي'],[21,'كبير'],[26,'كبير جداً']]),se('w','عرض الصورة',[[600,'ضيق'],[700,'عادي'],[800,'عريض'],[900,'عريض جداً']])])}
+function ivSet(k,v){let c={};try{c=JSON.parse(lsv('ivcfg','{}'))||{}}catch(e){}c[k]=v;svk('ivcfg',JSON.stringify(c));_iv=null;ivPrev()}
+function ivSync(){document.querySelectorAll('[data-ivs]').forEach(i=>{i.value=i.dataset.ivs==='shop'?shopN():docW()});ivPrev()}
+let ivTm;function ivPrev(){if(!$('ivD').open)return;clearTimeout(ivTm);ivTm=setTimeout(()=>{try{
+  const r={cname:'اسم العميل',ts:Date.now(),no:12,note:'ملاحظة تجريبية',tq:0,tv:.6,sub:10500,nylon:0,disc:0,prev:2000,total:12500,paid:5000,rest:7500,
+   rows:[{t:'mq',n:'خشب زان',w:20,h:300,th:50,u:'م³',c:10,q:.3,p:20000,v:6000},{t:'mq',n:'خشب موسكي',w:15,h:400,th:25,u:'م³',c:20,q:.3,p:15000,v:4500}],
+   gnote:getGN()||'رسالة عادية تجريبية',gnoteRed:getGR()||'رسالة حمراء تجريبية'};
+  const cv=sheet(invSheet(r));cv.style.cssText='width:100%;height:auto;border:1px solid #ccc;border-radius:8px;margin-top:10px';const b=$('ivPrev');b.innerHTML='';b.appendChild(cv)}catch(e){}},150)}
+$('ivD').addEventListener('toggle',()=>{if($('ivD').open){ivBuild();ivPrev()}});
+['input','change'].forEach(ev=>$('ivBody').addEventListener(ev,e=>{const t=e.target;
+  if(t.dataset.ivs){svk(t.dataset.ivs,t.value.trim());$('shopN').value=shopN();$('docW').value=docW();ivPrev()}
+  else if(t.dataset.ivc)ivSet(t.dataset.ivc,t.checked?1:0);
+  else if(t.dataset.iv)ivSet(t.dataset.iv,t.type==='color'||t.tagName==='SELECT'?t.value:t.value)}));
+$('ivReset').onclick=()=>{try{localStorage.removeItem('ivcfg')}catch(e){}_iv=null;ivBuild();ivPrev()};
 
 /* سلة المحذوفات */
 const trashList=()=>{const l=lget('trash'),k=l.filter(x=>x.delAt>Date.now()-30*864e5);if(k.length!==l.length)lset('trash',k);return k};
