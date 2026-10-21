@@ -340,7 +340,11 @@ details.card textarea{direction:rtl;text-align:right;font-size:14px;width:100%;m
     <label class="opt"><input type="checkbox" id="prAuto"> فتح الطباعة تلقائيًا بعد كل حفظ</label>
     <label style="margin-top:6px">عرض الورق</label>
     <select id="prW" style="width:100%;font:inherit;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)"><option value="58">58 مم</option><option value="80">80 مم</option></select>
-    <div class="mute" style="margin-top:6px">بتطبع صورة الفاتورة من طباعة الجهاز (طابعة مثبتة، أو تطبيق طباعة بلوتوث زي RawBT).</div></div>
+    <label style="margin-top:6px">طريقة الطباعة</label>
+    <select id="prM" style="width:100%;font:inherit;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)"><option value="bt">بلوتوث مباشر على الماكينة (كروم)</option><option value="raw">تطبيق RawBT (أندرويد)</option><option value="dlg">نافذة الطباعة العادية</option></select>
+    <div class="btns"><button class="alt" id="prPair">🔗 ربط الطابعة</button><button class="alt" id="prTest">🧪 طباعة تجربة</button></div>
+    <div class="mute" id="prSt" style="margin-top:4px"></div>
+    <div class="mute" style="margin-top:6px">البلوتوث المباشر بيطبع على الماكينة من غير أي نافذة، وبيشتغل مع الطابعات اللي بتدعم بلوتوث BLE. اربط الطابعة مرة من هنا، وبعدها فعّل "الطباعة التلقائية".</div></div>
   <div class="card"><b>📦 المخزن</b>
     <label class="opt"><input type="checkbox" id="whAlOn"> إظهار تنبيه نقص المخزن في السجل</label>
     <label class="opt"><input type="checkbox" id="whWdOn"> إظهار أمتار الخشب (زان/سويد) في السجل</label>
@@ -563,7 +567,7 @@ async function showImg(cv,name,msg,auto,phone,rec){
   $('reshint').textContent=canS?'':'الصورة بتتنسخ ويتفتح شات العميل. الصقها (اضغط مطولاً ثم لصق) وأرسل.';
   $('resimg').src=cv.toDataURL('image/png');$('resm').textContent=baseMsg;$('res').classList.remove('hide');
   try{$('res').scrollIntoView({block:'start'})}catch(e){}
-  $('resprint').classList.toggle('hide',!pget('prOn',false));if(auto)await downloadCur();if(prNext&&Date.now()-prNext<15000){prNext=0;if(pget('prOn',false)&&pget('prAuto',false))printCur()}}
+  $('resprint').classList.toggle('hide',!pget('prOn',false));if(auto)await downloadCur();if(prNext&&Date.now()-prNext<15000){prNext=0;if(pget('prOn',false)&&pget('prAuto',false))printDirect()}}
 $('resdl').onclick=downloadCur;$('resx').onclick=()=>$('res').classList.add('hide');
 $('resdel').onclick=()=>{if(!curRec)return;if(!delArm){delArm=true;$('resdel').textContent='اضغط تأكيد الحذف';return}
   trashPut(curRec);del('invoices',curRec.id);curRec=null;$('res').classList.add('hide');drawCusts();drawDash();drawTrash();if(lastC){$('prev').value=balOf(lastC)||'';calc()}};
@@ -1068,7 +1072,42 @@ function printCur(){if(!curBlob)return;const w=lsv('prW','80'),pw=w==='58'?48:72
   const d=f.contentWindow.document;d.open();d.write('<!doctype html><html><head><meta charset="utf-8"><style>@page{size:'+w+'mm auto;margin:0}html,body{margin:0;padding:0;background:#fff}img{display:block;width:'+pw+'mm;margin:0 auto}</style></head><body><img src="'+url+'"></body></html>');d.close();
   const img=d.querySelector('img'),go=()=>{try{f.contentWindow.focus();f.contentWindow.print()}catch(e){$('resm').textContent='تعذر فتح الطباعة على الجهاز ده'}setTimeout(()=>{f.remove();URL.revokeObjectURL(url)},60000)};
   if(img.complete)go();else{img.onload=go;img.onerror=()=>f.remove()}}
-$('resprint').onclick=printCur;
+
+/* ---------- طباعة حرارية مباشرة (ESC/POS) ---------- */
+const BT_SV=['000018f0-0000-1000-8000-00805f9b34fb','0000ff00-0000-1000-8000-00805f9b34fb','0000fff0-0000-1000-8000-00805f9b34fb','49535343-fe7d-4ae5-8fa9-9fafd205e455','e7810a71-73ae-499d-8c15-faa9aef0c3f2','0000ffe0-0000-1000-8000-00805f9b34fb','0000ae30-0000-1000-8000-00805f9b34fb'];
+var btDev=null,btCh=null,prBusy=false;
+const prMsg=t=>{$('prSt').textContent=t;if(!$('res').classList.contains('hide'))$('resm').textContent=baseMsg+' · '+t};
+function escPack(d,w,h){const bw=w/8,out=[0x1b,0x40];
+  for(let y0=0;y0<h;y0+=96){const hh=Math.min(96,h-y0);out.push(0x1d,0x76,0x30,0,bw&255,bw>>8,hh&255,hh>>8);
+    for(let y=y0;y<y0+hh;y++)for(let xb=0;xb<bw;xb++){let b=0;for(let k=0;k<8;k++){const i=(y*w+xb*8+k)*4,lum=.299*d[i]+.587*d[i+1]+.114*d[i+2];if(lum<165)b|=0x80>>k}out.push(b)}}
+  out.push(0x1b,0x64,4);return new Uint8Array(out)}
+async function escRaster(blob,dots){const bmp=await createImageBitmap(blob),w=dots,h=Math.max(1,Math.round(bmp.height*w/bmp.width)),cv=document.createElement('canvas');cv.width=w;cv.height=h;
+  const cx=cv.getContext('2d');cx.fillStyle='#fff';cx.fillRect(0,0,w,h);cx.drawImage(bmp,0,0,w,h);return escPack(cx.getImageData(0,0,w,h).data,w,h)}
+async function btPick(){if(!navigator.bluetooth)throw new Error('المتصفح ده مش بيدعم البلوتوث المباشر: استخدم كروم على أندرويد أو الكمبيوتر');
+  btDev=await navigator.bluetooth.requestDevice({acceptAllDevices:true,optionalServices:BT_SV});btCh=null;svk('prDevName',btDev.name||'طابعة');return btDev}
+async function btChar(){if(btCh&&btDev&&btDev.gatt.connected)return btCh;
+  if(!btDev&&navigator.bluetooth&&navigator.bluetooth.getDevices){try{const ds=await navigator.bluetooth.getDevices(),n=lsv('prDevName','');btDev=ds.find(x=>x.name===n)||ds[0]||null}catch(e){}}
+  if(!btDev)await btPick();
+  const srv=await btDev.gatt.connect(),svs=await srv.getPrimaryServices();
+  for(const sv of svs){const cs=await sv.getCharacteristics();for(const c of cs){if(c.properties.write||c.properties.writeWithoutResponse){btCh=c;return c}}}
+  throw new Error('مش لاقي قناة كتابة في الطابعة دي')}
+async function btSend(u8){let sz=100;for(let t=0;t<2;t++){const ch=await btChar();try{for(let i=0;i<u8.length;i+=sz){const part=u8.slice(i,i+sz);if(ch.properties.writeWithoutResponse)await ch.writeValueWithoutResponse(part);else await ch.writeValue(part);await new Promise(r=>setTimeout(r,10))}return}catch(e){if(t||sz===20)throw e;sz=20;btCh=null}}}
+function rawbtSend(u8){let bin='';for(let i=0;i<u8.length;i+=8192)bin+=String.fromCharCode.apply(null,u8.subarray(i,i+8192));location.href='rawbt:base64,'+btoa(bin)}
+async function printDirect(blob){blob=(blob&&blob.size)?blob:curBlob;if(!blob)return;const m=lsv('prM','bt');
+  if(m==='dlg'){printCur();return}
+  if(prBusy)return;prBusy=true;
+  try{prMsg('جارٍ الطباعة...');const u8=await escRaster(blob,lsv('prW','80')==='58'?384:576);
+    if(m==='raw')rawbtSend(u8);else await btSend(u8);prMsg('تمت الطباعة ✓')}
+  catch(e){prMsg('تعذرت الطباعة: '+((e&&e.message)||e)+' · جرّب زرار 🖨️ طباعة أو غيّر الطريقة من الإعدادات')}
+  prBusy=false}
+$('resprint').onclick=()=>printDirect();
+$('prM').value=lsv('prM','bt');$('prM').onchange=()=>svk('prM',$('prM').value);
+$('prSt').textContent=lsv('prDevName','')?'آخر طابعة: '+lsv('prDevName',''):'';
+$('prPair').onclick=async()=>{try{await btPick();prMsg('تم الربط: '+(btDev.name||'طابعة'))}catch(e){prMsg('تعذر الربط: '+((e&&e.message)||e))}};
+$('prTest').onclick=async()=>{const cv=document.createElement('canvas');cv.width=560;cv.height=170;const cx=cv.getContext('2d');cx.fillStyle='#fff';cx.fillRect(0,0,560,170);cx.fillStyle='#000';cx.textAlign='center';cx.direction='rtl';
+  cx.font='bold 38px Tahoma,Arial';cx.fillText('ابو حامد لتجارة الاخشاب',280,60);cx.font='28px Tahoma,Arial';cx.fillText('تجربة الطباعة ✓',280,110);cx.font='20px Arial';cx.fillText(stamp(Date.now()),280,150);
+  const b=await new Promise(r=>cv.toBlob(r,'image/png'));printDirect(b)};
+
 $('prOn').checked=pget('prOn',false);$('prOn').onchange=()=>{pset('prOn',$('prOn').checked);$('resprint').classList.toggle('hide',!$('prOn').checked||!curBlob)};
 $('prAuto').checked=pget('prAuto',false);$('prAuto').onchange=()=>pset('prAuto',$('prAuto').checked);
 $('prW').value=lsv('prW','80');$('prW').onchange=()=>svk('prW',$('prW').value);
