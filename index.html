@@ -6,16 +6,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ابو حامد لتجارة الاخشاب</title>
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#3e2414">
 <meta name="color-scheme" content="light">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ابو حامد">
-<link rel="apple-touch-icon" href="icon-192.png">
-<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
 <style>
-:root{--bg:#f3f6f5;--card:#fff;--ink:#111827;--mute:#4b5563;--line:#d1d5db;--acc:#0f766e;--accLight:#e2f1ef;--accInk:#fff;--accB:#0f766e;--tot:#eef3f2;--danger:#b91c1c;--drB:#fee2e2;--drI:#991b1b;--crB:#dcfce7;--crI:#166534;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);--shadowMd:0 4px 12px rgba(0,0,0,.1);--radius:12px;color-scheme:light}
-[data-theme="dark"]{--bg:#0f172a;--card:#1e293b;--ink:#e2e8f0;--mute:#94a3b8;--line:#334155;--acc:#14b8a6;--accLight:#134e4a;--accInk:#fff;--accB:#14b8a6;--tot:#1a2e2b;--danger:#f87171;--drB:#3b1111;--drI:#fca5a5;--crB:#0a2e1a;--crI:#86efac;--shadow:0 1px 3px rgba(0,0,0,.3);--shadowMd:0 4px 12px rgba(0,0,0,.4);color-scheme:dark}
+:root{--bg:#f5eee1;--card:#fffdf8;--ink:#2b1a0f;--mute:#6b5646;--line:#dccfb8;--acc:#7a4320;--accLight:#f3e3c8;--accInk:#fff;--accB:#7a4320;--tot:#f1e6d2;--gold:#d4a24c;--hdr:#3e2414;--danger:#b91c1c;--drB:#fee2e2;--drI:#991b1b;--crB:#dcfce7;--crI:#166534;--shadow:0 1px 3px rgba(62,36,20,.10),0 1px 2px rgba(62,36,20,.06);--shadowMd:0 4px 12px rgba(62,36,20,.14);--radius:12px;color-scheme:light}
+[data-theme="dark"]{--bg:#1c120b;--card:#2a1b11;--ink:#f3e7d3;--mute:#b8a58c;--line:#47301f;--acc:#d49a45;--accLight:#4a3118;--accInk:#2b1a0f;--accB:#d49a45;--tot:#33220f;--gold:#e0b062;--hdr:#2a1b11;--danger:#f87171;--drB:#3b1111;--drI:#fca5a5;--crB:#0a2e1a;--crI:#86efac;--shadow:0 1px 3px rgba(0,0,0,.35);--shadowMd:0 4px 12px rgba(0,0,0,.45);color-scheme:dark}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{background:var(--bg);transition:background-color .3s}
 body{margin:0;color:var(--ink);font-family:'Segoe UI',Tahoma,'Noto Naskh Arabic',Arial,sans-serif;padding:10px;padding-top:calc(62px + env(safe-area-inset-top,0px));padding-bottom:calc(78px + env(safe-area-inset-bottom,0px));max-width:640px;margin-inline:auto;font-size:16px;min-height:100vh}
@@ -59,9 +60,10 @@ table.st{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0}
 .hide{display:none!important}
 
 /* ===== Header ===== */
-.app-header{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--acc);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:52px;padding-top:env(safe-area-inset-top,0px);box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.app-header{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--hdr);border-bottom:3px solid var(--gold);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:52px;padding-top:env(safe-area-inset-top,0px);box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .app-header .app-title{font-size:18px;font-weight:700;letter-spacing:.5px}
-.app-header .app-subtitle{font-size:12px;opacity:.85}
+.app-header .app-subtitle{font-size:12px;opacity:.85;color:var(--gold)}
+
 .theme-toggle{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;padding:6px;border-radius:50%;transition:transform .3s}
 .theme-toggle:active{transform:scale(.85)}
 
@@ -182,7 +184,7 @@ details.card textarea{direction:rtl;text-align:right;font-size:14px;width:100%;m
 </head>
 <body>
 <div class="app-header">
-  <div><div class="app-title">ابو حامد لتجارة الاخشاب</div><div class="app-subtitle">إدارة محل الأخشاب</div></div>
+  <div><div class="app-title">ابو حامد لتجارة الاخشاب</div><div class="app-subtitle">محلة الكبرى · إدارة محل الأخشاب</div></div>
 </div>
 
 <div id="lock" class="lock"><div style="font-size:42px">🔒</div><b style="font-size:18px">ابو حامد لتجارة الاخشاب</b><div class="mute">اكتب الرقم السري</div>
@@ -428,8 +430,9 @@ $('bnav').onclick=e=>{const b=e.target.closest('button[data-t]');if(!b)return;co
 const IVD={ttl:'العميل /',nPre:'ملاحظة:',hBayan:'البيان',hSize:'المقاس',hCnt:'العدد',hQty:'الكمية',hPrice:'السعر',hVal:'القيمة',
   lSub:'إجمالي الإذن',lNyl:'نولون',lDisc:'خصم',lPrev:'رصيد سابق',lTot:'الإجمالي',lPaid:'المدفوع',lRest:'المتبقي',
   showShop:1,showDate:1,showSub:1,showPrev:1,
-  cShop:'#0f766e',cHead:'#eeeeee',cTot:'#e2f1ef',cRed:'#dc2626',cText:'#000000',cLine:'#444444',
-  fs:15,ts:24,shs:17,w:700};
+  cShop:'#5a3015',cHead:'#efe3cc',cTot:'#f3e3c8',cRed:'#dc2626',cText:'#000000',cLine:'#444444',
+  fs:15,ts:24,shs:17,w:700,showLogo:1,logoT:'c',logoS:80};
+const LOGO={c:new Image(),b:new Image()};LOGO.c.src='logo.png';LOGO.b.src='logo-black.png';
 let _iv=null;
 const IV=()=>{if(!_iv){let c={};try{c=JSON.parse(lsv('ivcfg','{}'))||{}}catch(e){}_iv={...IVD,...c}}return _iv};
 function sheet(o){
@@ -438,8 +441,12 @@ function sheet(o){
   const wrap=(t,w,font)=>{mc.font=font;mc.direction='rtl';const out=[];let cur='';for(const wd of String(t==null?'':t).split(/\s+/)){const tr=cur?cur+' '+wd:wd;if(!cur||mc.measureText(tr).width<=w)cur=tr;else{out.push(cur);cur=wd}}out.push(cur);return out};
   const paint=x=>{let y=10;x.direction='rtl';x.textBaseline='middle';
     const T=(s,px,py,al,font,col)=>{x.font=font;x.textAlign=al;x.fillStyle=col||V.cText;x.fillText(String(s),px,py)};
-    x.direction='rtl';if(+V.showShop)T(lsv('shop','ابو حامد لتجارة الاخشاب'),W-P,y+10,'right','bold '+V.shs+'px '+F,V.cShop);x.direction='rtl';
-    if(+V.showDate)T(o.date,P,y+10,'left','13px '+F,'#555');y+=Math.max(24,(+V.shs)+6);
+    const lg=LOGO[V.logoT==='b'?'b':'c'],LS=+V.logoS||80,hasLg=+V.showLogo&&lg&&lg.complete&&lg.naturalWidth>0;
+    if(hasLg){x.drawImage(lg,P,y,LS,LS);x.direction='rtl';
+      if(+V.showShop)T(lsv('shop','ابو حامد لتجارة الاخشاب'),W-P,y+LS/2-12,'right','bold '+V.shs+'px '+F,V.cShop);
+      if(+V.showDate)T(o.date,W-P,y+LS/2+(+V.showShop?16:0),'right','13px '+F,'#555');y+=LS+6}
+    else{x.direction='rtl';if(+V.showShop)T(lsv('shop','ابو حامد لتجارة الاخشاب'),W-P,y+10,'right','bold '+V.shs+'px '+F,V.cShop);x.direction='rtl';
+      if(+V.showDate)T(o.date,P,y+10,'left','13px '+F,'#555');y+=Math.max(24,(+V.shs)+6)}
     T(o.title||((V.ttl?V.ttl+' ':'')+o.name),W/2,y+13,'center','bold '+V.ts+'px '+F);y+=(+V.ts)+6;
     if(o.sub){T(o.sub,W/2,y+7,'center','14px '+F,'#555');y+=22}
     (o.meta||[]).forEach(s=>{T(s,W-P,y+10,'right',BD);y+=LH+2});y+=4;
@@ -785,7 +792,7 @@ $('autoWa').onchange=()=>{try{localStorage.setItem('autoWa',$('autoWa').checked?
 const pget=(k,d)=>{try{const v=localStorage.getItem(k);return v===null?d:v==='1'}catch(e){return d}};
 const pset=(k,v)=>{try{localStorage.setItem(k,v?'1':'0')}catch(e){}};
 const getGN=()=>{try{return localStorage.getItem('gnote')||''}catch(e){return''}};
-function setTheme(dark){document.documentElement.setAttribute('data-theme',dark?'dark':'light');try{localStorage.setItem('theme',dark?'dark':'light')}catch(e){}try{document.querySelector('meta[name="theme-color"]').content=dark?'#0f172a':'#0f766e'}catch(e){}}
+function setTheme(dark){document.documentElement.setAttribute('data-theme',dark?'dark':'light');try{localStorage.setItem('theme',dark?'dark':'light')}catch(e){}try{document.querySelector('meta[name="theme-color"]').content=dark?'#2a1b11':'#3e2414'}catch(e){}}
 function applyCalc(){const on=pget('calcOn',true);$('calcFab').classList.toggle('hide',!on);if(!on)$('calcModal').classList.add('hide')}
 $('gnote').value=getGN();$('gnote').oninput=()=>{try{localStorage.setItem('gnote',$('gnote').value)}catch(e){}};
 $('calcOn').checked=pget('calcOn',true);$('calcOn').onchange=()=>{pset('calcOn',$('calcOn').checked);applyCalc()};applyCalc();
@@ -815,15 +822,15 @@ $('gnOn').checked=pget('gnOn',true);$('gnOn').onchange=()=>{pset('gnOn',$('gnOn'
 function ivBuild(){const V=IV(),tx=(k,l)=>`<div><label>${l}</label><input data-iv="${k}" value="${esc(V[k])}"></div>`,
   ck=(k,l)=>`<label class="opt"><input type="checkbox" data-ivc="${k}"${+V[k]?' checked':''}> ${l}</label>`,
   co=(k,l)=>`<div><label>${l}</label><input type="color" data-iv="${k}" value="${V[k]}" style="height:38px;padding:2px"></div>`,
-  se=(k,l,o)=>`<div><label>${l}</label><select data-iv="${k}">${o.map(([v,t])=>`<option value="${v}"${+V[k]===v?' selected':''}>${t}</option>`).join('')}</select></div>`,
+  se=(k,l,o)=>`<div><label>${l}</label><select data-iv="${k}">${o.map(([v,t])=>`<option value="${v}"${String(V[k])===String(v)?' selected':''}>${t}</option>`).join('')}</select></div>`,
   h=t=>`<b style="display:block;margin:12px 0 4px">${t}</b>`,g=a=>`<div class="g2">${a.join('')}</div>`;
   $('ivBody').innerHTML=h('الاسم والعنوان')+
    g([`<div><label>اسم المحل</label><input data-ivs="shop" value="${esc(shopN())}"></div>`,`<div><label>كلمة الفاتورة</label><input data-ivs="docw" value="${esc(docW())}"></div>`,tx('ttl','قبل اسم العميل'),tx('nPre','كلمة الملاحظة')])+
-   ck('showShop','إظهار اسم المحل')+ck('showDate','إظهار التاريخ')+ck('showSub','إظهار سطر رقم الفاتورة')+ck('showPrev','إظهار صف الرصيد السابق')+
+   ck('showLogo','إظهار اللوجو في الفاتورة')+ck('showShop','إظهار اسم المحل')+ck('showDate','إظهار التاريخ')+ck('showSub','إظهار سطر رقم الفاتورة')+ck('showPrev','إظهار صف الرصيد السابق')+
    h('عناوين أعمدة الجدول')+g([tx('hBayan','البيان'),tx('hSize','المقاس'),tx('hCnt','العدد'),tx('hQty','الكمية'),tx('hPrice','السعر'),tx('hVal','القيمة')])+
    h('كلمات الإجماليات')+g([tx('lSub','إجمالي الإذن'),tx('lNyl','نولون'),tx('lDisc','خصم'),tx('lPrev','رصيد سابق'),tx('lTot','الإجمالي'),tx('lPaid','المدفوع'),tx('lRest','المتبقي')])+
    h('الألوان')+g([co('cShop','اسم المحل'),co('cHead','خلفية عناوين الجدول'),co('cTot','خلفية الإجمالي والمتبقي'),co('cRed','الرسالة الحمراء'),co('cText','لون الكتابة'),co('cLine','لون الخطوط')])+
-   h('الأحجام')+g([se('fs','حجم الكتابة',[[14,'صغير'],[15,'عادي'],[17,'كبير'],[19,'كبير جداً']]),se('ts','حجم اسم العميل',[[20,'صغير'],[24,'عادي'],[28,'كبير'],[32,'كبير جداً']]),se('shs','حجم اسم المحل',[[15,'صغير'],[17,'عادي'],[21,'كبير'],[26,'كبير جداً']]),se('w','عرض الصورة',[[600,'ضيق'],[700,'عادي'],[800,'عريض'],[900,'عريض جداً']])])}
+   h('الأحجام')+g([se('logoT','نوع اللوجو',[['c','ملوّن'],['b','أبيض وأسود (للطباعة)']]),se('logoS','حجم اللوجو',[[60,'صغير'],[80,'عادي'],[100,'كبير'],[130,'كبير جداً']]),se('fs','حجم الكتابة',[[14,'صغير'],[15,'عادي'],[17,'كبير'],[19,'كبير جداً']]),se('ts','حجم اسم العميل',[[20,'صغير'],[24,'عادي'],[28,'كبير'],[32,'كبير جداً']]),se('shs','حجم اسم المحل',[[15,'صغير'],[17,'عادي'],[21,'كبير'],[26,'كبير جداً']]),se('w','عرض الصورة',[[600,'ضيق'],[700,'عادي'],[800,'عريض'],[900,'عريض جداً']])])}
 function ivSet(k,v){let c={};try{c=JSON.parse(lsv('ivcfg','{}'))||{}}catch(e){}c[k]=v;svk('ivcfg',JSON.stringify(c));_iv=null;ivPrev()}
 function ivSync(){document.querySelectorAll('[data-ivs]').forEach(i=>{i.value=i.dataset.ivs==='shop'?shopN():docW()});ivPrev()}
 let ivTm;function ivPrev(){if(!$('ivD').open)return;clearTimeout(ivTm);ivTm=setTimeout(()=>{try{
