@@ -178,6 +178,22 @@ section:not(.hide){animation:fadeIn .18s ease-out}
 .lock{position:fixed;inset:0;z-index:100;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px}
 .locked #lock{display:flex}
 #cust,#hq,.row .n{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23888' stroke-width='1.6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 8px center;padding-left:24px}
+/* ===== Settings polish ===== */
+select{width:100%;font:inherit;font-size:15px;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);min-width:0}
+select:focus{outline:2px solid var(--acc);outline-offset:1px}
+.sec-h{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--acc);margin:18px 4px 8px}
+.sec-h::after{content:'';flex:1;height:1px;background:var(--line)}
+.sec-h:first-child{margin-top:4px}
+.msgrow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px}
+.msgrow b{font-size:14px}
+.msgrow label{display:flex;align-items:center;gap:6px;margin:0;font-size:13px;color:var(--ink)}
+details.sub{border:1px solid var(--line);border-radius:10px;margin-top:8px;background:var(--bg)}
+details.sub>summary{padding:9px 12px;font-size:14px;font-weight:600;cursor:pointer;color:var(--ink)}
+details.sub>div{padding:0 12px 10px}
+details.sub .g2{margin-top:4px}
+details.sub input[type=color]{height:40px;padding:3px;cursor:pointer}
+details.card>summary,details.sub>summary{list-style-position:inside}
+#ivPrev canvas{display:block}
 details.card summary{font-weight:700;cursor:pointer}
 details.card textarea{direction:rtl;text-align:right;font-size:14px;width:100%;margin-bottom:4px}
 </style>
@@ -271,11 +287,7 @@ details.card textarea{direction:rtl;text-align:right;font-size:14px;width:100%;m
 </section>
 
 <section id="t-st" class="hide">
-  <div class="card"><b>رسائل تحت الفاتورة</b><div class="mute" style="margin:4px 0 6px">تظهر تحت الإجمالي في صورة الفاتورة. الرسالة الحمراء الأول وبعدها العادية. الزرار بيشغّل أو يقفل كل رسالة.</div>
-    <label class="opt"><input type="checkbox" id="gnRedOn"> <b style="color:#dc2626">الرسالة الحمراء</b> (شغّالة)</label>
-    <textarea id="gnoteRed" rows="2" placeholder="اكتب الرسالة الحمراء هنا" style="direction:rtl;text-align:right;font-size:14px;color:#dc2626"></textarea>
-    <label class="opt"><input type="checkbox" id="gnOn"> <b>الرسالة العادية</b> (شغّالة)</label>
-    <textarea id="gnote" rows="3" placeholder="اكتب الرسالة العادية هنا" style="direction:rtl;text-align:right;font-size:14px"></textarea></div>
+  <div class="sec-h">⚙️ عام</div>
   <div class="card"><b>خيارات</b>
     <label class="opt"><input type="checkbox" id="calcOn"> إظهار الآلة الحاسبة</label>
     <label class="opt"><input type="checkbox" id="themeChk"> الوضع الليلي</label></div>
@@ -288,6 +300,16 @@ details.card textarea{direction:rtl;text-align:right;font-size:14px;width:100%;m
     <label class="opt"><input type="checkbox" id="trashOn"> سلة المحذوفات (الفاتورة المحذوفة تتحفظ 30 يوم)</label>
     <label class="opt"><input type="checkbox" id="bkAl"> تنبيه النسخة الاحتياطية (لو عدّى أسبوع)</label>
     <label style="margin-top:8px">أسباب خصم المدفوع الجاهزة (سطر لكل سبب: الاسم=النسبة)</label><textarea id="pfPreT" rows="3" style="direction:rtl;text-align:right;font-size:14px"></textarea></div>
+  <div class="sec-h">🧾 الفاتورة</div>
+  <div class="card"><b>رسائل تحت الفاتورة</b><div class="mute" style="margin:4px 0 0">بتظهر تحت الإجمالي في صورة الفاتورة: الحمراء الأول وبعدها العادية.</div>
+    <div class="msgrow"><b style="color:#dc2626">الرسالة الحمراء</b><label><input type="checkbox" id="gnRedOn"> تشغيل</label></div>
+    <textarea id="gnoteRed" rows="2" placeholder="اكتب الرسالة الحمراء هنا" style="direction:rtl;text-align:right;font-size:14px;color:#dc2626"></textarea>
+    <div class="msgrow"><b>الرسالة العادية</b><label><input type="checkbox" id="gnOn"> تشغيل</label></div>
+    <textarea id="gnote" rows="3" placeholder="اكتب الرسالة العادية هنا" style="direction:rtl;text-align:right;font-size:14px"></textarea></div>
+  <details class="card" id="ivD"><summary>🧾 شكل الفاتورة والمكتوب</summary>
+    <div class="mute" style="margin:6px 0">أي تغيير بيظهر في المعاينة تحت، وبيتطبق على كل الصور اللي تتعمل بعد كده (الألوان والأحجام بتأثر كمان على كشف الحساب والتقارير).</div>
+    <div id="ivBody"></div><div id="ivPrev"></div>
+    <div class="btns"><button class="alt b-red" id="ivReset">رجوع للشكل الأصلي</button></div></details>
   <details class="card" id="msgD"><summary>📨 رسائل الواتساب والفاتورة</summary>
     <div class="mute" style="margin:6px 0">غيّري أو امسحي أي كلمة. الكلمات اللي بين {} بتتبدّل لوحدها.</div>
     <div class="g2"><div><label>اسم المحل (فاضي = يختفي)</label><input id="shopN"></div><div><label>كلمة الفاتورة (فاضي = تختفي)</label><input id="docW"></div></div>
@@ -295,10 +317,7 @@ details.card textarea{direction:rtl;text-align:right;font-size:14px;width:100%;m
     <label style="margin-top:6px">رسالة الدفعة</label><textarea id="tplPay" rows="4"></textarea><div class="mute">{المحل} {العميل} {المبلغ} {الحساب} {التاريخ} {الخصم}</div>
     <label style="margin-top:6px">رسالة تذكير الدين</label><textarea id="tplRem" rows="4"></textarea><div class="mute">{المحل} {العميل} {الحساب}</div>
     <div class="btns"><button class="alt b-red" id="tplReset">رجوع للصيغ الأصلية</button></div></details>
-  <details class="card" id="ivD"><summary>🧾 شكل الفاتورة والمكتوب</summary>
-    <div class="mute" style="margin:6px 0">أي تغيير بيظهر في المعاينة تحت، وبيتطبق على كل الصور اللي تتعمل بعد كده (الألوان والأحجام بتأثر كمان على كشف الحساب والتقارير).</div>
-    <div id="ivBody"></div><div id="ivPrev"></div>
-    <div class="btns"><button class="alt b-red" id="ivReset">رجوع للشكل الأصلي</button></div></details>
+  <div class="sec-h">🔐 البيانات والأمان</div>
   <details class="card" id="trD"><summary>🗑 سلة المحذوفات <span id="trCnt"></span></summary>
     <div class="mute" style="margin:6px 0">الفواتير المحذوفة بتتحفظ 30 يوم على الجهاز ده. اضغطي استرجاع ترجّعيها.</div>
     <div id="trList"></div><div class="info" id="trMsg"></div></details>
@@ -824,13 +843,14 @@ function ivBuild(){const V=IV(),tx=(k,l)=>`<div><label>${l}</label><input data-i
   co=(k,l)=>`<div><label>${l}</label><input type="color" data-iv="${k}" value="${V[k]}" style="height:38px;padding:2px"></div>`,
   se=(k,l,o)=>`<div><label>${l}</label><select data-iv="${k}">${o.map(([v,t])=>`<option value="${v}"${String(V[k])===String(v)?' selected':''}>${t}</option>`).join('')}</select></div>`,
   h=t=>`<b style="display:block;margin:12px 0 4px">${t}</b>`,g=a=>`<div class="g2">${a.join('')}</div>`;
-  $('ivBody').innerHTML=h('الاسم والعنوان')+
-   g([`<div><label>اسم المحل</label><input data-ivs="shop" value="${esc(shopN())}"></div>`,`<div><label>كلمة الفاتورة</label><input data-ivs="docw" value="${esc(docW())}"></div>`,tx('ttl','قبل اسم العميل'),tx('nPre','كلمة الملاحظة')])+
-   ck('showLogo','إظهار اللوجو في الفاتورة')+ck('showShop','إظهار اسم المحل')+ck('showDate','إظهار التاريخ')+ck('showSub','إظهار سطر رقم الفاتورة')+ck('showPrev','إظهار صف الرصيد السابق')+
-   h('عناوين أعمدة الجدول')+g([tx('hBayan','البيان'),tx('hSize','المقاس'),tx('hCnt','العدد'),tx('hQty','الكمية'),tx('hPrice','السعر'),tx('hVal','القيمة')])+
-   h('كلمات الإجماليات')+g([tx('lSub','إجمالي الإذن'),tx('lNyl','نولون'),tx('lDisc','خصم'),tx('lPrev','رصيد سابق'),tx('lTot','الإجمالي'),tx('lPaid','المدفوع'),tx('lRest','المتبقي')])+
-   h('الألوان')+g([co('cShop','اسم المحل'),co('cHead','خلفية عناوين الجدول'),co('cTot','خلفية الإجمالي والمتبقي'),co('cRed','الرسالة الحمراء'),co('cText','لون الكتابة'),co('cLine','لون الخطوط')])+
-   h('الأحجام')+g([se('logoT','نوع اللوجو',[['c','ملوّن'],['b','أبيض وأسود (للطباعة)']]),se('logoS','حجم اللوجو',[[60,'صغير'],[80,'عادي'],[100,'كبير'],[130,'كبير جداً']]),se('fs','حجم الكتابة',[[14,'صغير'],[15,'عادي'],[17,'كبير'],[19,'كبير جداً']]),se('ts','حجم اسم العميل',[[20,'صغير'],[24,'عادي'],[28,'كبير'],[32,'كبير جداً']]),se('shs','حجم اسم المحل',[[15,'صغير'],[17,'عادي'],[21,'كبير'],[26,'كبير جداً']]),se('w','عرض الصورة',[[600,'ضيق'],[700,'عادي'],[800,'عريض'],[900,'عريض جداً']])])}
+  const sub=(t,body,open)=>`<details class="sub"${open?' open':''}><summary>${t}</summary><div>${body}</div></details>`;
+  $('ivBody').innerHTML=
+   sub('الاسم والعنوان',g([`<div><label>اسم المحل</label><input data-ivs="shop" value="${esc(shopN())}"></div>`,`<div><label>كلمة الفاتورة</label><input data-ivs="docw" value="${esc(docW())}"></div>`,tx('ttl','قبل اسم العميل'),tx('nPre','كلمة الملاحظة')]),1)+
+   sub('إظهار وإخفاء',ck('showLogo','إظهار اللوجو')+ck('showShop','إظهار اسم المحل')+ck('showDate','إظهار التاريخ')+ck('showSub','إظهار سطر رقم الفاتورة')+ck('showPrev','إظهار صف الرصيد السابق')+g([se('logoT','نوع اللوجو',[['c','ملوّن'],['b','أبيض وأسود (للطباعة)']]),se('logoS','حجم اللوجو',[[60,'صغير'],[80,'عادي'],[100,'كبير'],[130,'كبير جداً']])]))+
+   sub('عناوين أعمدة الجدول',g([tx('hBayan','البيان'),tx('hSize','المقاس'),tx('hCnt','العدد'),tx('hQty','الكمية'),tx('hPrice','السعر'),tx('hVal','القيمة')]))+
+   sub('كلمات الإجماليات',g([tx('lSub','إجمالي الإذن'),tx('lNyl','نولون'),tx('lDisc','خصم'),tx('lPrev','رصيد سابق'),tx('lTot','الإجمالي'),tx('lPaid','المدفوع'),tx('lRest','المتبقي')]))+
+   sub('الألوان',g([co('cShop','اسم المحل'),co('cHead','خلفية عناوين الجدول'),co('cTot','خلفية الإجمالي والمتبقي'),co('cRed','الرسالة الحمراء'),co('cText','لون الكتابة'),co('cLine','لون الخطوط')]))+
+   sub('الأحجام',g([se('fs','حجم الكتابة',[[14,'صغير'],[15,'عادي'],[17,'كبير'],[19,'كبير جداً']]),se('ts','حجم اسم العميل',[[20,'صغير'],[24,'عادي'],[28,'كبير'],[32,'كبير جداً']]),se('shs','حجم اسم المحل',[[15,'صغير'],[17,'عادي'],[21,'كبير'],[26,'كبير جداً']]),se('w','عرض الصورة',[[600,'ضيق'],[700,'عادي'],[800,'عريض'],[900,'عريض جداً']])]))}
 function ivSet(k,v){let c={};try{c=JSON.parse(lsv('ivcfg','{}'))||{}}catch(e){}c[k]=v;svk('ivcfg',JSON.stringify(c));_iv=null;ivPrev()}
 function ivSync(){document.querySelectorAll('[data-ivs]').forEach(i=>{i.value=i.dataset.ivs==='shop'?shopN():docW()});ivPrev()}
 let ivTm;function ivPrev(){if(!$('ivD').open)return;clearTimeout(ivTm);ivTm=setTimeout(()=>{try{
