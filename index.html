@@ -259,6 +259,8 @@ details.card textarea{direction:rtl;text-align:right;font-size:14px;width:100%;m
 .av{width:30px;height:30px;border-radius:50%;background:var(--accLight);color:var(--acc);display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
 .ab.on{background:var(--acc);color:var(--accInk);border-color:var(--acc)}
 .pfl{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid var(--line)}
+.addbar .fvb{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:6px 12px;border-radius:14px;line-height:1.3;text-align:right}
+.fvb b{font-size:14px}.fvb small{font-size:11px;font-weight:400;opacity:.85;white-space:nowrap}
 .ofb{display:block;text-align:right}
 .offr{width:100%;margin-top:6px;padding:8px;background:var(--tot);border:1px dashed var(--acc);border-radius:8px}
 .offr.hide,.ofb.hide{display:none}
@@ -359,6 +361,7 @@ thmApply();
     <div id="recentC" class="addbar" style="flex-wrap:wrap;margin:6px 0 0"></div>
     <div id="phoneBox" class="hide" style="margin-top:6px"><label>واتساب (اختياري)</label><input id="phone" type="tel" inputmode="tel"></div>
     <div class="info" id="cinfo"></div>
+    <div id="cfav" class="hide" style="margin-top:6px"><div class="mute" style="font-size:12px;margin-bottom:4px">⭐ بياخد عادةً · دوس عليه يتضاف</div><div id="cfavB" class="addbar" style="flex-wrap:wrap;margin:0"></div></div>
     <div id="dueRow" class="hide" style="margin-top:6px"><label>📅 موعد سداد المتبقي</label><input id="dueD" type="date"></div>
   </div>
   <div id="rows"></div>
@@ -514,7 +517,7 @@ thmApply();
       <div class="btns"><button class="main" id="lkSave">تفعيل القفل</button></div></div>
     <label class="opt hide" id="lkBioBox"><input type="checkbox" id="lkBio"> الفتح بالبصمة</label>
     <div class="info" id="lkMsg"></div></div>
-  <div class="card"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.6 · تحديث 3 نوفمبر 2026 · ثمن الإذن تلقائي</div></div>
+  <div class="card"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.9 · تحديث 3 نوفمبر 2026 · تاريخ كامل لآخر مرة</div></div>
   <div class="card"><b>حالة الحفظ</b><div id="stor" style="margin-top:4px;font-size:14px"></div></div>
   <div class="card"><b>الإرسال</b>
     <label style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);margin-top:6px"><input type="checkbox" id="autoWa"> بعد حفظ الفاتورة افتح الإرسال للعميل تلقائياً</label></div>
@@ -946,16 +949,26 @@ $('t-new').addEventListener('click',e=>{const x=e.target.dataset.x;if(x){const r
 $('quick').addEventListener('click',e=>{const b=e.target.closest('button[data-q]');if(!b)return;const it=S.items.find(x=>x.id===b.dataset.q);if(!it)return;
   const d=addRow('mq'),s=(c,v)=>{const x=d.querySelector(c);if(x&&v)x.value=v};d.querySelector('.n').value=it.name;d.dataset.iid=it.id;s('.p',it.p);s('.w',it.w);s('.h',it.h);s('.t',it.t);s('.c',it.c);setCmp(d,+it.t>0&&+it.w>0);calc();
   const e0=[...d.querySelectorAll('input.h,input.w,input.t,input.c,input.p')].find(i=>!i.value&&i.offsetParent!==null);if(e0)e0.focus()});
+$('cfavB').addEventListener('click',e=>{const b=e.target.closest('button[data-fav]');if(!b)return;const x=FAV[+b.dataset.fav];if(!x)return;
+  const d=addRow(x.t||'mq'),s=(c,v)=>{const i=d.querySelector(c);if(i&&v)i.value=v};s('.n',x.n);s('.w',x.w);s('.h',x.h);s('.t',x.th);s('.p',x.po>0?x.po:x.p);if(x.iid&&S.items.some(i=>i.id===x.iid))d.dataset.iid=x.iid;setCmp(d,+x.th>0&&+x.w>0);calc();
+  const e0=[...d.querySelectorAll('input.h,input.w,input.t,input.c,input.p')].find(i=>!i.value&&i.offsetParent!==null);if(e0)e0.focus()});
 $('moreBtn').onclick=()=>{['r_nylon','r_disc','r_dp'].forEach(i=>$(i).classList.remove('hide'));if(!lastC)$('r_prev').classList.remove('hide');$('note').classList.remove('hide');$('moreBtn').classList.add('hide');calc()};
-let lastC=null;
+let lastC=null,favFor='',FAV=[];
+function showFav(c){const box=$('cfav'),b=$('cfavB');if(!box||!b)return;favFor=c?c.id:'';const m=new Map;
+  if(c)S.invoices.filter(r=>r.cid===c.id&&r.type==='inv'&&!(r.rows||[]).some(x=>x.cols)).sort((a,b)=>(a.ts||0)-(b.ts||0)).forEach(r=>{const seen=new Set;(r.rows||[]).forEach(x=>{if(!x.n)return;const k=[nm(x.n).trim(),+x.th||0,+x.w||0,+x.h||0].join('|');if(seen.has(k))return;seen.add(k);const e=m.get(k)||{n:0,x:null};e.n++;e.x=x;e.ts=r.ts;m.set(k,e)})});
+  const l=[...m.values()].sort((a,b)=>b.n-a.n).slice(0,8);FAV=l.map(e=>e.x);
+  const lb=x=>x.n+((+x.w&&+x.h&&!String(x.n).includes(String(x.w)))?' '+(+x.th?x.th+'×':'')+x.w+'×'+x.h:'');
+  const when=ts=>{if(!ts)return'';const a=new Date(ts);return a.getDate()+'/'+(a.getMonth()+1)+'/'+a.getFullYear()};
+  const inf=e=>{const x=e.x,a=['آخر مرة '+f(x.p)+(x.po>0?' (عرض)':'')];const w=when(e.ts);if(w)a.push(w);if(+x.c>0)a.push(x.c+' حتة');return a.join(' · ')};
+  b.innerHTML=l.map((e,i)=>`<button type="button" class="alt b-blue fvb" data-fav="${i}"><b>${esc(lb(e.x))}</b><small>${esc(inf(e))}</small></button>`).join('');box.classList.toggle('hide',!l.length)}
 function custInput(){const name=$('cust').value.trim(),c=S.customers.find(x=>x.name===name)||null;
   if(c&&(!lastC||lastC.id!==c.id)){$('prev').value=balOf(c)||'';$('phone').value=c.phone||'';$('dueD').value=c.due||''}
   else if(!c&&lastC){$('prev').value='';$('phone').value='';$('dueD').value=''}
-  lastC=c;showRecent();$('phoneBox').classList.toggle('hide',!!c||!name);$('prev').readOnly=!!c;if(c)$('r_prev').classList.add('hide');else if(!nv($('prev').value))$('r_prev').classList.add('hide');
+  lastC=c;showRecent();if((c?c.id:'')!==favFor)showFav(c);$('phoneBox').classList.toggle('hide',!!c||!name);$('prev').readOnly=!!c;if(c)$('r_prev').classList.add('hide');else if(!nv($('prev').value))$('r_prev').classList.add('hide');
   $('cinfo').textContent=c?`فاتورة رقم ${nextNo(c)} · الحساب: ${bal(c)}${resTxt(c)}`:name?'عميل جديد: اكتب رصيده القديم لو عليه حساب':'';calc()}
 $('cust').addEventListener('input',custInput);
 $('recentC').addEventListener('click',e=>{const b=e.target.closest('button[data-rc]');if(!b)return;const c=getC(b.dataset.rc);if(!c)return;$('cust').value=c.name;$('cust').dispatchEvent(new Event('input',{bubbles:true}));dd.style.display='none'});
-function clearInv(){wkMan=false;resLoad=null;PM='';payReset();editId=null;$('editBar').classList.add('hide');$('cust').readOnly=false;$('rows').innerHTML='';['nylon','disc','dp','pfWhy','prev','paid','note','cust','phone','dueD','wk'].forEach(i=>$(i).value='');$('note').classList.add('hide');$('prev').readOnly=false;['r_nylon','r_disc','r_dp','r_prev'].forEach(i=>$(i).classList.add('hide'));lastC=null;$('cinfo').textContent='';$('phoneBox').classList.add('hide');$('moreBtn').classList.remove('hide');showRecent();calc()}
+function clearInv(){wkMan=false;resLoad=null;PM='';payReset();editId=null;$('editBar').classList.add('hide');$('cust').readOnly=false;$('rows').innerHTML='';['nylon','disc','dp','pfWhy','prev','paid','note','cust','phone','dueD','wk'].forEach(i=>$(i).value='');$('note').classList.add('hide');$('prev').readOnly=false;['r_nylon','r_disc','r_dp','r_prev'].forEach(i=>$(i).classList.add('hide'));lastC=null;showFav(null);$('cinfo').textContent='';$('phoneBox').classList.add('hide');$('moreBtn').classList.remove('hide');showRecent();calc()}
 $('clear').onclick=()=>{clearInv();$('msg').textContent=''};
 async function doSave(img){const m=$('msg');m.textContent='';
   try{calc();const name=$('cust').value.trim();
