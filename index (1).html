@@ -258,6 +258,16 @@ details.card textarea{direction:rtl;text-align:right;font-size:14px;width:100%;m
 .av{width:30px;height:30px;border-radius:50%;background:var(--accLight);color:var(--acc);display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
 .ab.on{background:var(--acc);color:var(--accInk);border-color:var(--acc)}
 .pfl{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid var(--line)}
+.ofb{display:block;text-align:right}
+.offr{width:100%;margin-top:6px;padding:8px;background:var(--tot);border:1px dashed var(--acc);border-radius:8px}
+.offr.hide,.ofb.hide{display:none}
+.ofg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:8px;align-items:end}
+.ofg input{text-align:center;width:100%}
+.ofg .px{height:34px;padding:0 10px}
+.ofh{margin-top:4px;font-weight:600;color:var(--ink)}
+.ofh:empty{display:none}
+.row.cmp{flex-wrap:wrap}
+.row.cmp .ofb,.row.cmp .offr{flex:0 0 100%}
 </style>
 <script>
 var THM_KEYS=[['acc','اللون الأساسي (الأزرار)'],['hdr','الشريط العلوي'],['gold','اللون الدهبي'],['bg','خلفية التطبيق'],['card','خلفية الكروت'],['ink','لون الكتابة'],['mute','كتابة باهتة'],['line','لون الحدود'],['tot','خلفية الأرقام']];
@@ -502,7 +512,7 @@ thmApply();
       <div class="btns"><button class="main" id="lkSave">تفعيل القفل</button></div></div>
     <label class="opt hide" id="lkBioBox"><input type="checkbox" id="lkBio"> الفتح بالبصمة</label>
     <div class="info" id="lkMsg"></div></div>
-  <div class="card"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.2 · تحديث 2 نوفمبر 2026 · إضافة بند "عرض"</div></div>
+  <div class="card"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.3 · تحديث 3 نوفمبر 2026 · ترتيب خانات العرض</div></div>
   <div class="card"><b>حالة الحفظ</b><div id="stor" style="margin-top:4px;font-size:14px"></div></div>
   <div class="card"><b>الإرسال</b>
     <label style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);margin-top:6px"><input type="checkbox" id="autoWa"> بعد حفظ الفاتورة افتح الإرسال للعميل تلقائياً</label></div>
@@ -908,7 +918,7 @@ function setCmp(d,on){d.classList.toggle('cmp',!!on);const g=c=>(d.querySelector
   if(on){d.querySelector('.szn').textContent=g('input.n');d.querySelector('.szt').textContent=g('input.t')+'×'+g('input.w')+' ✎'}}
 function addRow(t){const rd=t==='rd',d=document.createElement('div');d.className='row';d.dataset.t=t;
   const num=(c,l)=>`<div class="f-${c}"><label>${l}</label><input class="${c}" type="number" inputmode="decimal"></div>`;
-  d.innerHTML=`<div class="r1"><input class="n" placeholder="${rd?'اسم الصنف':'ابحث'}" autocomplete="off"><button class="del" aria-label="حذف">×</button></div><div class="rg a"><div class="f-nm" role="button" tabindex="0" title="تعديل"><b class="szn"></b><span class="szt"></span></div>${num('t','التخانة مم')+num('w','العرض')+num('h','الطول')+num('c','العدد')+num('p',rd?'السعر':'سعر م³')}</div><div class="ro"><span class="vq"><span class="qq"></span><span><span class="vl">القيمة: </span><b class="val num">0.00</b></span></span><span class="cx"><button class="del" type="button" aria-label="حذف">×</button></span></div><button type="button" class="lnk ofb">🏷️ عرض</button><div class="offr hide"><div class="ro" style="gap:6px;margin:2px 0 0"><input class="op" type="number" inputmode="decimal" placeholder="سعر العرض" style="flex:1"><input class="oe" type="date" title="العرض ساري لحد (اختياري)" style="flex:1"><button type="button" class="px ofx" aria-label="شيل العرض">×</button></div><div class="mute ofh" style="font-size:12px"></div></div>`;
+  d.innerHTML=`<div class="r1"><input class="n" placeholder="${rd?'اسم الصنف':'ابحث'}" autocomplete="off"><button class="del" aria-label="حذف">×</button></div><div class="rg a"><div class="f-nm" role="button" tabindex="0" title="تعديل"><b class="szn"></b><span class="szt"></span></div>${num('t','التخانة مم')+num('w','العرض')+num('h','الطول')+num('c','العدد')+num('p',rd?'السعر':'سعر م³')}</div><div class="ro"><span class="vq"><span class="qq"></span><span><span class="vl">القيمة: </span><b class="val num">0.00</b></span></span><span class="cx"><button class="del" type="button" aria-label="حذف">×</button></span></div><button type="button" class="lnk ofb">🏷️ عرض</button><div class="offr hide"><div class="ofg"><div><label>سعر العرض</label><input class="op" type="number" inputmode="decimal" placeholder="مثلاً 21000"></div><div><label>ساري لحد (اختياري)</label><input class="oe" type="date"></div><button type="button" class="px ofx" aria-label="شيل العرض">×</button></div><div class="mute ofh"></div></div>`;
   d.querySelectorAll('.del').forEach(b=>b.onclick=()=>{d.remove();calc()});const ofb=d.querySelector('.ofb'),ofr=d.querySelector('.offr');ofb.onclick=()=>{ofr.classList.remove('hide');ofb.classList.add('hide');d.querySelector('.op').focus()};d.querySelector('.ofx').onclick=()=>{d.querySelector('.op').value='';d.querySelector('.oe').value='';ofr.classList.add('hide');ofb.classList.remove('hide');calc()};d.querySelector('.f-nm').onclick=()=>{setCmp(d,false);const i=d.querySelector('input.t');if(i)i.focus()};d.querySelectorAll('input').forEach(i=>i.oninput=calc);
   const n=d.querySelector('.n');n.onfocus=()=>showDD(n,d);n.addEventListener('click',()=>showDD(n,d));n.addEventListener('input',()=>{if(d.classList.contains('cmp'))setCmp(d,false);showDD(n,d)});$('rows').appendChild(d);return d}
 let TOT={},editId=null;
