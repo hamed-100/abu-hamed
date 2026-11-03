@@ -260,6 +260,8 @@ details.card textarea{direction:rtl;text-align:right;font-size:14px;width:100%;m
 .ab.on{background:var(--acc);color:var(--accInk);border-color:var(--acc)}
 .pfl{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid var(--line)}
 .addbar .fvb{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:6px 12px;border-radius:14px;line-height:1.3;text-align:right}
+.addbar .fvb{position:relative;padding-left:30px}
+.fvx{position:absolute;top:50%;left:8px;transform:translateY(-50%);width:20px;height:20px;line-height:18px;text-align:center;border-radius:50%;background:rgba(0,0,0,.12);font-size:15px;font-weight:700}
 .fvb b{font-size:14px}.fvb small{font-size:11px;font-weight:400;opacity:.85;white-space:nowrap}
 .ofb{display:block;text-align:right}
 .offr{width:100%;margin-top:6px;padding:8px;background:var(--tot);border:1px dashed var(--acc);border-radius:8px}
@@ -517,7 +519,7 @@ thmApply();
       <div class="btns"><button class="main" id="lkSave">تفعيل القفل</button></div></div>
     <label class="opt hide" id="lkBioBox"><input type="checkbox" id="lkBio"> الفتح بالبصمة</label>
     <div class="info" id="lkMsg"></div></div>
-  <div class="card"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.9 · تحديث 3 نوفمبر 2026 · تاريخ كامل لآخر مرة</div></div>
+  <div class="card"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.10 · تحديث 3 نوفمبر 2026 · إخفاء أصناف من المعتاد</div></div>
   <div class="card"><b>حالة الحفظ</b><div id="stor" style="margin-top:4px;font-size:14px"></div></div>
   <div class="card"><b>الإرسال</b>
     <label style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);margin-top:6px"><input type="checkbox" id="autoWa"> بعد حفظ الفاتورة افتح الإرسال للعميل تلقائياً</label></div>
@@ -949,18 +951,23 @@ $('t-new').addEventListener('click',e=>{const x=e.target.dataset.x;if(x){const r
 $('quick').addEventListener('click',e=>{const b=e.target.closest('button[data-q]');if(!b)return;const it=S.items.find(x=>x.id===b.dataset.q);if(!it)return;
   const d=addRow('mq'),s=(c,v)=>{const x=d.querySelector(c);if(x&&v)x.value=v};d.querySelector('.n').value=it.name;d.dataset.iid=it.id;s('.p',it.p);s('.w',it.w);s('.h',it.h);s('.t',it.t);s('.c',it.c);setCmp(d,+it.t>0&&+it.w>0);calc();
   const e0=[...d.querySelectorAll('input.h,input.w,input.t,input.c,input.p')].find(i=>!i.value&&i.offsetParent!==null);if(e0)e0.focus()});
-$('cfavB').addEventListener('click',e=>{const b=e.target.closest('button[data-fav]');if(!b)return;const x=FAV[+b.dataset.fav];if(!x)return;
+$('cfavB').addEventListener('click',e=>{const cc=getC(favFor),fx=e.target.closest('[data-fx]'),ra=e.target.closest('[data-fxall]');
+  if(ra&&cc){delete cc.fh;put('customers',cc);showFav(cc);return}
+  if(fx&&cc){const x=FAV[+fx.dataset.fx];if(!x)return;if(!confirm('تشيل "'+x.n+'" من أصناف '+cc.name+' المعتادة؟'))return;cc.fh={...(cc.fh||{}),[x._k]:Date.now()};put('customers',cc);showFav(cc);return}
+  const b=e.target.closest('button[data-fav]');if(!b)return;const x=FAV[+b.dataset.fav];if(!x)return;
   const d=addRow(x.t||'mq'),s=(c,v)=>{const i=d.querySelector(c);if(i&&v)i.value=v};s('.n',x.n);s('.w',x.w);s('.h',x.h);s('.t',x.th);s('.p',x.po>0?x.po:x.p);if(x.iid&&S.items.some(i=>i.id===x.iid))d.dataset.iid=x.iid;setCmp(d,+x.th>0&&+x.w>0);calc();
   const e0=[...d.querySelectorAll('input.h,input.w,input.t,input.c,input.p')].find(i=>!i.value&&i.offsetParent!==null);if(e0)e0.focus()});
 $('moreBtn').onclick=()=>{['r_nylon','r_disc','r_dp'].forEach(i=>$(i).classList.remove('hide'));if(!lastC)$('r_prev').classList.remove('hide');$('note').classList.remove('hide');$('moreBtn').classList.add('hide');calc()};
 let lastC=null,favFor='',FAV=[];
 function showFav(c){const box=$('cfav'),b=$('cfavB');if(!box||!b)return;favFor=c?c.id:'';const m=new Map;
-  if(c)S.invoices.filter(r=>r.cid===c.id&&r.type==='inv'&&!(r.rows||[]).some(x=>x.cols)).sort((a,b)=>(a.ts||0)-(b.ts||0)).forEach(r=>{const seen=new Set;(r.rows||[]).forEach(x=>{if(!x.n)return;const k=[nm(x.n).trim(),+x.th||0,+x.w||0,+x.h||0].join('|');if(seen.has(k))return;seen.add(k);const e=m.get(k)||{n:0,x:null};e.n++;e.x=x;e.ts=r.ts;m.set(k,e)})});
-  const l=[...m.values()].sort((a,b)=>b.n-a.n).slice(0,8);FAV=l.map(e=>e.x);
+  if(c)S.invoices.filter(r=>r.cid===c.id&&r.type==='inv'&&!(r.rows||[]).some(x=>x.cols)).sort((a,b)=>(a.ts||0)-(b.ts||0)).forEach(r=>{const seen=new Set;(r.rows||[]).forEach(x=>{if(!x.n)return;const k=[nm(x.n).trim(),+x.th||0,+x.w||0,+x.h||0].join('|');if(seen.has(k))return;seen.add(k);const e=m.get(k)||{n:0,x:null,k};e.n++;e.x=x;e.ts=r.ts;m.set(k,e)})});
+  const fh=(c&&c.fh)||{},all=[...m.values()],hid=all.filter(e=>fh[e.k]&&e.ts<=fh[e.k]);
+  const l=all.filter(e=>!hid.includes(e)).sort((a,b)=>b.n-a.n).slice(0,8);FAV=l.map(e=>({...e.x,_k:e.k}));
   const lb=x=>x.n+((+x.w&&+x.h&&!String(x.n).includes(String(x.w)))?' '+(+x.th?x.th+'×':'')+x.w+'×'+x.h:'');
   const when=ts=>{if(!ts)return'';const a=new Date(ts);return a.getDate()+'/'+(a.getMonth()+1)+'/'+a.getFullYear()};
   const inf=e=>{const x=e.x,a=['آخر مرة '+f(x.p)+(x.po>0?' (عرض)':'')];const w=when(e.ts);if(w)a.push(w);if(+x.c>0)a.push(x.c+' حتة');return a.join(' · ')};
-  b.innerHTML=l.map((e,i)=>`<button type="button" class="alt b-blue fvb" data-fav="${i}"><b>${esc(lb(e.x))}</b><small>${esc(inf(e))}</small></button>`).join('');box.classList.toggle('hide',!l.length)}
+  b.innerHTML=l.map((e,i)=>`<button type="button" class="alt b-blue fvb" data-fav="${i}"><span class="fvx" data-fx="${i}" title="شيله من القائمة">×</span><b>${esc(lb(e.x))}</b><small>${esc(inf(e))}</small></button>`).join('')+(hid.length?`<button type="button" class="lnk" data-fxall="1">↩️ رجّع المخفي (${hid.length})</button>`:'');
+  box.classList.toggle('hide',!l.length&&!hid.length)}
 function custInput(){const name=$('cust').value.trim(),c=S.customers.find(x=>x.name===name)||null;
   if(c&&(!lastC||lastC.id!==c.id)){$('prev').value=balOf(c)||'';$('phone').value=c.phone||'';$('dueD').value=c.due||''}
   else if(!c&&lastC){$('prev').value='';$('phone').value='';$('dueD').value=''}
