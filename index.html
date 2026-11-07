@@ -421,6 +421,8 @@ thmApply();
     <div class="rowc"><input id="cq" placeholder="ابحث باسم العميل"><button class="main" data-m="add">+ عميل</button></div>
     <div id="cuAdd" class="card hide">
       <input id="nc_name" placeholder="اسم العميل (مطلوب)">
+      <button type="button" class="alt hide" id="ncPick" style="margin-top:6px;width:100%">📇 اختار من جهات الاتصال</button>
+      <div id="ncSugT" class="mute hide" style="font-size:12px;margin-top:6px">من السجل (أسماء اتسجلت في فواتير ومالهاش عميل) · دوس تختار:</div><div id="ncSug" class="addbar" style="flex-wrap:wrap;margin:4px 0 0"></div>
       <div class="g2" style="margin-top:6px"><input id="nc_phone" type="tel" inputmode="tel" placeholder="واتساب (اختياري)"><input id="nc_bal" type="number" inputmode="decimal" placeholder="حساب قديم عليه"></div>
       <div class="g2"><input id="nc_addr" placeholder="العنوان (اختياري)"><input id="nc_note" placeholder="ملاحظات (اختياري)"></div>
       <div class="btns" style="margin:0"><button class="main" id="addCu">حفظ العميل</button></div><div class="info" id="cuMsg" style="color:var(--danger)"></div>
@@ -526,7 +528,7 @@ thmApply();
       <div class="btns"><button class="main" id="lkSave">تفعيل القفل</button></div></div>
     <label class="opt hide" id="lkBioBox"><input type="checkbox" id="lkBio"> الفتح بالبصمة</label>
     <div class="info" id="lkMsg"></div></div>
-  <div class="card"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.25 · تحديث 7 نوفمبر 2026 · ألوان كل شكل</div></div>
+  <div class="card"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.26 · تحديث 8 نوفمبر 2026 · اختيار عميل من السجل</div></div>
   <div class="card"><b>حالة الحفظ</b><div id="stor" style="margin-top:4px;font-size:14px"></div></div>
   <div class="card"><b>الإرسال</b>
     <label style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);margin-top:6px"><input type="checkbox" id="autoWa"> بعد حفظ الفاتورة افتح الإرسال للعميل تلقائياً</label></div>
@@ -916,7 +918,26 @@ $('cq').oninput=drawCusts;
 $('addCu').onclick=()=>{const name=$('nc_name').value.trim(),m=$('cuMsg');m.textContent='';
   if(!name){m.textContent='اكتب اسم العميل';return}if(S.customers.some(c=>c.name===name)){m.textContent='الاسم موجود بالفعل';return}
   const c={id:uid(),name,phone:$('nc_phone').value.trim(),addr:$('nc_addr').value.trim(),note:$('nc_note').value.trim(),open:nv($('nc_bal').value)};
-  S.customers.push(c);put('customers',c);['nc_name','nc_phone','nc_bal','nc_addr','nc_note'].forEach(i=>$(i).value='');$('cuAdd').classList.add('hide');drawCusts()};
+  S.customers.push(c);put('customers',c);relinkLog(c);['nc_name','nc_phone','nc_bal','nc_addr','nc_note'].forEach(i=>$(i).value='');$('cuAdd').classList.add('hide');drawCusts()};
+
+
+/* ---------- اختيار عميل من جهات الاتصال أو من السجل ---------- */
+let lgPick=null;
+function logNames(){const known=new Set(S.customers.map(c=>nm(c.name).trim())),m=new Map;
+  [S.invoices,S.reservations,S.quotes,S.cheques].forEach(a=>(a||[]).forEach(r=>{const n=(r.cname||'').trim();if(!n)return;const k=nm(n).trim();if(known.has(k))return;const o=m.get(k)||{name:n,phone:'',ts:0};if(r.phone&&!o.phone)o.phone=r.phone;if((r.ts||0)>o.ts)o.ts=r.ts||0;m.set(k,o)}));
+  return [...m.values()].sort((a,b)=>b.ts-a.ts)}
+function relinkLog(c){if(!lgPick||nm(c.name).trim()!==lgPick){lgPick=null;return}
+  [['invoices',S.invoices],['reservations',S.reservations],['quotes',S.quotes],['cheques',S.cheques]].forEach(([k,a])=>(a||[]).forEach(r=>{if(nm(r.cname||'').trim()===lgPick&&(!r.cid||!S.customers.some(x=>x!==c&&x.id===r.cid))){r.cid=c.id;touch(k,r)}}));lgPick=null}
+function drawNcSug(){const box=$('ncSug'),t=$('ncSugT');if(!box)return;const q=nm($('nc_name').value).trim();
+  const l=logNames().filter(x=>!q||nm(x.name).includes(q)).slice(0,8);window._ncl=l;
+  box.innerHTML=l.map((x,i)=>`<button type="button" class="alt b-blue" data-sg="${i}">${esc(x.name)}${x.phone?' · '+esc(x.phone):''}</button>`).join('');t.classList.toggle('hide',!l.length)}
+(function(){
+  const pick=$('ncPick');
+  if(pick&&window.isSecureContext&&navigator.contacts&&navigator.contacts.select)pick.classList.remove('hide');
+  if(pick)pick.onclick=async()=>{try{const r=await navigator.contacts.select(['name','tel'],{multiple:false});if(!r||!r.length)return;const c=r[0],n0=((c.name&&c.name[0])||'').trim();let tl=((c.tel&&c.tel[0])||'').replace(/[^\d+]/g,'');if(/^\+?20\d{10}$/.test(tl))tl='0'+tl.replace(/^\+?20/,'');if(n0)$('nc_name').value=n0;if(tl)$('nc_phone').value=tl;lgPick=null;drawNcSug()}catch(e){}};
+  $('nc_name').addEventListener('input',()=>{lgPick=null;drawNcSug()});$('nc_name').addEventListener('focus',drawNcSug);
+  $('ncSug').addEventListener('click',e=>{const b=e.target.closest('button[data-sg]');if(!b)return;const x=(window._ncl||[])[+b.dataset.sg];if(!x)return;$('nc_name').value=x.name;if(x.phone)$('nc_phone').value=x.phone;lgPick=nm(x.name).trim();$('ncSug').innerHTML='';$('ncSugT').classList.add('hide')});
+})();
 
 /* ---------- الأصناف ---------- */
 const COLS={mq:[['t','التخانة مم'],['w','العرض'],['h','الطول'],['c','العدد'],['p','السعر']]};
