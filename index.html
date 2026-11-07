@@ -528,8 +528,9 @@ thmApply();
       <div class="btns"><button class="main" id="lkSave">تفعيل القفل</button></div></div>
     <label class="opt hide" id="lkBioBox"><input type="checkbox" id="lkBio"> الفتح بالبصمة</label>
     <div class="info" id="lkMsg"></div></div>
-  <div class="card"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.26 · تحديث 8 نوفمبر 2026 · اختيار عميل من السجل</div></div>
+  <div class="card"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.27 · تحديث 8 نوفمبر 2026 · تخزين البيانات في IndexedDB وعرض المساحة</div></div>
   <div class="card"><b>حالة الحفظ</b><div id="stor" style="margin-top:4px;font-size:14px"></div></div>
+  <div class="card"><b>مساحة التخزين على الجهاز</b><div id="stoBox" style="margin-top:4px;font-size:14px">جاري القراءة…</div><button class="alt" id="stoPersist" style="margin-top:8px">فعّل التخزين الدائم</button></div>
   <div class="card"><b>الإرسال</b>
     <label style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);margin-top:6px"><input type="checkbox" id="autoWa"> بعد حفظ الفاتورة افتح الإرسال للعميل تلقائياً</label></div>
   <div class="card"><b>النسخة الاحتياطية</b><div class="mute" id="bkInfo" style="margin-top:4px"></div>
@@ -595,8 +596,42 @@ const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const two=n=>String(n).padStart(2,'0');
 function stamp(t){const d=new Date(t);let h=d.getHours();const ap=h>=12?'PM':'AM';h=h%12||12;return `${d.getFullYear()}/${two(d.getMonth()+1)}/${two(d.getDate())}  ${two(h)}:${two(d.getMinutes())} ${ap}`}
 const dshort=t=>{const d=new Date(t);return `${d.getFullYear()}/${two(d.getMonth()+1)}/${two(d.getDate())}`};
-function lget(k){try{return JSON.parse(localStorage.getItem(k))||[]}catch(e){return[]}}
-function lset(k,x){try{localStorage.setItem(k,JSON.stringify(x))}catch(e){}}
+/* ---------- تخزين البيانات الرئيسية في IndexedDB (مساحة كبيرة) مع كاش فوري ---------- */
+const LK=['items','customers','invoices','expenses','quotes','cash','reservations','cheques','recurring','pdel','trash','woods'];
+const LC={};let LIDB=null,idbFail=false;
+const idbReady=(async()=>{
+  try{
+    LIDB=await new Promise((res,rej)=>{const q=indexedDB.open('abuhamed-data',1);q.onupgradeneeded=()=>q.result.createObjectStore('d');q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error);q.onblocked=()=>rej(new Error('blocked'))});
+    const got=await new Promise(r=>{const o={},c=LIDB.transaction('d','readonly').objectStore('d').openCursor();c.onsuccess=e=>{const k=e.target.result;if(k){o[k.key]=k.value;k.continue()}else r(o)};c.onerror=()=>r(o)});
+    const mig=[];
+    LK.forEach(k=>{
+      if(got[k]!==undefined){LC[k]=got[k]}
+      else{let v=null;try{v=localStorage.getItem(k)}catch(e){}if(v!==null){LC[k]=v;mig.push(k)}}
+    });
+    if(mig.length){
+      await new Promise(r=>{const tx=LIDB.transaction('d','readwrite'),st=tx.objectStore('d');mig.forEach(k=>st.put(LC[k],k));tx.oncomplete=()=>r(true);tx.onerror=()=>r(false)});
+      /* مسح النسخة القديمة من localStorage بعد التأكد إنها اتكتبت في IndexedDB */
+      const chk=await new Promise(r=>{const rq=LIDB.transaction('d','readonly').objectStore('d').getAll();rq.onsuccess=()=>r(rq.result.length);rq.onerror=()=>r(0)});
+      if(chk>=mig.length)mig.forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
+    }
+  }catch(e){idbFail=true;LIDB=null}
+})();
+function lget(k){
+  try{
+    if(LIDB&&k in LC)return JSON.parse(LC[k])||[];
+    if(LIDB)return[];
+    return JSON.parse(localStorage.getItem(k))||[];
+  }catch(e){return[]}
+}
+function lset(k,x){
+  const j=JSON.stringify(x);
+  if(LIDB){
+    LC[k]=j;
+    try{const tx=LIDB.transaction('d','readwrite');tx.objectStore('d').put(j,k);tx.onerror=()=>{try{localStorage.setItem(k,j)}catch(e){}}}catch(e){try{localStorage.setItem(k,j)}catch(_){}}
+    return;
+  }
+  try{localStorage.setItem(k,j)}catch(e){}
+}
 const lsv=(k,d)=>{try{const v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}};
 const nm=t=>String(t==null?'':t).toLowerCase().replace(/[\u064B-\u065F\u0640]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي');
 const sfail=()=>{$('stor').textContent='تنبيه: تعذر الحفظ السحابي، البيانات محفوظة على هذا الجهاز.'};
@@ -1154,6 +1189,17 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&FBDB&&Dat
 /* ---------- تطبيق الموبايل (PWA) ---------- */
 
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+async function stoInfo(){
+  const el=$('stoBox');if(!el)return;
+  const gb=b=>b>=1073741824?(b/1073741824).toFixed(2)+' جيجا':(b/1048576).toFixed(1)+' ميجا';
+  try{
+    if(!(navigator.storage&&navigator.storage.estimate)){el.textContent='المتصفح مش بيدّي تفاصيل المساحة.';return}
+    const e=await navigator.storage.estimate();
+    let per=false;try{per=navigator.storage.persisted?await navigator.storage.persisted():false}catch(_){}
+    el.innerHTML='المستخدم: <b>'+gb(e.usage||0)+'</b> · المتاح للتطبيق: <b>'+gb(e.quota||0)+'</b><br>التخزين الدائم: '+(per?'✅ مفعّل (المتصفح مش هيمسح بياناتك لوحده)':'⚠️ لسه ما اتفعلش')+'<br>مكان الحفظ: '+(idbFail?'localStorage (حد حوالي 5 ميجا)':'IndexedDB (مساحة كبيرة)');
+  }catch(e){el.textContent='تعذر قراءة المساحة.'}
+}
+$('stoPersist')&&($('stoPersist').onclick=async()=>{try{if(navigator.storage&&navigator.storage.persist)await navigator.storage.persist()}catch(e){}stoInfo()});
 
 try{$('autoWa').checked=localStorage.getItem('autoWa')==='1'}catch(e){}
 $('autoWa').onchange=()=>{try{localStorage.setItem('autoWa',$('autoWa').checked?'1':'0')}catch(e){}};
@@ -1989,9 +2035,11 @@ $('qpOv').addEventListener('click',e=>{const t=e.target;
 const _di0=drawItems;drawItems=function(){_di0();drawWh()};
 const _dd0=drawDash;drawDash=function(){_dd0();try{drawWh()}catch(e){}};
 
+idbReady.then(()=>{
 loadLocal();drawDash();drawCusts();drawItems();calc();bkInfo();applyFeatures();lockInit();drawTrash();loadMsgUI();
 recRun();drawCusts();rsUpd();qUpd();
-fbBoot();
+fbBoot();stoInfo();try{$('woodsT').value=(lget('woods').length?lget('woods'):['زان']).join('\n');drawWh()}catch(e){}
+});
 </script>
 <script>
 (function(){
