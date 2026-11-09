@@ -279,9 +279,10 @@ details.card textarea{direction:rtl;text-align:right;font-size:14px;width:100%;m
 .row.cmp .ofb,.row.cmp .offr{flex:0 0 100%}
 
 /* ===== نمط إكسل: جدول البنود في شاشة الفاتورة ===== */
-body.xl{--xc:minmax(0,1fr) 44px 36px 42px 32px 60px 56px 20px}
+body.xl{--xc:minmax(0,1fr) 38px 32px 38px 30px 54px 56px 18px}
 #xlHead{display:none}
-body.xl #xlHead{display:grid;grid-template-columns:var(--xc);margin-top:6px;border:1px solid var(--line);border-bottom:0;border-radius:8px 8px 0 0;background:var(--tot);font-size:11px;font-weight:700;color:var(--mute);text-align:center}
+body.xl #quick button[data-add]{display:none}
+body.xl #xlHead{display:grid;grid-template-columns:var(--xc);margin-top:6px;border:1px solid var(--line);border-bottom:0;border-radius:8px 8px 0 0;background:var(--tot);font-size:10px;font-weight:700;color:var(--mute);text-align:center}
 body.xl #xlHead span{padding:6px 1px;border-inline-start:1px solid var(--line);white-space:nowrap;overflow:hidden}
 body.xl #xlHead span:first-child{border-inline-start:0}
 body.xl #rows{border:1px solid var(--line);border-radius:0 0 8px 8px;background:var(--card);margin-bottom:8px}
@@ -304,12 +305,12 @@ body.xl #rows .row.lm .f-t,body.xl #rows .row.lm .f-w,body.xl #rows .row.lm .f-h
 body.xl #rows .row .f-t,body.xl #rows .row .f-w,body.xl #rows .row .f-h,body.xl #rows .row .f-c,body.xl #rows .row .f-p{margin:0;min-width:0;border-inline-start:1px solid var(--line)}
 body.xl #rows .row .n,body.xl #rows .row .f-t input,body.xl #rows .row .f-w input,body.xl #rows .row .f-h input,body.xl #rows .row .f-c input,body.xl #rows .row .f-p input{height:38px;width:100%;border:0;border-radius:0;background:transparent;box-shadow:none;text-align:center;padding:0 1px;font-size:13px;margin:0;-moz-appearance:textfield;appearance:textfield}
 body.xl #rows .row input::-webkit-inner-spin-button,body.xl #rows .row input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
-body.xl #rows .row .n{text-align:right;padding:0 6px}
+body.xl #rows .row .n{text-align:right;padding:0 4px;font-size:12.5px}
 body.xl #rows .row .n:focus,body.xl #rows .row input:focus{outline:2px solid #1f9d62;outline-offset:-2px;background:rgba(31,157,98,.10);border-radius:0}
 body.xl #rows .row .vq{grid-column:7;display:flex;flex-direction:row;align-items:center;justify-content:center;min-width:0;border-inline-start:1px solid var(--line);font-weight:700;font-size:13px;background:var(--tot)}
 body.xl #rows .row .vq .val{font-size:13px}
 body.xl #rows .row .cx{grid-column:8;display:flex;align-items:center;justify-content:center;border-inline-start:1px solid var(--line);margin:0}
-body.xl #rows .row .cx .del{width:20px;height:38px;font-size:18px;padding:0}
+body.xl #rows .row .cx .del{width:18px;height:38px;font-size:18px;padding:0}
 body.xl #rows .row .ofb,body.xl #rows .row .pw,body.xl #rows .row .offr,body.xl #rows .row .lph{grid-column:1/-1;border-top:1px dashed var(--line);padding:3px 8px;margin:0}
 body.xl #rows .row .ofb{text-align:right;font-size:11.5px;padding:2px 8px}
 </style>
@@ -550,7 +551,7 @@ thmApply();
   <details class="card" id="msgD"><summary>📨 رسائل الواتساب والفاتورة</summary>
     <div class="mute" style="margin:6px 0">غيّري أو امسحي أي كلمة. الكلمات اللي بين {} بتتبدّل لوحدها.</div>
     <div class="g2"><div><label>اسم المحل (فاضي = يختفي)</label><input id="shopN"></div><div><label>كلمة الفاتورة (فاضي = تختفي)</label><input id="docW"></div></div>
-    <label style="margin-top:6px">رسالة الفاتورة</label><textarea id="tplInv" rows="6"></textarea><div class="mute">{المحل} {العميل} {الفاتورة} {التاريخ} {الإجمالي} {المدفوع} {المتبقي} {الخصم}</div>
+    <label style="margin-top:6px">رسالة الفاتورة</label><textarea id="tplInv" rows="6"></textarea><div class="mute">{المحل} {العميل} {الفاتورة} {التاريخ} {البنود} {الإجمالي} {المدفوع} {المتبقي} {الخصم}</div>
     <label style="margin-top:6px">رسالة الدفعة</label><textarea id="tplPay" rows="4"></textarea><div class="mute">{المحل} {العميل} {المبلغ} {الحساب} {التاريخ} {الخصم}</div>
     <label style="margin-top:6px">رسالة تذكير الدين</label><textarea id="tplRem" rows="4"></textarea><div class="mute">{المحل} {العميل} {الحساب}</div>
     <div class="btns"><button class="alt b-red" id="tplReset">رجوع للصيغ الأصلية</button></div></details>
@@ -564,7 +565,7 @@ thmApply();
       <div class="btns"><button class="main" id="lkSave">تفعيل القفل</button></div></div>
     <label class="opt hide" id="lkBioBox"><input type="checkbox" id="lkBio"> الفتح بالبصمة</label>
     <div class="info" id="lkMsg"></div></div>
-  <div class="card"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.38 · تحديث 8 نوفمبر 2026 · إجمالي الفلوس في إجمالي كل مجموعة</div></div>
+  <div class="card"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.40 · تحديث 9 نوفمبر 2026 · تنقل بزر التالي وسعر آخر مرة للعميل والبنود في رسالة النص</div></div>
   <div class="card"><b>حالة الحفظ</b><div id="stor" style="margin-top:4px;font-size:14px"></div></div>
   <div class="card"><label style="display:flex;align-items:center;gap:8px;margin:0;font-size:14px;font-weight:700"><input type="checkbox" id="xlChk"> نمط إكسل في شاشة الفاتورة (جدول للبنود)</label></div>
   <div class="card"><b>مساحة التخزين على الجهاز</b><div id="stoBox" style="margin-top:4px;font-size:14px">جاري القراءة…</div><button class="alt" id="stoPersist" style="margin-top:8px">فعّل التخزين الدائم</button></div>
@@ -915,15 +916,22 @@ $('ressh').onclick=async()=>{if(!curBlob)return;const file=new File([curBlob],cu
   $('resm').textContent=baseMsg+' · مشاركة الصور غير متاحة في هذا المتصفح، جاري حفظ الصورة...';
   const r=await dl(curBlob,curName);
   $('resm').textContent=baseMsg+({ok:' · تم حفظ الصورة: افتح واتساب وأرفقها من المعرض أو الملفات',anchor:' · تم تنزيل الصورة: أرفقها في واتساب',declined:' · تم الإلغاء',fail:' · اضغط مطولاً على الصورة وشاركها'}[r]||'')};
-const TPLD={inv:'{المحل}\nالعميل / {العميل}\n{الفاتورة} - {التاريخ}\nالإجمالي: {الإجمالي}\nالمدفوع: {المدفوع}\nالمتبقي: {المتبقي}',pay:'{المحل}\nالعميل / {العميل}\nإيصال دفعة: {المبلغ}\nالحساب بعد الدفعة: {الحساب}',rem:'السلام عليكم {العميل}\nحسابك عندنا في {المحل}: {الحساب} جنيه.\nبرجاء السداد في أقرب وقت. شكراً لتعاملك معنا.'};
+const TPLD={inv:'{المحل}\nالعميل / {العميل}\n{الفاتورة} - {التاريخ}\n{البنود}\nالإجمالي: {الإجمالي}\nالمدفوع: {المدفوع}\nالمتبقي: {المتبقي}',pay:'{المحل}\nالعميل / {العميل}\nإيصال دفعة: {المبلغ}\nالحساب بعد الدفعة: {الحساب}',rem:'السلام عليكم {العميل}\nحسابك عندنا في {المحل}: {الحساب} جنيه.\nبرجاء السداد في أقرب وقت. شكراً لتعاملك معنا.'};
 const tplOf=k=>{const v=lsv('tpl_'+k,'');return v.trim()?v:TPLD[k]},shopN=()=>lsv('shop','ابو حامد لتجارة الاخشاب'),docW=()=>lsv('docw','إذن صرف');
 function fillTpl(k,m){return tplOf(k).split('\n').map(l=>{const had=/\{[^}]+\}/.test(l),o=l.replace(/\{([^}]+)\}/g,(x,key)=>key in m?m[key]:x);return{o,skip:had&&!o.trim()}}).filter(x=>!x.skip).map(x=>x.o).join('\n')}
+function itemsTxt(r){try{const pl=(r.rows||[]).filter(x=>!x.cols&&x.n);if(!pl.length)return'';const order=[],mp={};
+  pl.forEach((x,i)=>{const k=nm(String(x.n)).trim()||('#'+i);if(!mp[k]){mp[k]=[];order.push(k)}mp[k].push(x)});
+  const sz=x=>x.w>0&&x.h>0?((x.th>0?x.th+'/':'')+x.w+'/'+x.h):'';
+  return order.map(k=>{const g=mp[k],ls=g.map(x=>'  '+(sz(x)?sz(x)+' ':'')+(x.u==='م'?fq(x.q)+' م':'× '+x.c)+' = '+f(x.v));
+    if(g.length>1){const cnt=g.reduce((t,x)=>t+(x.u==='م'?0:(+x.c||0)),0),vq=g.reduce((t,x)=>t+((x.u==='م³'&&+x.q>0)?+x.q:0),0),tv=g.reduce((t,x)=>t+(+x.v||0),0);
+      ls.push('  الإجمالي: '+(Math.round(cnt*100)/100)+' قطعة'+(vq>0?' · '+fv(vq)+' م³':'')+' · '+f(tv))}
+    return g[0].n+':\n'+ls.join('\n')}).join('\n')}catch(e){return''}}
 function txtOf(r){const m={'المحل':shopN(),'العميل':r.cname,'التاريخ':dshort(r.ts),'الخصم':r.pfv?f(r.pfv):'','سبب_الخصم':r.pfWhy||''};
   if(r.refund)return [shopN(),'العميل / '+r.cname,'تم رد العربون: '+f(Math.abs(r.amount)),'الحساب بعد الرد: '+f(r.rest)].join('\n');
   if(r.dep)return [shopN(),'العميل / '+r.cname,'عربون حجز رقم '+r.rsvNo+': '+f(r.amount),'المتبقي عند الاستلام: '+f(Math.max(0,(+r.rsvSub||0)-(+r.amount||0)))].join('\n');
   if(r.ret)return [shopN(),'العميل / '+r.cname,'مرتجع بقيمة: '+f(r.amount),'الحساب بعد المرتجع: '+f(r.rest)].join('\n');
   if(r.type==='pay'){m['المبلغ']=f(r.amount);m['الحساب']=f(r.rest);return fillTpl('pay',m)}
-  m['الفاتورة']=(docW()?docW()+' ':'')+'رقم '+r.no;m['الإجمالي']=f(r.total);m['المدفوع']=f(r.paid);m['المتبقي']=f(r.rest);return fillTpl('inv',m)}
+  m['البنود']=itemsTxt(r);m['الفاتورة']=(docW()?docW()+' ':'')+'رقم '+r.no;m['الإجمالي']=f(r.total);m['المدفوع']=f(r.paid);m['المتبقي']=f(r.rest);return fillTpl('inv',m)}
 function txtLink(r){return 'https://wa.me/'+waNum(phOf(r))+'?text='+encodeURIComponent(txtOf(r))}
 $('reswa').onclick=e=>{const n=waNum(curPhone);if(!curBlob||!n){e.preventDefault();$('resm').textContent=baseMsg+' · اكتب رقم واتساب العميل في بياناته أولاً';return}
   $('reswa').href='https://wa.me/'+n;
@@ -1060,7 +1068,7 @@ function showDD(inp,tr){const q=nm(inp.value.trim()),t=tr.dataset.t;const l=S.it
   dd.style.display='block';placeDD()}
 dd.addEventListener('mousedown',e=>{e.preventDefault();const cd=e.target.closest('div[data-c]');if(cd){const c=getC(cd.dataset.c);if(c&&ddInp){ddInp.value=c.name;ddInp.dispatchEvent(new Event('input',{bubbles:true}))}dd.style.display='none';return}const d=e.target.closest('div[data-k]');if(!d)return;const it=S.items.find(x=>x.id===d.dataset.k);
   ddInp.value=it.name;ddRow.dataset.iid=it.id;delete ddRow.dataset.lm;
-  const s=(c,v)=>{const x=ddRow.querySelector(c);if(x)x.value=v||''};s('.p',it.p);s('.w',it.w);s('.h',it.h);s('.t',it.t);if(it.c)s('.c',it.c);
+  const s=(c,v)=>{const x=ddRow.querySelector(c);if(x)x.value=v||''};s('.p',it.p);s('.w',it.w);s('.h',it.h);s('.t',it.t);if(it.c)s('.c',it.c);try{const lk=lastC&&FAVP[[nm(it.name).trim(),+it.t||0,+it.w||0,+it.h||0].join('|')];if(lk&&lk.p>0)s('.p',lk.p)}catch(_){}
   setCmp(ddRow,ddRow.dataset.t==='mq'&&+it.t>0&&+it.w>0);
   dd.style.display='none';calc();const e0=[...ddRow.querySelectorAll('input.h,input.w,input.t,input.c,input.p')].find(i=>!i.value&&i.offsetParent!==null);if(e0)e0.focus()});
 function showCD(inp){if(inp.readOnly)return;const q=nm(inp.value.trim()),l=S.customers.filter(c=>!q||nm(c.name).includes(q)).sort((a,b)=>a.name.localeCompare(b.name,'ar')).slice(0,40);
@@ -1076,10 +1084,10 @@ document.addEventListener('focusin',e=>{if(e.target.type==='number'&&!e.target.r
 function setCmp(d,on){d.classList.toggle('cmp',!!on);const g=c=>(d.querySelector(c)||{}).value||'',ph={h:'طول',c:'عدد',p:'سعر'};
   Object.keys(ph).forEach(k=>{const i=d.querySelector('input.'+k);if(i){if(on)i.placeholder=ph[k];else i.removeAttribute('placeholder')}});
   if(on){d.querySelector('.szn').textContent=g('input.n');d.querySelector('.szt').textContent=g('input.t')+'×'+g('input.w')+' ✎'}}
-function addRow(t){const rd=t==='rd',d=document.createElement('div');d.className='row';d.dataset.t=t;
+function addRow(t){if(document.body.classList.contains('xl')){const L=[...document.querySelectorAll('#rows .row')].pop();if(L&&L.dataset.t===t&&![...L.querySelectorAll('input')].some(i=>i.value.trim()!==''))return L}const rd=t==='rd',d=document.createElement('div');d.className='row';d.dataset.t=t;
   const num=(c,l)=>`<div class="f-${c}"><label>${l}</label><input class="${c}" type="number" inputmode="decimal"></div>`;
   d.innerHTML=`<div class="r1"><input class="n" placeholder="${rd?'اسم الصنف':'ابحث'}" autocomplete="off"><button class="del" aria-label="حذف">×</button></div><div class="rg a"><div class="f-nm" role="button" tabindex="0" title="تعديل"><b class="szn"></b><span class="szt"></span></div>${num('t','التخانة مم')+num('w','العرض')+num('h','الطول')+num('c','العدد')+num('p',rd?'السعر':'سعر م³')}</div><div class="ro"><span class="vq"><span class="qq"></span><span><span class="vl">القيمة: </span><b class="val num">0.00</b></span></span><span class="cx"><button class="del" type="button" aria-label="حذف">×</button></span></div><button type="button" class="lnk ofb">🏷️ عرض</button><div class="pw hide"></div><div class="offr hide"><div class="ofg"><div><label>سعر العرض</label><input class="op" type="number" inputmode="decimal" placeholder="مثلاً 21000"></div><div><label>ساري لحد (اختياري)</label><input class="oe" type="date"></div><button type="button" class="px ofx" aria-label="شيل العرض">×</button></div><div class="mute ofh"></div></div>`;
-  d.querySelectorAll('.del').forEach(b=>b.onclick=()=>{d.remove();calc()});const ofb=d.querySelector('.ofb'),ofr=d.querySelector('.offr');ofb.onclick=()=>{ofr.classList.remove('hide');ofb.classList.add('hide');d.querySelector('.op').focus()};d.querySelector('.ofx').onclick=()=>{d.querySelector('.op').value='';d.querySelector('.oe').value='';ofr.classList.add('hide');ofb.classList.remove('hide');calc()};d.querySelector('.f-nm').onclick=()=>{setCmp(d,false);const i=d.querySelector('input.t');if(i)i.focus()};d.querySelectorAll('input').forEach(i=>i.oninput=calc);
+  d.querySelectorAll('.del').forEach(b=>b.onclick=()=>{d.remove();calc()});const ofb=d.querySelector('.ofb'),ofr=d.querySelector('.offr');ofb.onclick=()=>{ofr.classList.remove('hide');ofb.classList.add('hide');d.querySelector('.op').focus()};d.querySelector('.ofx').onclick=()=>{d.querySelector('.op').value='';d.querySelector('.oe').value='';ofr.classList.add('hide');ofb.classList.remove('hide');calc()};d.querySelector('.f-nm').onclick=()=>{setCmp(d,false);const i=d.querySelector('input.t');if(i)i.focus()};d.querySelectorAll('input').forEach(i=>{i.oninput=calc;i.setAttribute('enterkeyhint','next')});
   const n=d.querySelector('.n');n.onfocus=()=>showDD(n,d);n.addEventListener('click',()=>showDD(n,d));n.addEventListener('input',()=>{if(d.classList.contains('cmp'))setCmp(d,false);showDD(n,d)});$('rows').appendChild(d);return d}
 let TOT={},editId=null,wkMan=false;
 function calc(){_wm=null;let sub=0,tq=0,tv=0;const rows=[];
@@ -1099,8 +1107,20 @@ function calc(){_wm=null;let sub=0,tq=0,tv=0;const rows=[];
   $('tqw').textContent=qtyTxt(tq,tv);$('sub').textContent=f(sub-wk-mk-xp);$('grand').textContent=f(total);$('rest').textContent=f(total-paid);$('prevv').textContent=f(prev);$('netp').textContent=f(paid);$('prest').classList.toggle('ok',total-paid<=0&&(total>0||paid>0));
   $('r_sub').classList.toggle('hide',['r_nylon','r_mak','r_xp','r_disc','r_dp','r_prev'].every(i=>$(i).classList.contains('hide')));
   $('dpAmt').textContent=rd2(pfv-PY.wf)?' = '+f(rd2(pfv-PY.wf)):'';TOT={rows,sub,wk,mk,xp,tq:rd2(tq),tv:Math.round(tv*1000)/1000,prev,pf,pfv,pfWhy:PY.wal>0?'سحب فودافون كاش':$('pfWhy').value.trim(),pm:PM,pmx:{c:PY.cash,w:PY.wal,i:PY.ins},vfp:PY.wal>0?PY.v:0,vfm:vfMode(),paidRaw,total,paid,rest:total-paid};pmUI(PY);
-  $('dueRow').classList.toggle('hide',!($('cust').value.trim()&&(total-paid)>0));const pay=!rows.length&&paid>0;$('save').textContent=editId?'حفظ التعديل':pay?'تسجيل دفعة':'حفظ الفاتورة';$('saveImg').textContent=pay?'دفعة كصورة':'حفظ كصورة';limChk();rowHints()}
+  $('dueRow').classList.toggle('hide',!($('cust').value.trim()&&(total-paid)>0));const pay=!rows.length&&paid>0;$('save').textContent=editId?'حفظ التعديل':pay?'تسجيل دفعة':'حفظ الفاتورة';$('saveImg').textContent=pay?'دفعة كصورة':'حفظ كصورة';limChk();rowHints();xlBlank()}
+function xlBlank(){try{if(!document.body.classList.contains('xl'))return;const rs=[...document.querySelectorAll('#rows .row')],L=rs[rs.length-1];if(!L||[...L.querySelectorAll('input')].some(i=>i.value.trim()!==''))addRow('mq')}catch(e){}}
 ['nylon','mak','xpn','disc','dp','prev','paid'].forEach(i=>$(i).oninput=calc);$('wk').oninput=()=>{wkMan=$('wk').value.trim()!=='';calc()};
+/* ---------- التنقل بين الخانات بزر Enter / التالي ---------- */
+(function(){const ORD=['.n','.t','.w','.h','.c','.p'];
+$('rows').addEventListener('keydown',e=>{if(e.key!=='Enter'||e.isComposing)return;const inp=e.target;
+  if(!inp.matches||!inp.matches('input.n,input.t,input.w,input.h,input.c,input.p'))return;const row=inp.closest('.row');if(!row)return;e.preventDefault();
+  if(inp.classList.contains('n')&&inp.value.trim()&&dd.style.display!=='none'){const ds=[...dd.children].filter(c=>c.dataset&&c.dataset.k);if(ds.length===1){ds[0].dispatchEvent(new MouseEvent('mousedown',{bubbles:true,cancelable:true}));return}}
+  const ok=i=>i&&!i.readOnly&&i.offsetParent!==null&&getComputedStyle(i).visibility!=='hidden';
+  const fl=ORD.map(c=>row.querySelector('input'+c)).filter(ok),k=fl.indexOf(inp);
+  if(k>=0&&k<fl.length-1){fl[k+1].focus();return}
+  dd.style.display='none';let nx=row.nextElementSibling;while(nx&&!nx.classList.contains('row'))nx=nx.nextElementSibling;
+  if(!nx){try{xlBlank()}catch(_){}nx=row.nextElementSibling}
+  const n=nx&&nx.querySelector('input.n');if(n)n.focus();else inp.blur()})})();
 $('t-new').addEventListener('click',e=>{const x=e.target.dataset.x;if(x){const r=$(x);r.classList.remove('hide');const i=r.querySelector('input');if(i&&!i.readOnly)i.focus();return}const t=e.target.dataset.add;if(t){addRow(t).querySelector('.n').focus();calc()}});
 $('quick').addEventListener('click',e=>{const b=e.target.closest('button[data-q]');if(!b)return;const it=S.items.find(x=>x.id===b.dataset.q);if(!it)return;
   const d=addRow('mq'),s=(c,v)=>{const x=d.querySelector(c);if(x&&v)x.value=v};d.querySelector('.n').value=it.name;d.dataset.iid=it.id;s('.p',it.p);s('.w',it.w);s('.h',it.h);s('.t',it.t);s('.c',it.c);setCmp(d,+it.t>0&&+it.w>0);calc();
@@ -1262,7 +1282,7 @@ async function stoInfo(){
   }catch(e){el.textContent='تعذر قراءة المساحة.'}
 }
 const xlGet=()=>{try{return localStorage.getItem('xlOn')!=='0'}catch(e){return true}};
-function xlApply(){document.body.classList.toggle('xl',xlGet());const c=$('xlChk');if(c)c.checked=xlGet()}
+function xlApply(){document.body.classList.toggle('xl',xlGet());const c=$('xlChk');if(c)c.checked=xlGet();try{xlBlank()}catch(e){}}
 xlApply();$('xlChk')&&($('xlChk').onchange=()=>{try{localStorage.setItem('xlOn',$('xlChk').checked?'1':'0')}catch(e){}xlApply()});
 $('stoPersist')&&($('stoPersist').onclick=async()=>{try{if(navigator.storage&&navigator.storage.persist)await navigator.storage.persist()}catch(e){}stoInfo()});
 
