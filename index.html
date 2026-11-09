@@ -381,6 +381,7 @@ thmApply();
     <div class="stat-card"><div class="stat-label">مبيعات الأسبوع</div><div class="stat-value num" id="d_week">0.00</div></div>
     <div class="stat-card warn"><div class="stat-label">إجمالي المديونيات</div><div class="stat-value num" id="d_debt">0</div></div>
   </div>
+  <div class="card" id="cmpBox"></div>
   <div class="card">
     <input id="hq" placeholder="ابحث باسم العميل أو كود الفاتورة">
     <div class="seg s" id="hPer" style="margin:6px 0 4px"><button data-p="all" class="on">الكل</button><button data-p="d">اليوم</button><button data-p="w">أسبوع</button><button data-p="m">شهر</button></div>
@@ -565,7 +566,7 @@ thmApply();
       <div class="btns"><button class="main" id="lkSave">تفعيل القفل</button></div></div>
     <label class="opt hide" id="lkBioBox"><input type="checkbox" id="lkBio"> الفتح بالبصمة</label>
     <div class="info" id="lkMsg"></div></div>
-  <div class="card"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.40 · تحديث 9 نوفمبر 2026 · تنقل بزر التالي وسعر آخر مرة للعميل والبنود في رسالة النص</div></div>
+  <div class="card"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.41 · تحديث 9 نوفمبر 2026 · مقارنة مبيعات الأسبوع والشهر بالفترة اللي فاتت</div></div>
   <div class="card"><b>حالة الحفظ</b><div id="stor" style="margin-top:4px;font-size:14px"></div></div>
   <div class="card"><label style="display:flex;align-items:center;gap:8px;margin:0;font-size:14px;font-weight:700"><input type="checkbox" id="xlChk"> نمط إكسل في شاشة الفاتورة (جدول للبنود)</label></div>
   <div class="card"><b>مساحة التخزين على الجهاز</b><div id="stoBox" style="margin-top:4px;font-size:14px">جاري القراءة…</div><button class="alt" id="stoPersist" style="margin-top:8px">فعّل التخزين الدائم</button></div>
@@ -1546,6 +1547,20 @@ const WD=['الأحد','الاثنين','الثلاثاء','الأربعاء','�
 const hm=t=>{const d=new Date(t);let h=d.getHours();const ap=h>=12?'م':'ص';h=h%12||12;return h+':'+two(d.getMinutes())+' '+ap};
 function dayLabel(t){const d=new Date(t),n=new Date(),a=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime(),b=new Date(n.getFullYear(),n.getMonth(),n.getDate()).getTime(),full=WD[d.getDay()]+' '+d.getDate()+' '+MN[d.getMonth()];return a===b?'اليوم · '+full:a===b-864e5?'أمس · '+full:full}
 const debtAll=()=>S.customers.reduce((a,c)=>a+Math.max(0,balOf(c)),0);
+function drawCmp(){const box=$('cmpBox');if(!box)return;
+  const now=Date.now(),n=new Date(now),DAY=864e5;
+  const wk=wkStart(now),lw=(()=>{const d=new Date(wk);d.setDate(d.getDate()-7);return d.getTime()})(),lwEnd=Math.min(lw+(now-wk),wk);
+  const ms=new Date(n.getFullYear(),n.getMonth(),1).getTime(),lms=new Date(n.getFullYear(),n.getMonth()-1,1).getTime(),lmEnd=Math.min(lms+(now-ms),ms);
+  const agg=(a,b)=>{const l=S.invoices.filter(r=>r.ts>=a&&r.ts<b);return{n:l.filter(r=>r.type==='inv').length,s:rd2(l.reduce((t,r)=>t+val(r),0))}};
+  const chg=(c,p)=>{if(!(p>0))return c>0?'<b class="pos">جديد</b>':'<span class="mute">—</span>';const d=Math.round((c-p)/p*100);return '<b class="num" style="font-size:16px;color:'+(d>=0?'#1f9d62':'#d64545')+'">'+(d>=0?'▲ ':'▼ ')+Math.abs(d)+'%</b>'};
+  const df=(c,p)=>{const d=rd2(c-p);return '<div class="mute num" style="font-size:12px;color:'+(d>=0?'#1f9d62':'#d64545')+'"><bdi dir="ltr">'+(d>=0?'+':'−')+f(Math.abs(d))+'</bdi></div>'};
+  const blk=(ttl,sub,C,P,F)=>'<div style="padding:8px 0;border-top:1px solid var(--line)"><div style="font-size:13px"><b>'+ttl+'</b></div><div class="mute" style="font-size:12px;margin-bottom:4px">'+sub+'</div>'+
+    '<div class="ro" style="align-items:flex-end"><div><b class="num" style="font-size:20px">'+f(C.s)+'</b><div class="mute num" style="font-size:12px">قبلها: '+f(P.s)+'</div></div><div style="text-align:left">'+chg(C.s,P.s)+df(C.s,P.s)+'</div></div>'+
+    '<div class="mute" style="font-size:12px;margin-top:4px">فواتير: '+C.n+' مقابل '+P.n+' · '+F+'</div></div>';
+  const wC=agg(wk,now+1),wP=agg(lw,lwEnd),wF=agg(lw,wk),mC=agg(ms,now+1),mP=agg(lms,lmEnd),mF=agg(lms,ms);
+  box.innerHTML='<b>📊 مقارنة المبيعات</b>'+
+    blk('الأسبوع ده مقابل الأسبوع اللي فات','من السبت لحد دلوقتي، مقابل نفس المدة من الأسبوع اللي فات',wC,wP,'الأسبوع اللي فات كامل: '+f(wF.s))+
+    blk('الشهر ده مقابل الشهر اللي فات','من أول الشهر لحد دلوقتي، مقابل نفس المدة من الشهر اللي فات',mC,mP,'الشهر اللي فات كامل: '+f(mF.s))}
 function drawDash(){chBanDraw();
   const DAY=864e5,t0=new Date();t0.setHours(0,0,0,0);const todayTs=t0.getTime(),weekTs=todayTs-6*DAY;
   const inv=S.invoices.filter(r=>r.type==='inv'),tInvs=inv.filter(r=>r.ts>=todayTs);
@@ -1554,6 +1569,7 @@ function drawDash(){chBanDraw();
   $('d_todayPaid').textContent=f(tInvs.reduce((a,r)=>a+r.paid,0)+tPay);
   $('d_week').textContent=f(inv.filter(r=>r.ts>=weekTs).reduce((a,r)=>a+val(r),0)-rtN(weekTs));
   $('d_debt').textContent=f(debtAll());
+  try{drawCmp()}catch(e){}
   const q=$('hq').value.trim(),isCode=/^[#\s]*\d+$/.test(a2e(q)),from=isCode?0:hP==='d'?todayTs:hP==='w'?weekTs:hP==='m'?todayTs-29*DAY:0;
   const l=S.invoices.filter(r=>r.ts>=from&&(!q||nm(r.cname).includes(nm(q))||codeHit(r,q))).sort((x,y)=>y.ts-x.ts);
   const T={};l.forEach(r=>{const k=dshort(r.ts),t=T[k]=T[k]||{s:0,p:0};t.s+=val(r);t.p+=pd(r)});
