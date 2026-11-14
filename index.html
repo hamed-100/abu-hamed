@@ -56,6 +56,38 @@ table.st{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0}
 #resimg{width:100%;border-radius:6px;border:1px solid var(--line);background:var(--card);margin-top:6px}
 .hide{display:none!important}
 
+/* تصغير المساحات في قايمة المديونين */
+#dDebtBox{padding:8px}
+#dDebtBox .seg{margin:6px 0!important}
+#dDebtBox .main{padding:7px 10px;font-size:14px;margin-bottom:4px!important}
+#dDebtBox .hday{margin:6px 2px 3px;font-size:11px}
+#dDebtBox .rec{padding:5px 8px;margin-bottom:3px;gap:6px;box-shadow:none;border-radius:8px}
+#dDebtBox .rec .av{width:24px;height:24px;font-size:12px}
+#dDebtBox .rec .cn{font-size:14px;line-height:1.25}
+#dDebtBox .rec .mute{font-size:11px;line-height:1.25}
+#dDebtBox .rec .ab{padding:3px 7px;font-size:12px}
+#dDebtBox .rec .cb{font-size:12px;padding:2px 8px}
+
+/* ===== شكل السجل: بلاطات + بحث ===== */
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.tile{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 3px 9px;border-radius:14px;border:1px solid var(--tb);background:var(--tg);cursor:pointer;box-shadow:var(--shadow);text-align:center;min-width:0;transition:transform .15s}
+.tile:active{transform:scale(.96)}
+.tile .ti{font-size:24px;line-height:1.1}
+.tile .tl{font-size:11.5px;color:var(--ink);white-space:nowrap}
+.tile .tv{font-size:15px;font-weight:500;color:var(--ink);white-space:nowrap;max-width:100%}
+.t-g{--tg:#e3efe5;--tb:#c6dccb}.t-b{--tg:#e3e9f6;--tb:#bccae6}.t-y{--tg:#f6ebd6;--tb:#e3cfa6}.t-p{--tg:#ebe5f4;--tb:#cfc4e3}
+[data-theme="dark"] .t-g{--tg:#1d2e22;--tb:#2f4a37}[data-theme="dark"] .t-b{--tg:#1c2536;--tb:#2f3f5c}[data-theme="dark"] .t-y{--tg:#33250f;--tb:#5a4220}[data-theme="dark"] .t-p{--tg:#272032;--tb:#43375a}
+.hCard{padding:12px 12px 10px}
+.hsrch{position:relative}
+.hsrch input{border-radius:10px;padding:11px 12px 11px 40px;font-size:15px}
+.hchev{position:absolute;left:4px;top:50%;transform:translateY(-50%);background:none;border:0;color:var(--mute);font-size:20px;line-height:1;padding:6px 10px;cursor:pointer;transition:transform .2s}
+.hchev.on{transform:translateY(-50%) rotate(180deg)}
+.hbtns{display:flex;gap:6px;flex-wrap:wrap}
+#hTot{display:block;font-size:13px;margin-top:8px}
+.morewk{display:block;width:100%;text-align:center;background:var(--tot);border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:10px;color:var(--ink);font:inherit;cursor:pointer}
+.morewk b{display:block;font-size:15px;font-weight:500}.morewk span{display:block;font-size:13px;color:var(--mute);margin-top:2px}
+.hEmpty{margin:14px 2px;font-size:14px}
+
 /* ===== Header ===== */
 .app-header{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--hdr);border-bottom:3px solid var(--gold);color:var(--hdrInk,#fff);display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:52px;padding-top:env(safe-area-inset-top,0px);box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .app-header .app-title{font-size:18px;font-weight:700;letter-spacing:.5px}
@@ -409,18 +441,21 @@ thmApply();
   <div class="card hide" id="chBan3"></div>
   <div id="whAlertD"></div>
   <div id="whWoodD"></div>
-  <div class="stat-grid">
-    <div class="stat-card accent"><div class="stat-label">مبيعات اليوم</div><div class="stat-value num" id="d_today">0.00</div></div>
-    <div class="stat-card good"><div class="stat-label">مدفوعات اليوم</div><div class="stat-value num" id="d_todayPaid">0.00</div></div>
-    <div class="stat-card" id="dWeekCard"><div class="stat-label">مبيعات الأسبوع ▾</div><div class="stat-value num" id="d_week">0.00</div></div>
-    <div class="stat-card warn" id="dDebtCard"><div class="stat-label">إجمالي المديونيات ▾</div><div class="stat-value num" id="d_debt">0</div></div>
+  <div class="tiles">
+    <div class="tile t-g" id="dTodayCard" role="button"><span class="ti">💰</span><span class="tl">مبيعات اليوم ›</span><span class="tv num" id="d_today">0</span></div>
+    <div class="tile t-b" id="dPaidCard" role="button"><span class="ti">💵</span><span class="tl">المدفوع اليوم ›</span><span class="tv num" id="d_todayPaid">0</span></div>
+    <div class="tile t-y" id="dDebtCard" role="button"><span class="ti">📒</span><span class="tl">المديونيات ›</span><span class="tv num" id="d_debt">0</span></div>
+    <div class="tile t-p" id="dWeekCard" role="button"><span class="ti">📊</span><span class="tl">تقرير ›</span><span class="tv num" id="d_week">0</span></div>
   </div>
   <div class="card hide" id="cmpBox"></div>
   <div class="card hide" id="dDebtBox"></div>
-  <div class="card">
-    <input id="hq" placeholder="ابحث باسم العميل أو كود الفاتورة">
-    <div class="seg s" id="hPer" style="margin:6px 0 4px"><button data-p="all" class="on">الكل</button><button data-p="d">اليوم</button><button data-p="w">أسبوع</button><button data-p="m">شهر</button></div>
-    <div class="ro"><span class="mute" id="hTot"></span><span style="display:flex;gap:6px"><button class="ab" id="cashBtn">💵 الخزنة</button><button class="ab hide" id="dayClose">🧾 إقفال اليوم</button><button class="ab hide" id="monRep">📊 تقرير الشهر</button></span></div>
+  <div class="card hCard">
+    <div class="hsrch"><input id="hq" placeholder="ابحث: اسم · كود · مبلغ (700 · 600-800) · صنف · موقع" autocomplete="off"><button type="button" class="hchev" id="hOpt" aria-label="خيارات">⌄</button></div>
+    <div class="hpanel hide" id="hPanel">
+      <div class="seg s" id="hPer" style="margin:8px 0 6px"><button data-p="w" class="on">الأسبوع</button><button data-p="d">اليوم</button><button data-p="m">الشهر</button><button data-p="all">الكل</button></div>
+      <div class="hbtns"><button class="ab" id="cashBtn">💵 الخزنة</button><button class="ab hide" id="dayClose">🧾 إقفال اليوم</button><button class="ab hide" id="monRep">📊 تقرير الشهر</button><button class="ab" id="cmpBtn">📈 مقارنة</button></div>
+    </div>
+    <span class="mute" id="hTot"></span>
   </div>
   <div id="hList"></div>
 </section>
@@ -619,7 +654,7 @@ thmApply();
       <div class="btns"><button class="main" id="lkSave">تفعيل القفل</button></div></div>
     <label class="opt hide" id="lkBioBox"><input type="checkbox" id="lkBio"> الفتح بالبصمة</label>
     <div class="info" id="lkMsg"></div></div>
-  <div class="card"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.60 · تحديث 14 نوفمبر 2026 · تعديل فواتير الشراء</div></div>
+  <div class="card"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.61 · تحديث 14 نوفمبر 2026 · شكل السجل الجديد وقايمة المديونين</div></div>
   <div class="card"><b>حالة الحفظ</b><div id="stor" style="margin-top:4px;font-size:14px"></div></div>
   <div class="card"><label style="display:flex;align-items:center;gap:8px;margin:0;font-size:14px;font-weight:700"><input type="checkbox" id="xlChk"> نمط إكسل في شاشة الفاتورة (جدول للبنود)</label></div>
   <div class="card"><b>مساحة التخزين على الجهاز</b><div id="stoBox" style="margin-top:4px;font-size:14px">جاري القراءة…</div><button class="alt" id="stoPersist" style="margin-top:8px">فعّل التخزين الدائم</button></div>
@@ -1656,7 +1691,14 @@ $('bulk').addEventListener('click',e=>{if(e.target===$('bulk'))$('bulk').classLi
 $('bulkList').addEventListener('click',e=>{const a=e.target.closest('a[data-bk]');if(a){bulkSent.add(a.dataset.bk);setTimeout(drawBulk,400)}});
 
 /* ========== لوحة الإحصائيات (Dashboard) ========== */
-let hP='all',hLim=30;
+let hP='w',hLim=30,hWk=0;
+function wkBack(n){const d=new Date(wkStart(Date.now()));d.setDate(d.getDate()-7*n);return d.getTime()}
+function hMatch(r,q){if(!q)return true;const t=a2e(q).trim(),m=t.match(/^(\d+(?:\.\d+)?)\s*[-–]\s*(\d+(?:\.\d+)?)$/);
+  if(m){const lo=Math.min(+m[1],+m[2]),hi=Math.max(+m[1],+m[2]);return [val(r),pd(r),r.amount,r.total].some(x=>{x=Math.abs(+x||0);return x>0&&x>=lo&&x<=hi})}
+  if(/^\d+(\.\d+)?$/.test(t)&&[val(r),pd(r),r.amount,r.total].some(x=>{x=Math.abs(+x||0);return x>0&&Math.abs(x-(+t))<.5}))return true;
+  if(codeHit(r,q)||nm(r.cname).includes(nm(q)))return true;
+  if((r.rows||[]).some(x=>x&&nm(String(x.n||'')).includes(nm(q))))return true;
+  const c=r.cid&&typeof getC==='function'?getC(r.cid):null;return !!(c&&nm(c.addr||'').includes(nm(q)))}
 const WD=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],MN=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 const hm=t=>{const d=new Date(t);let h=d.getHours();const ap=h>=12?'م':'ص';h=h%12||12;return h+':'+two(d.getMinutes())+' '+ap};
 function dayLabel(t){const d=new Date(t),n=new Date(),a=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime(),b=new Date(n.getFullYear(),n.getMonth(),n.getDate()).getTime(),full=WD[d.getDay()]+' '+d.getDate()+' '+MN[d.getMonth()];return a===b?'اليوم · '+full:a===b-864e5?'أمس · '+full:full}
@@ -1762,8 +1804,12 @@ function drawDebtBox(){const b=$('dDebtBox');if(!b||b.classList.contains('hide')
    '<div class="seg s" style="margin:8px 0"><button data-dbf="all" class="'+(dbF==='all'?'on':'')+'">الكل ('+l.length+')</button><button data-dbf="ovd" class="'+(dbF==='ovd'?'on':'')+'">⚠ المتأخرين ('+od.length+')</button></div>'+
    (dbF==='ovd'?(od.length?'<button class="main b-green" id="dBulkOvd" style="width:100%;margin-bottom:6px">📨 تذكير المتأخرين ('+od.length+')</button>':''):
      ((l.length&&pget('bulkRem',true)?'<button class="main b-green" id="dBulkRem" style="width:100%;margin-bottom:6px">📨 تذكير كل المديونين</button>':'')+(l.length?'<button class="main b-green" id="dBulkStm" style="width:100%;margin-bottom:6px">📨 كشف حساب للكل</button>':'')))+
-   (L.map(c=>{const d=c.due?daysTo(c.due):0,late=d<0?' <span style="color:#d64545">· متأخر '+dyTxt(-d)+'</span>':'';return `<div class="rec cr2 cr3" data-dopen="${c.id}"><div style="flex:1;min-width:0"><div class="cn">${esc(c.name)}</div><div class="mute">${esc(cSub(c))}${late}</div></div><span class="cb ${bcls(c)} num">${bal(c)}</span>${actsH(c)}</div>`}).join('')||'<p class="mute">'+(dbF==='ovd'?'مفيش متأخرين 👌':'لا يوجد مديونين.')+'</p>')}
-$('dWeekCard').onclick=()=>{$('cmpBox').classList.toggle('hide');try{drawCmp()}catch(e){}};
+   colGroupsH(L,'data-dopen','<p class="mute">'+(dbF==='ovd'?'مفيش متأخرين 👌':'لا يوجد مديونين.')+'</p>')}
+$('dWeekCard').onclick=()=>showMonth(Date.now());
+$('cmpBtn').onclick=()=>{$('cmpBox').classList.toggle('hide');try{drawCmp()}catch(e){}};
+$('hOpt').onclick=()=>{$('hPanel').classList.toggle('hide');$('hOpt').classList.toggle('on',!$('hPanel').classList.contains('hide'))};
+$('dPaidCard').onclick=()=>$('cashBtn').click();
+$('dTodayCard').onclick=()=>{hP=hP==='d'?'w':'d';hLim=30;hWk=0;$('hq').value='';document.querySelectorAll('#hPer button').forEach(b=>b.classList.toggle('on',b.dataset.p===hP));drawDash();$('hList').scrollIntoView({behavior:'smooth',block:'start'})};
 $('dDebtCard').onclick=()=>{$('dDebtBox').classList.toggle('hide');drawDebtBox()};
 $('dDebtBox').addEventListener('click',e=>{const t=e.target;
   if(t.closest('a[data-lnk]'))return;
@@ -1779,22 +1825,28 @@ function drawDash(){chBanDraw();
   const tPay=S.invoices.filter(r=>r.type==='pay'&&!r.ret&&r.ts>=todayTs).reduce((a,r)=>a+r.amount,0),rtN=a=>S.invoices.filter(r=>r.ret&&r.ts>=a).reduce((x,r)=>x+(+r.amount||0),0);
   $('d_today').textContent=f(tInvs.reduce((a,r)=>a+val(r),0)-rtN(todayTs));
   $('d_todayPaid').textContent=f(tInvs.reduce((a,r)=>a+r.paid,0)+tPay);
-  $('d_week').textContent=f(inv.filter(r=>r.ts>=weekTs).reduce((a,r)=>a+val(r),0)-rtN(weekTs));
+  {const ms0=new Date(t0.getFullYear(),t0.getMonth(),1).getTime();$('d_week').textContent=f(inv.filter(r=>r.ts>=ms0).reduce((a,r)=>a+val(r),0)-rtN(ms0))}
   $('d_debt').textContent=f(debtAll());
   try{drawCmp()}catch(e){}try{drawDebtBox()}catch(e){}
-  const q=$('hq').value.trim(),isCode=/^[#\s]*\d+$/.test(a2e(q)),from=isCode?0:hP==='d'?todayTs:hP==='w'?weekTs:hP==='m'?todayTs-29*DAY:0;
-  const l=S.invoices.filter(r=>r.ts>=from&&(!q||nm(r.cname).includes(nm(q))||codeHit(r,q))).sort((x,y)=>y.ts-x.ts);
+  const q=$('hq').value.trim(),wk0=wkBack(hWk),ms1=new Date(t0.getFullYear(),t0.getMonth(),1).getTime(),
+    from=q?0:hP==='d'?todayTs:hP==='w'?wk0:hP==='m'?ms1:0;
+  const l=S.invoices.filter(r=>r.ts>=from&&hMatch(r,q)).sort((x,y)=>y.ts-x.ts);
   const T={};l.forEach(r=>{const k=dshort(r.ts),t=T[k]=T[k]||{s:0,p:0};t.s+=val(r);t.p+=pd(r)});
-  $('hTot').textContent=l.length+' معاملة · مبيعات '+f(l.reduce((a,r)=>a+val(r),0))+' · محصّل '+f(l.reduce((a,r)=>a+pd(r),0));
+  $('hTot').textContent=l.length+' معاملة · مبيعات '+f(l.reduce((a,r)=>a+val(r),0))+' · مدفوع '+f(l.reduce((a,r)=>a+pd(r),0));
   let last='',h='';
   l.slice(0,hLim).forEach(r=>{const k=dshort(r.ts);
-    if(k!==last){last=k;h+=`<div class="hday"><span>${dayLabel(r.ts)}</span><span class="num">مبيعات ${f(T[k].s)} · محصّل ${f(T[k].p)}</span>${pget('dayCl',true)?`<button class="lnk" data-dc="${r.ts}" style="padding:0 4px;font-size:12px">🧾 إقفال</button>`:''}</div>`}
+    if(k!==last){last=k;h+=`<div class="hday"><span>${dayLabel(r.ts)}</span><span class="num">مبيعات ${f(T[k].s)} · مدفوع ${f(T[k].p)}</span>${pget('dayCl',true)?`<button class="lnk" data-dc="${r.ts}" style="padding:0 4px;font-size:12px">🧾 إقفال</button>`:''}</div>`}
     h+=`<div class="hrow" data-h="${r.id}"><div class="hl"><b>${esc(r.cname)}</b><span class="mute">${r.type==='pay'?(plab(r)):'فاتورة #'+r.no}${r.code?' · كود '+fc(r):''} · ${hm(r.ts)}${pmIco(r)?' · '+pmIco(r):''}</span></div><div class="hr">${r.type==='pay'?`<b class="num">${r.ret?'-':''}${f(r.amount)}</b><span class="tag ${(r.ret||r.refund)?'dr':'ok'}">${plab(r)}</span>`:`<b class="num">${f(val(r))}</b>${r.rest>0?`<span class="tag dr">متبقي ${f(r.rest)}</span>`:`<span class="tag ok">مدفوعة</span>`}`}</div></div>`});
   if(l.length>hLim)h+=`<button class="lnk" data-more="1">عرض المزيد (${l.length-hLim})</button>`;
-  $('hList').innerHTML=h||'<p class="mute">لا توجد معاملات.</p>'}
-$('hq').oninput=()=>{hLim=30;drawDash()};
-$('hPer').onclick=e=>{const p=e.target.dataset.p;if(!p)return;hP=p;hLim=30;document.querySelectorAll('#hPer button').forEach(b=>b.classList.toggle('on',b===e.target));drawDash()};
-$('hList').addEventListener('click',e=>{const d=e.target.dataset;if(d.more){hLim+=30;drawDash()}else if(d.dc)showClose(+d.dc)});
+  if(!q&&hP==='w'){const older=S.invoices.filter(r=>r.ts<from);
+    if(older.length){const ws=wkStart(Math.max(...older.map(r=>r.ts))),n=Math.max(hWk+1,Math.round((wkBack(0)-ws)/6048e5)),wl=S.invoices.filter(r=>r.ts>=ws&&r.ts<from),we=new Date(ws);we.setDate(we.getDate()+6);
+      const dm=d=>d.getDate()+'/'+(d.getMonth()+1);
+      h+=`<button class="morewk" data-wkmore="${n}"><b>⬇ المزيد: أسبوع ${dm(new Date(ws))} ← ${dm(we)}</b><span>${wl.length} معاملة · مبيعات ${f(wl.reduce((a,r)=>a+val(r),0))} · مدفوع ${f(wl.reduce((a,r)=>a+pd(r),0))}</span></button>`}}
+  if(!l.length)h='<p class="mute hEmpty">'+(q?'مفيش نتايج للبحث.':hP==='w'?'مفيش معاملات في الأسبوع ده':hP==='d'?'مفيش معاملات النهارده':hP==='m'?'مفيش معاملات في الشهر ده':'لا توجد معاملات.')+'</p>'+h;
+  $('hList').innerHTML=h||'<p class="mute hEmpty">لا توجد معاملات.</p>'}
+$('hq').oninput=()=>{hLim=30;hWk=0;drawDash()};
+$('hPer').onclick=e=>{const p=e.target.dataset.p;if(!p)return;hP=p;hLim=30;hWk=0;document.querySelectorAll('#hPer button').forEach(b=>b.classList.toggle('on',b===e.target));drawDash()};
+$('hList').addEventListener('click',e=>{const wm=e.target.closest('[data-wkmore]');if(wm){hWk=+wm.dataset.wkmore;drawDash();return}const d=e.target.dataset;if(d.more){hLim+=30;drawDash()}else if(d.dc)showClose(+d.dc)});
 const pctTxt=(p,sl)=>sl>0?(Math.round(p/sl*1000)/10)+'%':'—';
 const chg=(x,y)=>{if(!y)return x?'جديد':'—';const d=(x-y)/Math.abs(y)*100;return (d>=0?'▲ ':'▼ ')+Math.abs(Math.round(d))+'%'};
 function cmpAgg(a,b){const l=S.invoices.filter(r=>r.ts>=a&&r.ts<b),g=pfAgg(a,b),ex=expSum(a,b);return{has:l.length>0,s:rd2(l.reduce((x,r)=>x+val(r),0)),p:g.profit,net:rd2(g.profit-ex),pc:g.sales>0?Math.round(g.profit/g.sales*1000)/10:0}}
@@ -2078,15 +2130,19 @@ $('retOv').addEventListener('click',e=>{const t=e.target;
 $('resret').onclick=()=>{if(curRec&&curRec.type==='inv')openRet(curRec)};
 
 /* ---------- التحصيل ---------- */
+function colGroupsH(l,attr,empty){
+  const G=[['⏰ متأخر'],['📍 النهارده'],['🕐 بكره'],['📅 الأسبوع ده'],['🗓️ بعد كده'],['❔ من غير موعد']].map(x=>({t:x[0],a:[],s:0}));
+  l.forEach(c=>{const d=c.due?daysTo(c.due):null,g=d===null?5:d<0?0:d===0?1:d===1?2:d<=7?3:4;G[g].a.push({c,d});G[g].s+=balOf(c)});
+  return G.filter(g=>g.a.length).map(g=>'<div class="hday"><span>'+g.t+' · '+g.a.length+'</span><span class="num">'+f(g.s)+'</span></div>'+g.a.sort((x,y)=>balOf(y.c)-balOf(x.c)).map(({c,d})=>{
+    const w=d===null?'ضيف موعد سداد':d<0?'متأخر '+(-d)+' يوم':d===0?'النهارده':d===1?'بكره':'بعد '+d+' يوم',lm=(+c.limit>0&&balOf(c)>+c.limit)?' · 🚦 عدّى الحد':'';
+    return '<div class="rec cr2" '+attr+'="'+c.id+'"><span class="av">'+esc(String(c.name).trim().charAt(0))+'</span><div style="flex:1;min-width:0"><div class="cn">'+esc(c.name)+'</div><div class="mute">'+w+lm+chqTag(c)+'</div></div><button class="ab" data-qp="'+c.id+'">💵</button><a class="ab" data-lnk="1" target="_blank" rel="noopener" href="'+remLinkAny(c)+'">ذكّره</a>'+telA(c)+'<span class="cb dr num">'+f(balOf(c))+'</span></div>'}).join('')).join('')||empty}
 function drawCol(q){$('bulkRem').classList.add('hide');$('bulkStm').classList.add('hide');$('dueBan2').classList.add('hide');
   const l=S.customers.filter(c=>balOf(c)>0&&(!q||nm(c.name).includes(nm(q))));
   const G=[['⏰ متأخر'],['📍 النهارده'],['🕐 بكره'],['📅 الأسبوع ده'],['🗓️ بعد كده'],['❔ من غير موعد']].map(x=>({t:x[0],a:[],s:0}));
   l.forEach(c=>{const d=c.due?daysTo(c.due):null,g=d===null?5:d<0?0:d===0?1:d===1?2:d<=7?3:4;G[g].a.push({c,d});G[g].s+=balOf(c)});
   const tot=l.reduce((a,c)=>a+balOf(c),0);
   $('cuTot').textContent='إجمالي المديونيات: '+f(tot)+' ('+l.length+' عميل)'+(G[0].a.length?' · متأخر '+f(G[0].s):'');
-  $('cuList').innerHTML=chBtnH()+G.filter(g=>g.a.length).map(g=>'<div class="hday"><span>'+g.t+' · '+g.a.length+'</span><span class="num">'+f(g.s)+'</span></div>'+g.a.sort((x,y)=>balOf(y.c)-balOf(x.c)).map(({c,d})=>{
-    const w=d===null?'ضيف موعد سداد':d<0?'متأخر '+(-d)+' يوم':d===0?'النهارده':d===1?'بكره':'بعد '+d+' يوم',lm=(+c.limit>0&&balOf(c)>+c.limit)?' · 🚦 عدّى الحد':'';
-    return '<div class="rec cr2" data-open="'+c.id+'"><span class="av">'+esc(String(c.name).trim().charAt(0))+'</span><div style="flex:1;min-width:0"><div class="cn">'+esc(c.name)+'</div><div class="mute">'+w+lm+chqTag(c)+'</div></div><button class="ab" data-qp="'+c.id+'">💵</button><a class="ab" data-lnk="1" target="_blank" rel="noopener" href="'+remLinkAny(c)+'">ذكّره</a>'+telA(c)+'<span class="cb dr num">'+f(balOf(c))+'</span></div>'}).join('')).join('')||'<p class="mute">لا يوجد مديونين. 👌</p>'}
+  $('cuList').innerHTML=chBtnH()+colGroupsH(l,'data-open','<p class="mute">لا يوجد مديونين. 👌</p>')}
 
 /* ---------- عروض الأسعار ---------- */
 var curQ=null;
