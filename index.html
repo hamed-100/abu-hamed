@@ -336,6 +336,14 @@ body.xl #rows .row .ofb{text-align:right;font-size:11.5px;padding:2px 8px}
 #cloud.cl-ok #cloudB{display:block;background:#1f9d62}
 #cloud.cl-sync #cloudB{display:block;background:#d9a441}
 #cloud.cl-warn #cloudB{display:block;background:#d64545}
+
+.cr3{flex-wrap:wrap}
+.cr3 .cact{flex:0 0 100%;display:flex;gap:8px;margin-top:8px}
+.cr3 .cact .ab{flex:1;text-align:center;padding:8px 6px;margin:0}
+
+#puRows input[type=number],#puPaid{-moz-appearance:textfield;appearance:textfield}
+#puRows input::-webkit-inner-spin-button,#puRows input::-webkit-outer-spin-button,#puPaid::-webkit-inner-spin-button,#puPaid::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+#puRows input{font-size:14px}
 </style>
 <script>
 var THM_KEYS=[['acc','اللون الأساسي (الأزرار)'],['hdr','الشريط العلوي'],['gold','اللون الدهبي'],['bg','خلفية التطبيق'],['card','خلفية الكروت'],['ink','لون الكتابة'],['mute','كتابة باهتة'],['line','لون الحدود'],['tot','خلفية الأرقام']];
@@ -502,14 +510,14 @@ thmApply();
 </section>
 
 <section id="t-it" class="hide">
-  <div class="seg" data-ws="1" style="margin-bottom:8px"><button data-go="wh">🏭 المخزن</button><button data-go="it" class="on">📦 الأصناف</button></div>
+  <div class="seg" data-ws="1" style="margin-bottom:8px"><button data-go="wh">🏭 المخزن</button><button data-go="it" class="on">📦 الأصناف</button><button data-go="pu">🛒 مشتريات</button></div>
     <div id="nform" class="it"></div>
     <label class="opt" style="margin-top:6px"><input type="checkbox" id="ni_lm"> 📏 يتباع بالمتر (الكمية بالأمتار مش عدد، زي 1×3)</label>
   <div id="ihead" class="mute"></div><div id="items" style="margin-top:4px"></div>
 </section>
 
 <section id="t-wh" class="hide">
-  <div class="seg" data-ws="1" style="margin-bottom:8px"><button data-go="wh" class="on">🏭 المخزن</button><button data-go="it">📦 الأصناف</button></div>
+  <div class="seg" data-ws="1" style="margin-bottom:8px"><button data-go="wh" class="on">🏭 المخزن</button><button data-go="it">📦 الأصناف</button><button data-go="pu">🛒 مشتريات</button></div>
   <div class="ro" style="margin-bottom:6px;gap:6px"><span id="whSum" class="mute"></span><button class="ab" id="reBtn" style="flex:none">📋 النواقص</button></div>
   <div id="whTot"></div>
   <div id="whMain">
@@ -521,6 +529,23 @@ thmApply();
     <div id="whTot" class="mute" style="margin:4px 0;font-weight:600"></div><div id="whHead" class="mute"></div><div id="whList" style="margin-top:4px"></div>
   </div>
   <div id="whDet" class="hide"></div>
+</section>
+
+<section id="t-pu" class="hide">
+  <div class="seg" data-ws="1" style="margin-bottom:8px"><button data-go="wh">🏭 المخزن</button><button data-go="it">📦 الأصناف</button><button data-go="pu" class="on">🛒 مشتريات</button></div>
+  <div class="card" id="puForm"><b id="puHead">🛒 فاتورة شراء جديدة</b>
+    <label style="margin-top:6px">المورد (اختياري)</label><input id="puSup" list="puSupL" placeholder="اسم المورد"><datalist id="puSupL"></datalist>
+    <div class="mute" style="display:grid;grid-template-columns:1.2fr .95fr .95fr 1fr 24px;gap:4px;margin-top:8px;font-size:11px;text-align:center"><span>البند</span><span>الكمية م³</span><span>سعر المتر</span><span>الإجمالي</span><span></span></div>
+    <div id="puRows"></div>
+    <button class="ab" id="puAddRow" type="button" style="margin:8px 0;width:100%">+ إضافة بند</button>
+    <div class="ro"><b>الإجمالي</b><b class="num" id="puTot" style="font-size:18px">0</b></div>
+    <label style="margin-top:6px">المدفوع</label><input id="puPaid" type="number" inputmode="decimal" placeholder="0">
+    <div class="ro" style="margin-top:6px"><b>المتبقي</b><b class="num" id="puRest" style="font-size:18px">0</b></div>
+    <input id="puNote" placeholder="ملاحظة (اختياري)" style="margin-top:6px">
+    <button class="main" id="puSave" style="width:100%;margin-top:8px">💾 حفظ فاتورة الشراء</button><button class="ab hide" id="puCancel" type="button" style="width:100%;margin-top:6px">إلغاء التعديل</button></div>
+  <div class="card"><div class="ro"><b>🧾 فواتير الشراء</b><span class="mute" id="puSum"></span></div>
+    <div class="seg s" id="puF" style="margin:8px 0"><button data-f="all" class="on">الكل</button><button data-f="owe">لسه عليّ فلوس</button></div>
+    <div id="puBy"></div><div id="puList"></div></div>
 </section>
 
 <section id="t-st" class="hide">
@@ -581,8 +606,8 @@ thmApply();
     <div class="g2"><div><label>اسم المحل (فاضي = يختفي)</label><input id="shopN"></div><div><label>كلمة الفاتورة (فاضي = تختفي)</label><input id="docW"></div></div>
     <label style="margin-top:6px">رسالة الفاتورة</label><textarea id="tplInv" rows="6"></textarea><div class="mute">{المحل} {العميل} {الفاتورة} {التاريخ} {البنود} {الإجمالي} {المدفوع} {المتبقي} {الخصم}</div>
     <label style="margin-top:6px">رسالة الدفعة</label><textarea id="tplPay" rows="4"></textarea><div class="mute">{المحل} {العميل} {المبلغ} {الحساب} {التاريخ} {الخصم}</div>
-    <label style="margin-top:6px">رسالة تذكير الدين</label><textarea id="tplRem" rows="4"></textarea><div class="mute">{المحل} {العميل} {الحساب}</div>
-    <label style="margin-top:6px">رسالة تذكير المتأخرين (عدّى ميعاد سدادهم)</label><textarea id="tplOvd" rows="5"></textarea><div class="mute">{المحل} {العميل} {الحساب} {الميعاد} {التأخير}</div>
+    <label style="margin-top:6px">رسالة تذكير الدين</label><textarea id="tplRem" rows="4"></textarea><div class="mute">{المحل} {العميل} {الحساب} {مدة_الشراء} {مدة_بدون_دفع}</div>
+    <label style="margin-top:6px">رسالة تذكير المتأخرين (عدّى ميعاد سدادهم)</label><textarea id="tplOvd" rows="5"></textarea><div class="mute">{المحل} {العميل} {الحساب} {الميعاد} {التأخير} {مدة_الشراء} {مدة_بدون_دفع}</div>
     <div class="btns"><button class="alt b-red" id="tplReset">رجوع للصيغ الأصلية</button></div></details>
   <div class="sec-h">🔐 البيانات والأمان</div>
   <details class="card" id="trD"><summary>🗑 سلة المحذوفات <span id="trCnt"></span></summary>
@@ -594,7 +619,7 @@ thmApply();
       <div class="btns"><button class="main" id="lkSave">تفعيل القفل</button></div></div>
     <label class="opt hide" id="lkBioBox"><input type="checkbox" id="lkBio"> الفتح بالبصمة</label>
     <div class="info" id="lkMsg"></div></div>
-  <div class="card"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.55 · تحديث 11 نوفمبر 2026 · لون الختم حسب حالة الحساب</div></div>
+  <div class="card"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.60 · تحديث 14 نوفمبر 2026 · تعديل فواتير الشراء</div></div>
   <div class="card"><b>حالة الحفظ</b><div id="stor" style="margin-top:4px;font-size:14px"></div></div>
   <div class="card"><label style="display:flex;align-items:center;gap:8px;margin:0;font-size:14px;font-weight:700"><input type="checkbox" id="xlChk"> نمط إكسل في شاشة الفاتورة (جدول للبنود)</label></div>
   <div class="card"><b>مساحة التخزين على الجهاز</b><div id="stoBox" style="margin-top:4px;font-size:14px">جاري القراءة…</div><button class="alt" id="stoPersist" style="margin-top:8px">فعّل التخزين الدائم</button></div>
@@ -638,6 +663,7 @@ thmApply();
 <nav class="bottom-nav" id="bnav">
   <button data-t="new" class="on"><span class="nav-icon">🧾</span><span class="nav-label">فاتورة</span></button>
   <button data-t="dash"><span class="nav-icon">📒</span><span class="nav-label">سجل</span></button>
+  <button data-t="pu" style="display:none" tabindex="-1"></button>
   <button data-t="it" style="display:none" tabindex="-1"></button>
   <button data-t="wh"><span class="nav-icon">🏭</span><span class="nav-label">المخزن</span></button>
   <button data-t="pf"><span class="nav-icon">💰</span><span class="nav-label">الربح</span></button>
@@ -664,7 +690,7 @@ const two=n=>String(n).padStart(2,'0');
 function stamp(t){const d=new Date(t);let h=d.getHours();const ap=h>=12?'PM':'AM';h=h%12||12;return `${d.getFullYear()}/${two(d.getMonth()+1)}/${two(d.getDate())}  ${two(h)}:${two(d.getMinutes())} ${ap}`}
 const dshort=t=>{const d=new Date(t);return `${d.getFullYear()}/${two(d.getMonth()+1)}/${two(d.getDate())}`};
 /* ---------- تخزين البيانات الرئيسية في IndexedDB (مساحة كبيرة) مع كاش فوري ---------- */
-const LK=['items','customers','invoices','expenses','quotes','cash','reservations','cheques','recurring','pdel','trash','woods'];
+const LK=['items','customers','invoices','expenses','quotes','cash','reservations','cheques','recurring','purchases','pdel','trash','woods'];
 const LC={};let LIDB=null,idbFail=false;
 const idbReady=(async()=>{
   try{
@@ -703,7 +729,7 @@ const lsv=(k,d)=>{try{const v=localStorage.getItem(k);return v===null?d:v}catch(
 const nm=t=>String(t==null?'':t).toLowerCase().replace(/[\u064B-\u065F\u0640]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي');
 const sfail=()=>{$('stor').textContent='تنبيه: تعذر الحفظ السحابي، البيانات محفوظة على هذا الجهاز.';try{cloudUpd('تعذر الحفظ السحابي: البيانات محفوظة على الجهاز وهتتزامن لما الاتصال يرجع')}catch(e){}};
 const sf=fn=>{try{const p=fn();if(p&&p.catch)p.catch(sfail)}catch(e){sfail()}};
-const S={items:[],customers:[],invoices:[],expenses:[],quotes:[],cash:[],reservations:[],cheques:[],recurring:[]};let db=null;
+const S={items:[],customers:[],invoices:[],expenses:[],quotes:[],cash:[],reservations:[],cheques:[],recurring:[],purchases:[]};let db=null;
 
 /* ---------- حساب العميل (يُحسب دائماً من السجل) ---------- */
 const val=r=>r.type==='pay'?(r.ret?-(+r.amount||0):0):rd2(r.total-r.prev),pd=r=>r.type==='pay'?(r.ret?0:r.amount):r.paid;
@@ -734,7 +760,7 @@ function migrate(){
   S.items=S.items.map(i=>{const v=i.v||{};return{...i,id:i.id||'i'+hs((i.type||'')+i.name),u:i.u||0,type:'mq',name:i.name,p:v.p!==undefined?v.p:(i.price||i.p||0),w:v.w!==undefined?v.w:(i.w||0),h:v.h!==undefined?v.h:(i.h||0),t:v.t!==undefined?v.t:(i.t||0),c:v.c!==undefined?v.c:(i.c||0)}});S.items.forEach(o=>{delete o.v;delete o.price});
   let ch=false;S.customers.forEach(c=>{if(c.open===undefined){const rs=ledger(c).sort((a,b)=>a.ts-b.ts);c.open=rs.length?(rs[0].prev||0):(c.balance||0);ch=true}});
   if(ch)lset('customers',S.customers)}
-function loadLocal(){S.items=lget('items');S.customers=lget('customers');S.invoices=lget('invoices');S.expenses=lget('expenses');S.quotes=lget('quotes');S.reservations=lget('reservations');S.cheques=lget('cheques');S.recurring=lget('recurring');S.cash=lget('cash');S.cash.forEach(x=>{if(!x.id)x.id='k'+x.d});migrate();backfillCodes()}
+function loadLocal(){S.items=lget('items');S.customers=lget('customers');S.invoices=lget('invoices');S.expenses=lget('expenses');S.quotes=lget('quotes');S.reservations=lget('reservations');S.cheques=lget('cheques');S.recurring=lget('recurring');S.purchases=lget('purchases');S.cash=lget('cash');S.cash.forEach(x=>{if(!x.id)x.id='k'+x.d});migrate();backfillCodes()}
 const TMB=new Map;
 const tmo=(p,ms)=>Promise.race([p,new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),ms))]);
 function mergeK(k,remote){const m=new Map(S[k].map(x=>[x.id,x])),up=[],rid=new Set(remote.map(r=>r.id));
@@ -749,7 +775,7 @@ async function loadCloud(){let d=null;
     const li=la.exists?(la.data().list||[]).map(i=>({...i,id:i.id||'i'+hs((i.type||'')+i.name),u:i.u||0})):[],lc=lb.exists?(lb.data().list||[]).map(c=>({...c,u:c.u||0})):[];
     const up=[];
     [['items',[...ri,...li]],['customers',[...rc,...lc]],['invoices',rv]].forEach(([k,r])=>{r.forEach(x=>{if(dead(k,x))rm.push([k,x.id])});S[k].forEach(x=>{if(dead(k,x))rm.push([k,x.id])});S[k]=S[k].filter(x=>!dead(k,x));mergeK(k,r.filter(x=>!dead(k,x))).forEach(o=>up.push([k,o]))});
-    for(const k of ['expenses','quotes','cash','reservations','cheques','recurring']){try{const r=fl(k,await rdc(k));r.forEach(x=>{if(dead(k,x))rm.push([k,x.id])});S[k].forEach(x=>{if(dead(k,x))rm.push([k,x.id])});S[k]=S[k].filter(x=>!dead(k,x));mergeK(k,r.filter(x=>!dead(k,x))).forEach(o=>up.push([k,o]))}catch(e){}}
+    for(const k of ['expenses','quotes','cash','reservations','cheques','recurring','purchases']){try{const r=fl(k,await rdc(k));r.forEach(x=>{if(dead(k,x))rm.push([k,x.id])});S[k].forEach(x=>{if(dead(k,x))rm.push([k,x.id])});S[k]=S[k].filter(x=>!dead(k,x));mergeK(k,r.filter(x=>!dead(k,x))).forEach(o=>up.push([k,o]))}catch(e){}}
     migrate();db=d;backfillCodes();
     try{await tmo(Promise.all(rm.map(([k,id])=>d.collection(k).doc(id).delete())),15000)}catch(e){}
     tb0.filter(t=>(t.at||0)<Date.now()-180*864e5).forEach(t=>sf(()=>d.collection('tomb').doc(t.k+'_'+t.id).delete()));
@@ -766,8 +792,8 @@ function touch(k,o){dirty.set(k+o.id,[k,o]);clearTimeout(tm);tm=setTimeout(()=>{
 /* ---------- التبويبات (Bottom Nav) ---------- */
 $('bnav').onclick=e=>{const b=e.target.closest('button[data-t]');if(!b)return;const t=b.dataset.t;
   document.querySelectorAll('#bnav button').forEach(x=>x.classList.toggle('on',x===b));
-  ['dash','new','cu','it','wh','st','pf'].forEach(k=>$('t-'+k).classList.toggle('hide',k!==t));if(t!=='pf')pfShow=false;cmpShow=false;try{$('cmpBox').classList.add('hide');$('dDebtBox').classList.add('hide')}catch(e){}
-  if(t==='dash')drawDash();if(t==='pf')drawPf();if(t==='cu')drawCusts();if(t==='wh'){selWh=null;drawWh(true)}if(t==='new'&&lastC&&!editId){$('prev').value=balOf(lastC)||'';calc()}};
+  ['dash','new','cu','it','wh','st','pf','pu'].forEach(k=>$('t-'+k).classList.toggle('hide',k!==t));if(t!=='pf')pfShow=false;cmpShow=false;try{$('cmpBox').classList.add('hide');$('dDebtBox').classList.add('hide')}catch(e){}
+  if(t==='dash')drawDash();if(t==='pu')drawPu();if(t==='pf')drawPf();if(t==='cu')drawCusts();if(t==='wh'){selWh=null;drawWh(true)}if(t==='new'&&lastC&&!editId){$('prev').value=balOf(lastC)||'';calc()}};
 
 /* ---------- رسم الصورة (بدون مكتبات) ---------- */
 const IVD={ttl:'العميل /',nPre:'ملاحظة:',hBayan:'البيان',hSize:'المقاس',hCnt:'العدد',hQty:'الكمية',hPrice:'السعر',hVal:'القيمة',
@@ -979,7 +1005,7 @@ $('ressh').onclick=async()=>{if(!curBlob)return;const file=new File([curBlob],cu
   $('resm').textContent=baseMsg+' · مشاركة الصور غير متاحة في هذا المتصفح، جاري حفظ الصورة...';
   const r=await dl(curBlob,curName);
   $('resm').textContent=baseMsg+({ok:' · تم حفظ الصورة: افتح واتساب وأرفقها من المعرض أو الملفات',anchor:' · تم تنزيل الصورة: أرفقها في واتساب',declined:' · تم الإلغاء',fail:' · اضغط مطولاً على الصورة وشاركها'}[r]||'')};
-const TPLD={inv:'{المحل}\nالعميل / {العميل}\n{الفاتورة} - {التاريخ}\n{البنود}\nالإجمالي: {الإجمالي}\nالمدفوع: {المدفوع}\nالمتبقي: {المتبقي}',pay:'{المحل}\nالعميل / {العميل}\nإيصال دفعة: {المبلغ}\nالحساب بعد الدفعة: {الحساب}',rem:'السلام عليكم {العميل}\nحسابك عندنا في {المحل}: {الحساب} جنيه.\nبرجاء السداد في أقرب وقت. شكراً لتعاملك معنا.',ovd:'السلام عليكم {العميل}\nحسابك عندنا في {المحل}: {الحساب} جنيه.\nميعاد السداد كان {الميعاد} (متأخر {التأخير}).\nبرجاء السداد في أقرب وقت. شكراً لتعاملك معنا.'};
+const TPLD={inv:'{المحل}\nالعميل / {العميل}\n{الفاتورة} - {التاريخ}\n{البنود}\nالإجمالي: {الإجمالي}\nالمدفوع: {المدفوع}\nالمتبقي: {المتبقي}',pay:'{المحل}\nالعميل / {العميل}\nإيصال دفعة: {المبلغ}\nالحساب بعد الدفعة: {الحساب}',rem:'السلام عليكم {العميل}\nحسابك عندنا في {المحل}: {الحساب} جنيه.\n{مدة_الشراء}\n{مدة_بدون_دفع}\nبرجاء السداد في أقرب وقت. شكراً لتعاملك معنا.',ovd:'السلام عليكم {العميل}\nحسابك عندنا في {المحل}: {الحساب} جنيه.\nميعاد السداد كان {الميعاد} (متأخر {التأخير}).\n{مدة_الشراء}\n{مدة_بدون_دفع}\nبرجاء السداد في أقرب وقت. شكراً لتعاملك معنا.'};
 const tplOf=k=>{const v=lsv('tpl_'+k,'');return v.trim()?v:TPLD[k]},shopN=()=>lsv('shop','ابو حامد لتجارة الاخشاب'),docW=()=>lsv('docw','إذن صرف');
 function fillTpl(k,m){return tplOf(k).split('\n').map(l=>{const had=/\{[^}]+\}/.test(l),o=l.replace(/\{([^}]+)\}/g,(x,key)=>key in m?m[key]:x);return{o,skip:had&&!o.trim()}}).filter(x=>!x.skip).map(x=>x.o).join('\n')}
 function itemsTxt(r){try{const pl=(r.rows||[]).filter(x=>!x.cols&&x.n);if(!pl.length)return'';const order=[],mp={};
@@ -1034,7 +1060,7 @@ function drawCusts(){dl2();dueBan();chBanDraw();
     $('cuTot').textContent='إجمالي المديونيات: '+f(l.reduce((s,c)=>s+balOf(c),0))+' ('+l.length+' عميل)'}
   else{l.sort((a,b)=>a.name.localeCompare(b.name,'ar'));$('cuTot').textContent='عدد العملاء: '+l.length+' · إجمالي المديونيات: '+f(S.customers.reduce((s,c)=>s+Math.max(0,balOf(c)),0))}
   $('bulkRem').classList.toggle('hide',!(cuMode==='debt'&&pget('bulkRem',true)&&l.length));$('bulkStm').classList.toggle('hide',!(cuMode==='debt'&&l.length));
-  $('cuList').innerHTML=l.map(c=>`<div class="rec cr2" data-open="${c.id}"><div style="flex:1;min-width:0"><div class="cn">${esc(c.name)}</div><div class="mute">${esc(cSub(c))}</div></div>${cuMode==='debt'?`<button class="ab" data-qp="${c.id}">💵</button><a class="ab" data-lnk="1" target="_blank" rel="noopener" href="${remLinkAny(c)}">ذكّره</a>`:''}<span class="cb ${bcls(c)} num">${bal(c)}</span></div>`).join('')||`<p class="mute">${cuMode==='debt'?'لا يوجد مديونين.':'لا يوجد عملاء بعد. اضغط (+ عميل جديد) أو احفظ فاتورة باسم جديد.'}</p>`}
+  $('cuList').innerHTML=l.map(c=>`<div class="rec cr2 cr3" data-open="${c.id}"><div style="flex:1;min-width:0"><div class="cn">${esc(c.name)}</div><div class="mute">${esc(cSub(c))}</div></div><span class="cb ${bcls(c)} num">${bal(c)}</span>${actsH(c)}</div>`).join('')||`<p class="mute">${cuMode==='debt'?'لا يوجد مديونين.':'لا يوجد عملاء بعد. اضغط (+ عميل جديد) أو احفظ فاتورة باسم جديد.'}</p>`}
 function drawDet(){const c=getC(selC),l=rowsOf(c);
   $('cuDet').innerHTML=`<button class="lnk" data-back="1">← رجوع</button>
   <div class="card"><div class="ro" style="margin-bottom:8px"><input data-f="name" value="${esc(c.name)}" style="font-weight:700;font-size:17px;flex:1"><span class="cb ${bcls(c)} num">${bal(c)}</span></div>
@@ -1261,12 +1287,21 @@ $('resedit').onclick=()=>{if(curRec)loadEdit(curRec)};$('resdup').onclick=()=>{i
 
 /* ---------- تذكير المديونين ---------- */
 const waNum=p=>{let d=(p||'').replace(/\D/g,'');if(d.startsWith('00'))d=d.slice(2);else if(d.startsWith('0'))d='20'+d.slice(1);return d};
-function remLinkAny(c){const d=c.due?daysTo(c.due):0;if(d<0)return 'https://wa.me/'+waNum(c.phone)+'?text='+encodeURIComponent(fillTpl('ovd',{'العميل':c.name,'المحل':shopN(),'الحساب':f(balOf(c)),'الميعاد':c.due.split('-').reverse().join('/'),'التأخير':(-d)+' يوم'}));return remLink(c)}
-function remLink(c){return 'https://wa.me/'+waNum(c.phone)+'?text='+encodeURIComponent(fillTpl('rem',{'العميل':c.name,'المحل':shopN(),'الحساب':f(balOf(c))}))}
+const telA=c=>c&&c.phone&&String(c.phone).replace(/[^\d+]/g,'').length>=5?'<a class="ab" data-lnk="1" aria-label="اتصال" href="tel:'+String(c.phone).replace(/[^\d+]/g,'')+'">📞</a>':'';
+function actsH(c){return '<div class="cact">'+telA(c)+'<button class="ab" data-qp="'+c.id+'" aria-label="دفعة">💵</button>'+(balOf(c)>0?'<a class="ab" data-lnk="1" target="_blank" rel="noopener" href="'+remLinkAny(c)+'">ذكّره</a>':'')+'</div>'}
+function dyTxt(n){return n<1?'':n===1?'يوم':n===2?'يومين':n<=10?n+' أيام':n+' يوم'}
+function custAge(c){try{const L=ledger(c),now=dayStart(Date.now()),dd=ts=>Math.max(0,Math.round((now-dayStart(ts))/864e5)),fd=ts=>{const d=new Date(ts);return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()};
+  const inv=L.filter(r=>r.type==='inv').sort((a,b)=>a.ts-b.ts),pays=L.filter(r=>(r.type==='pay'&&!r.ret&&+r.amount>0)||(r.type==='inv'&&+r.paid>0)).sort((a,b)=>b.ts-a.ts),D=balOf(c);
+  let buy='',nop='';
+  if(inv.length&&D>0){let acc=0,t=inv[0].ts;for(let i=inv.length-1;i>=0;i--){acc+=val(inv[i]);t=inv[i].ts;if(acc>=D-.5)break}const n=dyTxt(dd(t));if(n)buy='عدّى '+n+' على شراء البضاعة ولسه مفيش سداد.'}
+  if(D>0){if(pays.length){const n=dyTxt(dd(pays[0].ts));if(n)nop='بقالك '+n+' من غير ما تسدّد (آخر دفعة '+fd(pays[0].ts)+').'}else if(inv.length){const n=dyTxt(dd(inv[0].ts));if(n)nop='ما سدّدتش أي مبلغ من أول شراء (من '+n+').'}}
+  return{'مدة_الشراء':buy,'مدة_بدون_دفع':nop}}catch(e){return{'مدة_الشراء':'','مدة_بدون_دفع':''}}}
+function remLinkAny(c){const d=c.due?daysTo(c.due):0;if(d<0)return 'https://wa.me/'+waNum(c.phone)+'?text='+encodeURIComponent(fillTpl('ovd',{'العميل':c.name,'المحل':shopN(),'الحساب':f(balOf(c)),'الميعاد':c.due.split('-').reverse().join('/'),'التأخير':dyTxt(-d),...custAge(c)}));return remLink(c)}
+function remLink(c){return 'https://wa.me/'+waNum(c.phone)+'?text='+encodeURIComponent(fillTpl('rem',{'العميل':c.name,'المحل':shopN(),'الحساب':f(balOf(c)),...custAge(c)}))}
 
 /* ---------- النسخة الاحتياطية ---------- */
 function bkInfo(){let t=0;try{t=+localStorage.getItem('lastBackup')}catch(e){}$('bkInfo').textContent=db?'☁️ المزامنة السحابية شغالة، بياناتك متخزنة أونلاين'+(t?' · آخر نسخة ملف: '+stamp(t):''):t?'آخر نسخة: '+stamp(t)+(Date.now()-t>6048e5?' ⚠ عدّى أكتر من أسبوع، احفظ نسخة جديدة':''):'⚠ لم تحفظ نسخة احتياطية بعد. البيانات على هذا الجهاز فقط.'}
-$('bkSave').onclick=async()=>{const data={app:'ElTabakha',v:1,at:Date.now(),items:S.items,customers:S.customers,invoices:S.invoices,expenses:S.expenses,quotes:S.quotes,cash:S.cash,reservations:S.reservations,cheques:S.cheques,recurring:S.recurring};
+$('bkSave').onclick=async()=>{const data={app:'ElTabakha',v:1,at:Date.now(),items:S.items,customers:S.customers,invoices:S.invoices,expenses:S.expenses,quotes:S.quotes,cash:S.cash,reservations:S.reservations,cheques:S.cheques,recurring:S.recurring,purchases:S.purchases};
   const r=await dl(new Blob([JSON.stringify(data)],{type:'application/json'}),'نسخة-ابو-حامد-'+dshort(Date.now()).replace(/\//g,'-')+'.json');
   $('bkMsg').textContent={ok:'تم حفظ النسخة ✓',anchor:'تم تنزيل النسخة ✓',declined:'تم الإلغاء',fail:'تعذر حفظ الملف'}[r]||'';
   if(r==='ok'||r==='anchor'){try{localStorage.setItem('lastBackup',Date.now())}catch(e){}bkInfo();bkBan()}};
@@ -1274,7 +1309,7 @@ $('bkLoad').onclick=()=>$('bkFile').click();
 $('bkFile').onchange=async e=>{const fl=e.target.files[0];e.target.value='';if(!fl)return;
   try{const d=JSON.parse(await fl.text());if(!d||!Array.isArray(d.customers)||!Array.isArray(d.invoices))throw 0;
     const up=[];[['items',Array.isArray(d.items)?d.items:[]],['customers',d.customers],['invoices',d.invoices]].forEach(([k,r])=>mergeK(k,r).forEach(o=>up.push([k,o])));
-    migrate();if(db)up.forEach(([k,o])=>sf(()=>db.collection(k).doc(o.id).set(o)));[['expenses',d.expenses],['quotes',d.quotes],['cash',d.cash],['reservations',d.reservations],['cheques',d.cheques],['recurring',d.recurring]].forEach(([k,a])=>{if(Array.isArray(a))a.forEach(x=>{if(x&&(x.id||x.d)){if(!x.id)x.id='k'+x.d;if(!S[k].some(y=>y.id===x.id)){S[k].push(x);put(k,x)}}})})
+    migrate();if(db)up.forEach(([k,o])=>sf(()=>db.collection(k).doc(o.id).set(o)));[['expenses',d.expenses],['quotes',d.quotes],['cash',d.cash],['reservations',d.reservations],['cheques',d.cheques],['recurring',d.recurring],['purchases',d.purchases]].forEach(([k,a])=>{if(Array.isArray(a))a.forEach(x=>{if(x&&(x.id||x.d)){if(!x.id)x.id='k'+x.d;if(!S[k].some(y=>y.id===x.id)){S[k].push(x);put(k,x)}}})})
     drawCusts();drawItems();custInput();
     $('bkMsg').textContent='تم الاسترجاع ✓ ('+d.customers.length+' عميل، '+d.invoices.length+' فاتورة/دفعة)'}
   catch(err){$('bkMsg').textContent='الملف غير صالح.'}};
@@ -1324,7 +1359,7 @@ function liveApply(k,r){let ch=false;r.forEach(x=>{if(!x||!x.id||deadL(k,x))retu
 function liveTomb(r){let ch=false;r.forEach(t=>{if(!t||!t.id||!S[t.k])return;TMB.set(t.k+':'+t.id,t.at||0);const n=S[t.k].filter(y=>!(y.id===t.id&&(t.at||0)>=(y.u||0)));if(n.length!==S[t.k].length){S[t.k]=n;lset(t.k,n);ch=true}});if(ch)liveRefresh()}
 function liveOff(){LIVE.forEach(u=>{try{u&&u()}catch(e){}});LIVE=[]}
 function liveOn(){liveOff();if(!FBDB||!FBDB.listen)return;const since=Date.now()-6e5;
-  try{LIVE=[FBDB.listen('tomb','at',since,liveTomb),...['items','customers','invoices','expenses','quotes','cash','reservations','cheques','recurring'].map(k=>FBDB.listen(k,'u',since,r=>liveApply(k,r)))]}catch(e){LIVE=[]}}
+  try{LIVE=[FBDB.listen('tomb','at',since,liveTomb),...['items','customers','invoices','expenses','quotes','cash','reservations','cheques','recurring','purchases'].map(k=>FBDB.listen(k,'u',since,r=>liveApply(k,r)))]}catch(e){LIVE=[]}}
 async function fbBoot(){const cfg=fbCfg();if(!cfg){await syncNow();return}
   fbStat('جاري الاتصال بالسحابة...');
   try{await fbStart(cfg);const ok=await syncNow();if(ok)liveOn();fbStat(ok?'متصل ✓ المزامنة والنسخ الاحتياطي تلقائيين.':'متصل بالحساب لكن القراءة فشلت: راجع قواعد Firestore.')}
@@ -1628,6 +1663,57 @@ function dayLabel(t){const d=new Date(t),n=new Date(),a=new Date(d.getFullYear()
 const debtAll=()=>S.customers.reduce((a,c)=>a+Math.max(0,balOf(c)),0);
 (function(){let tm;$('cloud').onclick=()=>{const t=$('cloudTip');t.textContent=cloudMsg;t.classList.remove('hide');clearTimeout(tm);tm=setTimeout(()=>t.classList.add('hide'),3500)};
   $('cloudTip').onclick=()=>$('cloudTip').classList.add('hide')})();
+/* ---------- فواتير الشراء من الموردين ---------- */
+let puFil='all';
+function puRow(){const d=document.createElement('div');d.className='pur';d.style.cssText='display:grid;grid-template-columns:1.2fr .95fr .95fr 1fr 24px;gap:4px;align-items:center;margin-top:6px';
+  d.innerHTML='<input class="pn" placeholder="البند" style="min-width:0;padding:8px 4px"><input class="pq" type="number" inputmode="decimal" placeholder="م³" style="min-width:0;padding:8px 2px;text-align:center"><input class="pp" type="number" inputmode="decimal" placeholder="السعر" style="min-width:0;padding:8px 2px;text-align:center"><b class="num pv" style="text-align:center;font-size:13px">0</b><button class="del" type="button" aria-label="مسح" style="padding:0">×</button>';
+  $('puRows').appendChild(d);return d}
+function puCalc(){let t=0;document.querySelectorAll('#puRows .pur').forEach(r=>{const q=nv(r.querySelector('.pq').value),p=nv(r.querySelector('.pp').value),v=p>0?rd2((q>0?q:1)*p):0;r.querySelector('.pv').textContent=v?f(v):'0';t+=v});t=rd2(t);
+  $('puTot').textContent=f(t);const r=rd2(t-nv($('puPaid').value));$('puRest').textContent=f(r);$('puRest').style.color=r>0?'#d64545':'';return t}
+let puEdit=null;
+function puMode(){$('puHead').textContent=puEdit?'✏️ تعديل فاتورة شراء':'🛒 فاتورة شراء جديدة';$('puSave').textContent=puEdit?'💾 حفظ التعديل':'💾 حفظ فاتورة الشراء';$('puCancel').classList.toggle('hide',!puEdit)}
+function puReset(){puEdit=null;$('puRows').innerHTML='';puRow();$('puSup').value='';$('puPaid').value='';$('puNote').value='';puMode();puCalc()}
+function puAdjust(pays,np){pays=(pays||[]).map(x=>({...x}));let d=rd2(np-rd2(pays.reduce((t,x)=>t+(+x.a||0),0)));
+  if(d>0)pays.push({ts:Date.now(),a:d});
+  else while(d<0&&pays.length){const l=pays[pays.length-1];if(l.a<=-d+.001){d=rd2(d+l.a);pays.pop()}else{l.a=rd2(l.a+d);d=0}}
+  return pays}
+function puLoad(o){puEdit=o.id;$('puRows').innerHTML='';(o.lines||[]).forEach(x=>{const r=puRow();r.querySelector('.pn').value=x.n||'';r.querySelector('.pq').value=x.q>0?x.q:'';r.querySelector('.pp').value=x.p});
+  if(!(o.lines||[]).length)puRow();$('puSup').value=o.sup||'';$('puNote').value=o.note||'';$('puPaid').value=puPaidOf(o)||'';puMode();puCalc();
+  window.scrollTo(0,document.getElementById('puForm').getBoundingClientRect().top+window.scrollY-70)}
+function puPaidOf(o){return rd2((o.pays||[]).reduce((t,x)=>t+(+x.a||0),0))}
+function drawPu(){
+  const sups=[...new Set([...S.purchases.map(x=>x.sup),...S.items.flatMap(i=>(i.mv||[]).map(m=>m.sup))].filter(Boolean))];
+  $('puSupL').innerHTML=sups.map(x=>'<option value="'+esc(x)+'">').join('');
+  const all=S.purchases.slice().sort((a,b)=>b.ts-a.ts),owe=o=>rd2(o.total-puPaidOf(o)),L=puFil==='owe'?all.filter(o=>owe(o)>0.5):all,tot=all.reduce((t,o)=>t+owe(o),0);
+  $('puSum').textContent=all.length?('المتبقي للموردين: '+f(rd2(tot))):'';
+  document.querySelectorAll('#puF button').forEach(b=>b.classList.toggle('on',b.dataset.f===puFil));
+  const by={};all.forEach(o=>{const r=owe(o);if(r>0.5){const k=o.sup||'بدون مورد';by[k]=(by[k]||0)+r}});
+  $('puBy').innerHTML=Object.keys(by).length?'<div class="mute" style="font-size:12px;margin-bottom:6px">'+Object.entries(by).sort((a,b)=>b[1]-a[1]).map(([k,v])=>esc(k)+': <b class="num" style="color:#d64545">'+f(rd2(v))+'</b>').join(' · ')+'</div>':'';
+  const dt=ts=>{const d=new Date(ts);return d.getFullYear()+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+String(d.getDate()).padStart(2,'0')};
+  $('puList').innerHTML=L.map(o=>{const pd=puPaidOf(o),r=owe(o);
+    return '<details class="rec" style="display:block"><summary style="display:flex;align-items:center;gap:8px;cursor:pointer"><span style="flex:1;min-width:0"><b>'+esc(o.sup||'بدون مورد')+'</b><br><span class="mute" style="font-size:12px">'+dt(o.ts)+' · إجمالي '+f(o.total)+' · مدفوع '+f(pd)+'</span></span><span class="cb '+(r>0.5?'red':'')+' num">'+(r>0.5?'عليّ '+f(r):'خالص ✓')+'</span></summary>'+
+     '<div style="margin-top:8px">'+(o.lines||[]).map(x=>'<div class="ro" style="font-size:13px"><span>'+(esc(x.n)||'بند')+(x.q>0?' · '+fv(x.q)+' م³ × '+f(x.p):'')+'</span><b class="num">'+f(x.v)+'</b></div>').join('')+
+     ((o.pays||[]).length?'<div class="mute" style="font-size:12px;margin-top:6px">الدفعات: '+(o.pays||[]).map(x=>dt(x.ts)+' ← '+f(x.a)).join(' · ')+'</div>':'')+(o.note?'<div class="mute" style="font-size:12px;margin-top:4px">'+esc(o.note)+'</div>':'')+
+     '<div class="cact" style="display:flex;gap:8px;margin-top:8px">'+(r>0.5?'<button class="ab" style="flex:1" data-pup="'+o.id+'">💵 دفعة للمورد</button>':'')+'<button class="ab" style="flex:1" data-pue="'+o.id+'">✏️ تعديل</button><button class="ab" style="flex:1" data-pud="'+o.id+'">🗑️ مسح</button></div></div></details>'}).join('')||'<p class="mute">'+(puFil==='owe'?'مفيش فواتير عليها فلوس 👌':'لسه ما سجلتش فواتير شراء.')+'</p>'}
+puRow();
+$('puRows').addEventListener('input',puCalc);
+$('puRows').addEventListener('click',e=>{const b=e.target.closest('.del');if(!b)return;const rs=document.querySelectorAll('#puRows .pur');if(rs.length>1)b.closest('.pur').remove();else rs[0].querySelectorAll('input').forEach(i=>i.value='');puCalc()});
+$('puAddRow').onclick=()=>{const r=puRow();r.querySelector('.pn').focus()};
+$('puPaid').oninput=puCalc;
+$('puSave').onclick=()=>{const lines=[];document.querySelectorAll('#puRows .pur').forEach(r=>{const q=nv(r.querySelector('.pq').value),p=nv(r.querySelector('.pp').value);if(p>0)lines.push({n:r.querySelector('.pn').value.trim(),q:q>0?q:0,p,v:rd2((q>0?q:1)*p)})});
+  if(!lines.length){alert('اكتب بند واحد على الأقل (الكمية والسعر).');return}
+  const total=rd2(lines.reduce((t,x)=>t+x.v,0)),paid=nv($('puPaid').value);
+  if(paid>total+0.5){alert('المدفوع أكبر من إجمالي الفاتورة.');return}
+  if(puEdit){const e=S.purchases.find(x=>x.id===puEdit);if(e){e.sup=$('puSup').value.trim();e.note=$('puNote').value.trim();e.lines=lines;e.total=total;e.pays=puAdjust(e.pays,paid);put('purchases',e);puReset();drawPu();return}}
+  const o={id:uid(),ts:Date.now(),sup:$('puSup').value.trim(),note:$('puNote').value.trim(),lines,total,pays:paid>0?[{ts:Date.now(),a:paid}]:[]};
+  S.purchases.push(o);put('purchases',o);puReset();drawPu();window.scrollTo(0,document.getElementById('puList').getBoundingClientRect().top+window.scrollY-120)};
+$('t-pu').addEventListener('click',e=>{const t=e.target;
+  const fb=t.closest('#puF [data-f]');if(fb){puFil=fb.dataset.f;drawPu();return}
+  const pp=t.closest('[data-pup]');if(pp){const o=S.purchases.find(x=>x.id===pp.dataset.pup);if(!o)return;const r=rd2(o.total-puPaidOf(o)),v=nv(prompt('المبلغ المدفوع للمورد (المتبقي '+f(r)+'):',r));
+    if(v>0){if(v>r+0.5){alert('المبلغ أكبر من المتبقي.');return}o.pays=(o.pays||[]).concat([{ts:Date.now(),a:v}]);put('purchases',o);drawPu()}return}
+  const pe=t.closest('[data-pue]');if(pe){const o=S.purchases.find(x=>x.id===pe.dataset.pue);if(o)puLoad(o);return}
+  if(t.closest('#puCancel')){puReset();return}
+  const pd=t.closest('[data-pud]');if(pd&&confirm('مسح فاتورة الشراء دي؟')){if(puEdit===pd.dataset.pud)puReset();del('purchases',pd.dataset.pud);drawPu()}});
 /* ---------- مركز الإشعارات (الجرس) ---------- */
 (function(){const ids=['dueBan','chBan','autoBan','bkBanner','whAlertD'],nb=$('ntBody');
   ids.forEach(i=>{const e=$(i);if(e)nb.appendChild(e)});
@@ -1676,7 +1762,7 @@ function drawDebtBox(){const b=$('dDebtBox');if(!b||b.classList.contains('hide')
    '<div class="seg s" style="margin:8px 0"><button data-dbf="all" class="'+(dbF==='all'?'on':'')+'">الكل ('+l.length+')</button><button data-dbf="ovd" class="'+(dbF==='ovd'?'on':'')+'">⚠ المتأخرين ('+od.length+')</button></div>'+
    (dbF==='ovd'?(od.length?'<button class="main b-green" id="dBulkOvd" style="width:100%;margin-bottom:6px">📨 تذكير المتأخرين ('+od.length+')</button>':''):
      ((l.length&&pget('bulkRem',true)?'<button class="main b-green" id="dBulkRem" style="width:100%;margin-bottom:6px">📨 تذكير كل المديونين</button>':'')+(l.length?'<button class="main b-green" id="dBulkStm" style="width:100%;margin-bottom:6px">📨 كشف حساب للكل</button>':'')))+
-   (L.map(c=>{const d=c.due?daysTo(c.due):0,late=d<0?' <span style="color:#d64545">· متأخر '+(-d)+' يوم</span>':'';return `<div class="rec cr2" data-dopen="${c.id}"><div style="flex:1;min-width:0"><div class="cn">${esc(c.name)}</div><div class="mute">${esc(cSub(c))}${late}</div></div><button class="ab" data-qp="${c.id}">💵</button><a class="ab" data-lnk="1" target="_blank" rel="noopener" href="${remLinkAny(c)}">ذكّره</a><span class="cb ${bcls(c)} num">${bal(c)}</span></div>`}).join('')||'<p class="mute">'+(dbF==='ovd'?'مفيش متأخرين 👌':'لا يوجد مديونين.')+'</p>')}
+   (L.map(c=>{const d=c.due?daysTo(c.due):0,late=d<0?' <span style="color:#d64545">· متأخر '+dyTxt(-d)+'</span>':'';return `<div class="rec cr2 cr3" data-dopen="${c.id}"><div style="flex:1;min-width:0"><div class="cn">${esc(c.name)}</div><div class="mute">${esc(cSub(c))}${late}</div></div><span class="cb ${bcls(c)} num">${bal(c)}</span>${actsH(c)}</div>`}).join('')||'<p class="mute">'+(dbF==='ovd'?'مفيش متأخرين 👌':'لا يوجد مديونين.')+'</p>')}
 $('dWeekCard').onclick=()=>{$('cmpBox').classList.toggle('hide');try{drawCmp()}catch(e){}};
 $('dDebtCard').onclick=()=>{$('dDebtBox').classList.toggle('hide');drawDebtBox()};
 $('dDebtBox').addEventListener('click',e=>{const t=e.target;
@@ -1766,7 +1852,7 @@ $('calcReset').onclick=()=>{['calc_w','calc_h','calc_t','calc_p'].forEach(i=>$(i
   const all=async()=>{const d=await idb();return new Promise(r=>{const o={},c=d.transaction('s','readonly').objectStore('s').openCursor();c.onsuccess=e=>{const k=e.target.result;if(k){o[k.key]=k.value;k.continue()}else r(o)};c.onerror=()=>r(o)})};
   const put2=async(k,v)=>{const d=await idb();return new Promise((r,j)=>{const tx=d.transaction('s','readwrite');tx.objectStore('s').put(v,k);tx.oncomplete=r;tx.onerror=()=>j(tx.error)})};
   const del2=async k=>{const d=await idb();return new Promise(r=>{const tx=d.transaction('s','readwrite');tx.objectStore('s').delete(k);tx.oncomplete=r;tx.onerror=r})};
-  const data=()=>({app:'ElTabakha',v:1,at:Date.now(),items:S.items,customers:S.customers,invoices:S.invoices,expenses:S.expenses,quotes:S.quotes,cash:S.cash,reservations:S.reservations,cheques:S.cheques,recurring:S.recurring});
+  const data=()=>({app:'ElTabakha',v:1,at:Date.now(),items:S.items,customers:S.customers,invoices:S.invoices,expenses:S.expenses,quotes:S.quotes,cash:S.cash,reservations:S.reservations,cheques:S.cheques,recurring:S.recurring,purchases:S.purchases});
   async function draw(){const box=$('snapList');if(!box)return;let a={};try{a=await all()}catch(e){}
     const ks=Object.keys(a).sort().reverse();
     box.innerHTML=ks.length?ks.map(k=>{let n='';try{const d=JSON.parse(a[k]);n=d.customers.length+' عميل · '+d.invoices.length+' فاتورة/دفعة'}catch(e){}const p=k.split('-');return `<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 0;border-top:1px solid var(--line);font-size:13px"><span>${+p[2]}/${+p[1]}/${p[0]} <span class="mute">· ${n}</span></span><button type="button" class="px" data-snap="${k}">استرجاع</button></div>`}).join(''):'<div class="mute" style="font-size:12px">لسه مفيش نسخ. أول نسخة هتتاخد النهاردة.</div>'}
@@ -1924,7 +2010,7 @@ function drawWhDet(it,m){const st=stockOf(it,m),low=isLow(it,st),U=it.bulk?'م³
   ${ev.slice(0,60).map(e=>`<div class="rec"><div class="ro" style="color:var(--ink)"><span>${esc(e.lb)}</span><b class="num" style="color:${e.q<0?'var(--danger)':'var(--crI)'}">${e.q>0?'+':''}${QF(e.q)}</b></div><div class="ro"><span class="num">${stamp(e.ts)}</span><span>الرصيد: <b class="num">${QF(e.run)}</b>${e.id?` <button class="del" data-dm="${e.id}" aria-label="حذف الحركة" style="font-size:18px">×</button>`:''}</span></div></div>`).join('')||'<p class="mute">لا توجد حركات بعد.</p>'}
   ${ev.length>60?'<p class="mute">عرض آخر 60 حركة.</p>':''}`}
 whFormInit();
-function goT(t){document.querySelector('#bnav button[data-t="'+t+'"]').click();if(t==='it'||t==='wh')document.querySelectorAll('#bnav button').forEach(x=>x.classList.toggle('on',x.dataset.t==='wh'));window.scrollTo(0,0)}
+function goT(t){document.querySelector('#bnav button[data-t="'+t+'"]').click();if(t==='it'||t==='wh'||t==='pu')document.querySelectorAll('#bnav button').forEach(x=>x.classList.toggle('on',x.dataset.t==='wh'));window.scrollTo(0,0)}
 $('gear').onclick=()=>goT('st');
 document.querySelectorAll('.seg[data-ws] button').forEach(b=>b.onclick=()=>goT(b.dataset.go));
 $('whForm').addEventListener('click',e=>{if(e.target.id!=='whAdd')return;const name=$('wf_name').value.trim(),msg=$('whMsg');msg.textContent='';msg.style.color='var(--danger)';
@@ -2000,7 +2086,7 @@ function drawCol(q){$('bulkRem').classList.add('hide');$('bulkStm').classList.ad
   $('cuTot').textContent='إجمالي المديونيات: '+f(tot)+' ('+l.length+' عميل)'+(G[0].a.length?' · متأخر '+f(G[0].s):'');
   $('cuList').innerHTML=chBtnH()+G.filter(g=>g.a.length).map(g=>'<div class="hday"><span>'+g.t+' · '+g.a.length+'</span><span class="num">'+f(g.s)+'</span></div>'+g.a.sort((x,y)=>balOf(y.c)-balOf(x.c)).map(({c,d})=>{
     const w=d===null?'ضيف موعد سداد':d<0?'متأخر '+(-d)+' يوم':d===0?'النهارده':d===1?'بكره':'بعد '+d+' يوم',lm=(+c.limit>0&&balOf(c)>+c.limit)?' · 🚦 عدّى الحد':'';
-    return '<div class="rec cr2" data-open="'+c.id+'"><span class="av">'+esc(String(c.name).trim().charAt(0))+'</span><div style="flex:1;min-width:0"><div class="cn">'+esc(c.name)+'</div><div class="mute">'+w+lm+chqTag(c)+'</div></div><button class="ab" data-qp="'+c.id+'">💵</button><a class="ab" data-lnk="1" target="_blank" rel="noopener" href="'+remLinkAny(c)+'">ذكّره</a>'+(c.phone?'<a class="ab" data-lnk="1" href="tel:'+esc(c.phone)+'">📞</a>':'')+'<span class="cb dr num">'+f(balOf(c))+'</span></div>'}).join('')).join('')||'<p class="mute">لا يوجد مديونين. 👌</p>'}
+    return '<div class="rec cr2" data-open="'+c.id+'"><span class="av">'+esc(String(c.name).trim().charAt(0))+'</span><div style="flex:1;min-width:0"><div class="cn">'+esc(c.name)+'</div><div class="mute">'+w+lm+chqTag(c)+'</div></div><button class="ab" data-qp="'+c.id+'">💵</button><a class="ab" data-lnk="1" target="_blank" rel="noopener" href="'+remLinkAny(c)+'">ذكّره</a>'+telA(c)+'<span class="cb dr num">'+f(balOf(c))+'</span></div>'}).join('')).join('')||'<p class="mute">لا يوجد مديونين. 👌</p>'}
 
 /* ---------- عروض الأسعار ---------- */
 var curQ=null;
