@@ -7,6 +7,9 @@
 <title>ابو حامد لتجارة الاخشاب</title>
 <meta name="theme-color" content="#3e2414">
 <meta name="color-scheme" content="light">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ابو حامد">
@@ -95,6 +98,15 @@ table.st{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0}
 #swHint{font-size:12px;text-align:center;margin:2px 0 8px}
 #undoBar{position:fixed;left:12px;right:12px;bottom:84px;z-index:9999;background:#222;color:#fff;border-radius:12px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;box-shadow:0 4px 18px rgba(0,0,0,.35)}
 #undoBar button{background:none;border:0;color:#7dd3fc;font:inherit;font-weight:600;cursor:pointer;padding:2px 6px}
+
+/* الباركود والمسح */
+.hsrch input{padding-left:78px!important}
+.hcam{position:absolute;left:38px;top:50%;transform:translateY(-50%);background:none;border:0;font-size:20px;line-height:1;padding:6px 8px;cursor:pointer}
+#scanOv{position:fixed;inset:0;z-index:10000;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;padding:16px;gap:12px}
+#scanOv video{width:100%;max-width:520px;max-height:55vh;border-radius:12px;background:#111;object-fit:cover}
+#scanOv .sx{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));left:14px;background:rgba(255,255,255,.15);color:#fff;border:0;border-radius:50%;width:40px;height:40px;font-size:22px}
+#scanOv input{width:100%;max-width:320px;padding:10px;border-radius:10px;border:1px solid #888;background:#111;color:#fff;font-size:16px;text-align:center}
+#scanMsg{font-size:14px;min-height:20px;text-align:center}
 
 /* ===== Header ===== */
 .app-header{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--hdr);border-bottom:3px solid var(--gold);color:var(--hdrInk,#fff);display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:52px;padding-top:env(safe-area-inset-top,0px);box-shadow:0 2px 8px rgba(0,0,0,.15)}
@@ -458,10 +470,10 @@ thmApply();
   <div class="card hide" id="cmpBox"></div>
   <div class="card hide" id="dDebtBox"></div>
   <div class="card hCard">
-    <div class="hsrch"><input id="hq" placeholder="ابحث: اسم · كود · مبلغ (700 · 600-800) · صنف · موقع" autocomplete="off"><button type="button" class="hchev" id="hOpt" aria-label="خيارات">⌄</button></div>
+    <div class="hsrch"><input id="hq" placeholder="ابحث: اسم · كود · مبلغ (700 · 600-800) · صنف · موقع" autocomplete="off"><button type="button" class="hcam" id="hCam" aria-label="مسح باركود">📷</button><button type="button" class="hchev" id="hOpt" aria-label="خيارات">⌄</button></div>
     <div class="hpanel hide" id="hPanel">
       <div class="seg s" id="hPer" style="margin:8px 0 6px"><button data-p="w" class="on">الأسبوع</button><button data-p="d">اليوم</button><button data-p="m">الشهر</button><button data-p="all">الكل</button></div>
-      <div class="hbtns"><button class="ab" id="cashBtn">💵 الخزنة</button><button class="ab hide" id="dayClose">🧾 إقفال اليوم</button><button class="ab hide" id="monRep">📊 تقرير الشهر</button><button class="ab" id="cmpBtn">📈 مقارنة</button></div>
+      <div class="hbtns"><button class="ab" id="cashBtn">💵 الخزنة</button><button class="ab hide" id="dayClose">🧾 إقفال اليوم</button><button class="ab hide" id="monRep">📊 تقرير الشهر</button><button class="ab" id="cmpBtn">📈 مقارنة</button><button class="ab hide" id="instBtn">📲 تثبيت التطبيق</button></div>
     </div>
     <span class="mute" id="hTot"></span>
   </div>
@@ -662,7 +674,7 @@ thmApply();
       <div class="btns"><button class="main" id="lkSave">تفعيل القفل</button></div></div>
     <label class="opt hide" id="lkBioBox"><input type="checkbox" id="lkBio"> الفتح بالبصمة</label>
     <div class="info" id="lkMsg"></div></div>
-  <div class="card"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.65 · تحديث 14 نوفمبر 2026 · حذف البند بالسحب وزر الرجوع بين التبويبات</div></div>
+  <div class="card"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.66 · تحديث 14 نوفمبر 2026 · باركود الفاتورة والمسح بالكاميرا وتثبيت التطبيق</div></div>
   <div class="card"><b>حالة الحفظ</b><div id="stor" style="margin-top:4px;font-size:14px"></div></div>
   <div class="card"><label style="display:flex;align-items:center;gap:8px;margin:0;font-size:14px;font-weight:700"><input type="checkbox" id="xlChk"> نمط إكسل في شاشة الفاتورة (جدول للبنود)</label></div>
   <div class="card"><b>مساحة التخزين على الجهاز</b><div id="stoBox" style="margin-top:4px;font-size:14px">جاري القراءة…</div><button class="alt" id="stoPersist" style="margin-top:8px">فعّل التخزين الدائم</button></div>
@@ -867,6 +879,51 @@ $('bnav').onclick=e=>{const b=e.target.closest('button[data-t]');if(!b)return;co
   }catch(e){}
 })();
 
+/* ---------- باركود الفاتورة (Code128) + مسح بالكاميرا + تثبيت التطبيق ---------- */
+const C128="212222 222122 222221 121223 121322 131222 122213 122312 132212 221213 221312 231212 112232 122132 122231 113222 123122 123221 223211 221132 221231 213212 223112 312131 311222 321122 321221 312212 322112 322211 212123 212321 232121 111323 131123 131321 112313 132113 132311 211313 231113 231311 112133 112331 132131 113123 113321 133121 313121 211331 231131 213113 213311 213131 311123 311321 331121 312113 312311 332111 314111 221411 431111 111224 111422 121124 121421 141122 141221 112214 112412 122114 122411 142112 142211 241211 221114 413111 241112 134111 111242 121142 121241 114212 124112 124211 411212 421112 421211 212141 214121 412121 111143 111341 131141 114113 114311 411113 411311 113141 114131 311141 411131 211412 211214 211232 2331112".split(' ');
+function c128(t){t=String(t);let v;if(/^\d+$/.test(t)&&t.length%2===0){v=[105];for(let i=0;i<t.length;i+=2)v.push(+t.slice(i,i+2))}else{v=[104];for(const ch of t)v.push(Math.max(0,Math.min(94,ch.charCodeAt(0)-32)))}
+  let cs=v[0];for(let i=1;i<v.length;i++)cs+=i*v[i];v.push(cs%103,106);return v.map(i=>C128[i]).join('')}
+function addBar(cv,o){const code=o&&o.bar;if(!code||!pget('barOn',true))return cv;
+  const m=2,w=c128(code);let tot=0;for(const d of w)tot+=+d;const bw=(tot+20)*m,bh=46,ex=bh+44,W=cv.width,H=cv.height;
+  const n=document.createElement('canvas');n.width=W;n.height=H+ex;const x=n.getContext('2d');
+  let bg='#ffffff';try{const p=cv.getContext('2d').getImageData(Math.min(6,W-1),H-6,1,1).data;bg='rgb('+p[0]+','+p[1]+','+p[2]+')'}catch(e){}
+  x.fillStyle=bg;x.fillRect(0,0,W,H+ex);x.drawImage(cv,0,0);
+  x.fillStyle='#fff';const px=Math.round((W-bw)/2),py=H+6;x.fillRect(px,py,bw,bh+34);
+  x.fillStyle='#000';let cx=px+10*m;for(let i=0;i<w.length;i++){const k=+w[i]*m;if(i%2===0)x.fillRect(cx,py+6,k,bh);cx+=k}
+  x.font='bold 15px Tahoma, Arial, sans-serif';x.textAlign='center';x.fillStyle='#000';x.direction='ltr';x.fillText(code,W/2,py+bh+26);
+  return n}
+{const _s0=sheet;sheet=function(o){const cv=_s0(o);try{return addBar(cv,o)}catch(e){return cv}}}
+function openByCode(v){const t=a2e(v).trim().replace(/^[#\s]+/,'');if(!/^\d+$/.test(t))return false;
+  const r=S.invoices.find(x=>x.type==='inv'&&x.code&&+x.code===+t)||S.invoices.find(x=>x.code&&+x.code===+t);if(!r)return false;showRec(r,false,'');return true}
+(function(){
+  let stream=null,timer=null;
+  const stop=()=>{clearInterval(timer);timer=null;try{stream&&stream.getTracks().forEach(t=>t.stop())}catch(e){}stream=null;const o=$('scanOv');if(o)o.remove()};
+  const found=v=>{if(openByCode(v)){stop()}else{const m=$('scanMsg');if(m)m.textContent='مفيش فاتورة بالكود ده: '+v}};
+  $('hCam').onclick=async()=>{
+    if($('scanOv'))return;
+    const o=document.createElement('div');o.id='scanOv';
+    o.innerHTML='<button class="sx" type="button" aria-label="إغلاق">×</button><video playsinline muted></video><div id="scanMsg">وجّه الكاميرا على باركود الفاتورة</div><input id="scanIn" inputmode="numeric" placeholder="أو اكتب كود الفاتورة (مثلاً 0045)"><button class="main" type="button" id="scanGo">فتح</button>';
+    document.body.appendChild(o);
+    o.querySelector('.sx').onclick=stop;
+    const go=()=>{const v=$('scanIn').value;if(!v)return;if(openByCode(v))stop();else $('scanMsg').textContent='مفيش فاتورة بالكود ده'};
+    $('scanGo').onclick=go;$('scanIn').onkeydown=e=>{if(e.key==='Enter')go()};
+    const vid=o.querySelector('video');
+    if(!('BarcodeDetector' in window)||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){vid.style.display='none';$('scanMsg').textContent='المتصفح مش بيدعم مسح الباركود هنا. اكتب كود الفاتورة يدويًا.';return}
+    try{
+      const det=new BarcodeDetector({formats:['code_128']});
+      stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
+      vid.srcObject=stream;await vid.play();
+      timer=setInterval(async()=>{try{const r=await det.detect(vid);if(r&&r.length)found(r[0].rawValue)}catch(e){}},300);
+    }catch(e){vid.style.display='none';$('scanMsg').textContent='الكاميرا مش متاحة (لازم الرابط يبدأ بـ https وتسمح بالكاميرا). اكتب الكود يدويًا.'}
+  };
+  /* تثبيت التطبيق */
+  let dip=null;
+  window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e;const b=$('instBtn');if(b)b.classList.remove('hide')});
+  $('instBtn').onclick=async()=>{if(!dip)return;dip.prompt();try{await dip.userChoice}catch(e){}dip=null;$('instBtn').classList.add('hide')};
+  window.addEventListener('appinstalled',()=>{const b=$('instBtn');if(b)b.classList.add('hide')});
+  if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})})}
+})();
+
 /* ---------- رسم الصورة (بدون مكتبات) ---------- */
 const IVD={ttl:'العميل /',nPre:'ملاحظة:',hBayan:'البيان',hSize:'المقاس',hCnt:'العدد',hQty:'الكمية',hPrice:'السعر',hVal:'القيمة',
   lSub:'إجمالي الإذن',lNyl:'مشال',lMak:'مكنة',lXp:'مصاريف',lDisc:'خصم',lPrev:'رصيد سابق',lTot:'الإجمالي',lPaid:'المدفوع',lRest:'المتبقي',
@@ -1049,7 +1106,7 @@ function invSheet(r){const V=IV(),base={name:r.cname,date:stamp(r.ts),note:r.not
   const sum=[[V.lSub+qtyTxt(r.tq,r.tv),f(r.sub-(+r.wk||0)-(+r.mk||0)-(+r.xp||0))]];if(+r.wk)sum.push([r.wk>0?'إضافة على الإذن':'خصم من الإذن',f(Math.abs(r.wk))]);(r.sums||[]).forEach(x=>sum.push(['إجمالي '+x.l,f(x.v)]));
   if(r.nylon)sum.push([V.lNyl,f(r.nylon)]);if(+r.mk)sum.push([V.lMak,f(r.mk)]);if(+r.xp)sum.push([V.lXp,f(r.xp)]);if(r.disc)sum.push([V.lDisc,f(r.disc)]);if(r.dpv)sum.push([V.lDisc+' '+f(r.dp)+'%',f(r.dpv)]);
   if(+V.showPrev)sum.push([V.lPrev,f(r.prev)]);sum.push([V.lTot,f(r.total),1]);if(r.pfv)sum.push(['المبلغ المدفوع',f(r.paidRaw)],[pfLbl(r),f(r.pfv)],['صافي المدفوع',f(r.paid)]);else sum.push([V.lPaid,f(r.paid)]);sum.push([V.lRest,f(r.rest),1]);
-  return{...base,sub:+V.showSub?((lsv('docw','إذن صرف')?lsv('docw','إذن صرف')+' ':'')+'رقم '+r.no+(r.code?' · كود '+fc(r):'')):'',wa:1,owe:(+r.rest>0.5)?1:0,mini:1,pm:(+(r.paidRaw||r.paid||0)>0?r.pm||'':''),pmx:(+(r.paidRaw||r.paid||0)>0?r.pmx||(r.pm?null:{c:+(r.paidRaw||r.paid),w:0,i:0}):null),tables,gs,sum,gnote:[offNote(r),pget('gnOn',true)?(r.gnote||''):''].filter(Boolean).join('\n'),gnoteRed:pget('gnRedOn',true)?(r.gnoteRed||''):''}}
+  return{...base,bar:r.code?fc(r):'',sub:+V.showSub?((lsv('docw','إذن صرف')?lsv('docw','إذن صرف')+' ':'')+'رقم '+r.no+(r.code?' · كود '+fc(r):'')):'',wa:1,owe:(+r.rest>0.5)?1:0,mini:1,pm:(+(r.paidRaw||r.paid||0)>0?r.pm||'':''),pmx:(+(r.paidRaw||r.paid||0)>0?r.pmx||(r.pm?null:{c:+(r.paidRaw||r.paid),w:0,i:0}):null),tables,gs,sum,gnote:[offNote(r),pget('gnOn',true)?(r.gnote||''):''].filter(Boolean).join('\n'),gnoteRed:pget('gnRedOn',true)?(r.gnoteRed||''):''}}
 
 /* ---------- عرض/حفظ/مشاركة الصورة ---------- */
 let curBlob=null,curName='',curPhone='',baseMsg='',curRec=null,delArm=false;
