@@ -108,6 +108,24 @@ table.st{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0}
 #scanOv input{width:100%;max-width:320px;padding:10px;border-radius:10px;border:1px solid #888;background:#111;color:#fff;font-size:16px;text-align:center}
 #scanMsg{font-size:14px;min-height:20px;text-align:center}
 
+/* ===== الإعدادات: شاشة المربعات ===== */
+#t-st .sgp{display:none!important}
+#t-st .sgp.sgshow{display:block!important}
+.sgl{margin:16px 8px 6px;font-size:14px;color:var(--mute)}
+.sgg{display:grid;grid-template-columns:1fr 1fr;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
+.sgt{display:flex;align-items:center;gap:10px;padding:14px 12px;background:none;border:0;border-radius:0;box-shadow:none;margin:0;width:auto;min-width:0;text-align:right;font:inherit;color:var(--ink);cursor:pointer;border-bottom:1px solid var(--line)}
+.sgt:nth-child(odd){border-left:1px solid var(--line)}
+.sgt:last-child,.sgt:nth-last-child(2):nth-child(odd){border-bottom:0}
+.sgt:active{background:var(--tot)}
+.sgi{font-size:28px;line-height:1;flex:none}
+.sgx{display:flex;flex-direction:column;min-width:0;flex:1;gap:2px}
+.sgx b{font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sgx small{font-size:12.5px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sgHead{display:flex;align-items:center;gap:10px;margin:2px 0 10px}
+#sgHead.hide{display:none!important}
+#sgBack{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 12px;font:inherit;color:var(--ink);cursor:pointer;box-shadow:none;margin:0;width:auto}
+#sgTitle{font-size:18px}
+
 /* ===== Header ===== */
 .app-header{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--hdr);border-bottom:3px solid var(--gold);color:var(--hdrInk,#fff);display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:52px;padding-top:env(safe-area-inset-top,0px);box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .app-header .app-title{font-size:18px;font-weight:700;letter-spacing:.5px}
@@ -470,7 +488,7 @@ thmApply();
   <div class="card hide" id="cmpBox"></div>
   <div class="card hide" id="dDebtBox"></div>
   <div class="card hCard">
-    <div class="hsrch"><input id="hq" placeholder="ابحث: اسم · كود · مبلغ (700 · 600-800) · صنف · موقع" autocomplete="off"><button type="button" class="hcam" id="hCam" aria-label="مسح باركود">📷</button><button type="button" class="hchev" id="hOpt" aria-label="خيارات">⌄</button></div>
+    <div class="hsrch"><input id="hq" placeholder="ابحث: اسم · كود · مبلغ (700 · 600-800) · صنف · موقع" autocomplete="off"><button type="button" class="hcam" id="hCam" aria-label="مسح QR">📷</button><button type="button" class="hchev" id="hOpt" aria-label="خيارات">⌄</button></div>
     <div class="hpanel hide" id="hPanel">
       <div class="seg s" id="hPer" style="margin:8px 0 6px"><button data-p="w" class="on">الأسبوع</button><button data-p="d">اليوم</button><button data-p="m">الشهر</button><button data-p="all">الكل</button></div>
       <div class="hbtns"><button class="ab" id="cashBtn">💵 الخزنة</button><button class="ab hide" id="dayClose">🧾 إقفال اليوم</button><button class="ab hide" id="monRep">📊 تقرير الشهر</button><button class="ab" id="cmpBtn">📈 مقارنة</button><button class="ab hide" id="instBtn">📲 تثبيت التطبيق</button></div>
@@ -604,32 +622,53 @@ thmApply();
 </section>
 
 <section id="t-st" class="hide">
-  <div class="sec-h">⚙️ عام</div>
-  <div class="card"><b>خيارات</b>
-    <label class="opt"><input type="checkbox" id="calcOn"> إظهار الآلة الحاسبة</label>
-    <label class="opt"><input type="checkbox" id="themeChk"> الوضع الليلي</label>
-    <label class="opt"><input type="checkbox" id="rndChk"> تقريب المبالغ لأقرب جنيه (من غير قروش)</label></div>
-  <div class="card"><b>⏰ تنبيهات المديونين</b>
-    <div class="mute" style="margin:4px 0 6px">حدّد "موعد السداد" لكل عميل (من الفاتورة أو من بيانات العميل). قبل الميعاد بيوم بيظهر "فلان معاده بكره"، ويوم الميعاد "فلان معاده النهارده". لو العميل سدّد كامل التنبيه بيختفي.</div>
-    <label class="opt"><input type="checkbox" id="dueBanChk"> إظهار التنبيه فوق الصفحة</label>
-    <label class="opt"><input type="checkbox" id="dueNotiChk"> إشعار على الموبايل (لما تفتح التطبيق)</label>
-    <div class="ro" style="gap:8px;color:var(--ink)"><button type="button" class="ab" id="notiAsk">اسمح بالإشعارات</button><span class="mute" id="notiSt"></span></div>
-    <div class="mute" style="margin-top:6px">⚠ التطبيق مبيقدرش يصحى لوحده وهو مقفول. علشان التنبيه يرن في وقته حتى لو التطبيق مقفول، دوس 📅 جنب العميل لإضافة الميعاد في تقويم الموبايل.</div></div>
-  <details class="card" id="thmD"><summary>🎨 ألوان التطبيق</summary>
-    <div class="mute" style="margin:6px 0">اختار ثيم جاهز أو غيّر كل لون بنفسك، للوضع العادي والليلي كل واحد لوحده. التغيير بيظهر فوراً، وتحت كل وضع معاينة صغيرة.</div>
-    <div id="thmBody"></div>
-    <div class="btns"><button class="alt b-red" id="thmReset">رجوع للألوان الأصلية</button></div></details>
-  <div class="card"><b>ميزات إضافية</b><div class="mute" style="margin:4px 0 0">فعّلي اللي تحبيه وقفلي اللي مش محتاجاه</div>
+  <div id="sgHome" class="sgh">
+   <div class="sgl">الفاتورة</div>
+   <div class="sgg">
+    <button type="button" class="sgt" data-go="shop"><span class="sgi">🏪</span><span class="sgx"><b>بيانات المحل</b><small id="sgs_shop"></small></span></button>
+    <button type="button" class="sgt" data-go="design"><span class="sgi">🎨</span><span class="sgx"><b>تصميم الفاتورة</b><small id="sgs_design"></small></span></button>
+    <button type="button" class="sgt" data-go="opts"><span class="sgi">🧾</span><span class="sgx"><b>خيارات وطباعة</b><small id="sgs_opts"></small></span></button>
+    <button type="button" class="sgt" data-go="notes"><span class="sgi">📝</span><span class="sgx"><b>ملاحظات وسطور ثابتة</b><small id="sgs_notes"></small></span></button>
+   </div>
+   <div class="sgl">الفلوس</div>
+   <div class="sgg">
+    <button type="button" class="sgt" data-go="pay"><span class="sgi">💳</span><span class="sgx"><b>طرق الدفع</b><small id="sgs_pay"></small></span></button>
+    <button type="button" class="sgt" data-go="close"><span class="sgi">📊</span><span class="sgx"><b>الإقفال والتقارير</b><small id="sgs_close"></small></span></button>
+   </div>
+   <div class="sgl">العملاء</div>
+   <div class="sgg">
+    <button type="button" class="sgt" data-go="wa"><span class="sgi">💬</span><span class="sgx"><b>رسائل الواتساب</b><small id="sgs_wa"></small></span></button>
+    <button type="button" class="sgt" data-go="debt"><span class="sgi">🔔</span><span class="sgx"><b>تذكير المديونين</b><small id="sgs_debt"></small></span></button>
+   </div>
+   <div class="sgl">البرنامج</div>
+   <div class="sgg">
+    <button type="button" class="sgt" data-go="look"><span class="sgi">📱</span><span class="sgx"><b>شكل البرنامج</b><small id="sgs_look"></small></span></button>
+    <button type="button" class="sgt" data-go="noti"><span class="sgi">🔕</span><span class="sgx"><b>الإشعارات</b><small id="sgs_noti"></small></span></button>
+    <button type="button" class="sgt" data-go="lock"><span class="sgi">🔒</span><span class="sgx"><b>القفل والأمان</b><small id="sgs_lock"></small></span></button>
+    <button type="button" class="sgt" data-go="save"><span class="sgi">💾</span><span class="sgx"><b>الحفظ والنسخ</b><small id="sgs_save"></small></span></button>
+    <button type="button" class="sgt" data-go="wh"><span class="sgi">📦</span><span class="sgx"><b>المخزن</b><small id="sgs_wh"></small></span></button>
+   </div>
+  </div>
+  <div id="sgHead" class="hide"><button type="button" id="sgBack">‹ رجوع</button><b id="sgTitle"></b></div>
+  <div class="card sgp" data-sg="shop"><b>🏪 بيانات المحل</b>
+    <div class="mute" style="margin:4px 0 6px">الاسم والكلمة اللي بتظهر في الفاتورة ورسايل الواتساب.</div>
+    <div class="g2"><div><label>اسم المحل (فاضي = يختفي)</label><input id="shopN"></div><div><label>كلمة الفاتورة (فاضي = تختفي)</label><input id="docW"></div></div>
+  </div>
+  <details class="card sgp" data-sg="design" id="ivD"><summary>🧾 شكل الفاتورة والمكتوب</summary>
+    <div class="mute" style="margin:6px 0">أي تغيير بيظهر في المعاينة تحت، وبيتطبق على كل الصور اللي تتعمل بعد كده (الألوان والأحجام بتأثر كمان على كشف الحساب والتقارير).</div>
+    <div id="ivBody"></div><div id="ivPrev"></div>
+    <div class="btns"><button class="alt b-red" id="ivReset">رجوع للشكل الأصلي</button></div></details>
+  <div class="card sgp" data-sg="opts"><b>ميزات إضافية</b><div class="mute" style="margin:4px 0 0">فعّلي اللي تحبيه وقفلي اللي مش محتاجاه</div>
     <label class="opt"><input type="checkbox" id="editInv"> تعديل الفاتورة بعد حفظها</label>
     <label class="opt"><input type="checkbox" id="dupInv"> تكرار فاتورة قديمة لنفس العميل</label>
-    <label class="opt"><input type="checkbox" id="dayCl"> إقفال اليوم (زرار + إقفال أمس يظهر لوحده)</label>
     <label class="opt">⚠️ نبّهني لو هامش الربح في البند أقل من <input id="mgMin" type="number" inputmode="decimal" style="width:60px;display:inline-block;text-align:center"> %</label>
-    <label class="opt"><input type="checkbox" id="monCl"> تقرير الشهر (زرار + تقرير الشهر اللي فات يظهر لوحده)</label>
-    <label class="opt"><input type="checkbox" id="bulkRemChk"> تذكير كل المديونين مرة واحدة</label>
-    <label class="opt"><input type="checkbox" id="trashOn"> سلة المحذوفات (الفاتورة المحذوفة تتحفظ 30 يوم)</label>
-    <label class="opt"><input type="checkbox" id="bkAl"> تنبيه النسخة الاحتياطية (لو عدّى أسبوع)</label>
-    <label style="margin-top:8px">أسباب خصم المدفوع الجاهزة (سطر لكل سبب: الاسم=النسبة)</label><textarea id="pfPreT" rows="3" style="direction:rtl;text-align:right;font-size:14px"></textarea></div>
-  <div class="card"><b>🖨️ الطابعة الحرارية</b>
+</div>
+  <div class="card sgp" data-sg="opts"><b>🔳 QR الفاتورة</b>
+    <div class="mute" style="margin:4px 0 0">تتحكم فين يظهر الـQR (بيفتح الفاتورة لما يتمسح)</div>
+    <label class="opt"><input type="checkbox" id="qrWa"> يظهر في صورة الواتس / المشاركة / الحفظ</label>
+    <label class="opt"><input type="checkbox" id="qrPr"> يظهر في الطباعة</label>
+  </div>
+  <div class="card sgp" data-sg="opts"><b>🖨️ الطابعة الحرارية</b>
     <label class="opt"><input type="checkbox" id="prOn"> إظهار زرار الطباعة بعد حفظ الفاتورة</label>
     <label class="opt"><input type="checkbox" id="prAuto"> فتح الطباعة تلقائيًا بعد كل حفظ</label>
     <label style="margin-top:6px">عرض الورق</label>
@@ -639,55 +678,76 @@ thmApply();
     <div class="btns"><button class="alt" id="prPair">🔗 ربط الطابعة</button><button class="alt" id="prTest">🧪 طباعة تجربة</button></div>
     <div class="mute" id="prSt" style="margin-top:4px"></div>
     <div class="mute" style="margin-top:6px">البلوتوث المباشر بيطبع على الماكينة من غير أي نافذة، وبيشتغل مع الطابعات اللي بتدعم بلوتوث BLE. اربط الطابعة مرة من هنا، وبعدها فعّل "الطباعة التلقائية".</div></div>
-  <div class="card"><b>📦 المخزن</b>
-    <label class="opt"><input type="checkbox" id="whAlOn"> إظهار تنبيه نقص المخزن في السجل</label>
-    <label class="opt"><input type="checkbox" id="whWdOn"> إظهار أمتار الخشب (زان/سويد) في السجل</label>
-    <label style="margin-top:6px">أنواع خشب تتحسب لوحدها (مثال: زان). باقي الأصناف بتتحسب سويد</label>
-    <textarea id="woodsT" rows="2" style="direction:rtl;text-align:right;font-size:14px"></textarea></div>
-  <div class="sec-h">🧾 الفاتورة</div>
-  <div class="card"><b>رسائل تحت الفاتورة</b><div class="mute" style="margin:4px 0 0">بتظهر تحت الإجمالي في صورة الفاتورة: الحمراء الأول وبعدها العادية.</div>
+  <div class="card sgp" data-sg="notes"><b>رسائل تحت الفاتورة</b><div class="mute" style="margin:4px 0 0">بتظهر تحت الإجمالي في صورة الفاتورة: الحمراء الأول وبعدها العادية.</div>
     <div class="msgrow"><b style="color:#dc2626">الرسالة الحمراء</b><label><input type="checkbox" id="gnRedOn"> تشغيل</label></div>
     <textarea id="gnoteRed" rows="2" placeholder="اكتب الرسالة الحمراء هنا" style="direction:rtl;text-align:right;font-size:14px;color:#dc2626"></textarea>
     <div class="msgrow"><b>الرسالة العادية</b><label><input type="checkbox" id="gnOn"> تشغيل</label></div>
     <textarea id="gnote" rows="3" placeholder="اكتب الرسالة العادية هنا" style="direction:rtl;text-align:right;font-size:14px"></textarea></div>
-  <div class="card"><b>رسوم سحب فودافون كاش</b><div class="mute" style="margin:4px 0 6px">النسبة اللي بتظهر في خانة % لما تدوس "محفظة" في الفاتورة (1% = 10 جنيه عن كل 1,000). تقدر تغيّرها في الفاتورة نفسها قبل الحفظ، وتختار تلقائي أو مثبّت.</div>
+  <div class="card sgp" data-sg="pay"><b>رسوم سحب فودافون كاش</b><div class="mute" style="margin:4px 0 6px">النسبة اللي بتظهر في خانة % لما تدوس "محفظة" في الفاتورة (1% = 10 جنيه عن كل 1,000). تقدر تغيّرها في الفاتورة نفسها قبل الحفظ، وتختار تلقائي أو مثبّت.</div>
     <div class="g2"><div><label>نوع الرسوم</label><select id="vfMode"><option value="fix">مبلغ ثابت (جنيه)</option><option value="pct">نسبة % من المبلغ</option></select></div><div><label>القيمة</label><input id="vfVal" type="number" inputmode="decimal"></div></div></div>
-  <details class="card" id="ivD"><summary>🧾 شكل الفاتورة والمكتوب</summary>
-    <div class="mute" style="margin:6px 0">أي تغيير بيظهر في المعاينة تحت، وبيتطبق على كل الصور اللي تتعمل بعد كده (الألوان والأحجام بتأثر كمان على كشف الحساب والتقارير).</div>
-    <div id="ivBody"></div><div id="ivPrev"></div>
-    <div class="btns"><button class="alt b-red" id="ivReset">رجوع للشكل الأصلي</button></div></details>
-  <details class="card" id="msgD"><summary>📨 رسائل الواتساب والفاتورة</summary>
+  <div class="card sgp" data-sg="pay"><b>💳 أسباب خصم المدفوع</b>
+    <label style="margin-top:6px">أسباب خصم المدفوع الجاهزة (سطر لكل سبب: الاسم=النسبة)</label><textarea id="pfPreT" rows="3" style="direction:rtl;text-align:right;font-size:14px"></textarea></div>
+  <div class="card sgp" data-sg="close"><b>📊 الإقفال والتقارير</b>
+    <label class="opt"><input type="checkbox" id="dayCl"> إقفال اليوم (زرار + إقفال أمس يظهر لوحده)</label>
+    <label class="opt"><input type="checkbox" id="monCl"> تقرير الشهر (زرار + تقرير الشهر اللي فات يظهر لوحده)</label>
+  </div>
+  <details class="card sgp" data-sg="wa" id="msgD"><summary>📨 رسائل الواتساب والفاتورة</summary>
     <div class="mute" style="margin:6px 0">غيّري أو امسحي أي كلمة. الكلمات اللي بين {} بتتبدّل لوحدها.</div>
-    <div class="g2"><div><label>اسم المحل (فاضي = يختفي)</label><input id="shopN"></div><div><label>كلمة الفاتورة (فاضي = تختفي)</label><input id="docW"></div></div>
     <label style="margin-top:6px">رسالة الفاتورة</label><textarea id="tplInv" rows="6"></textarea><div class="mute">{المحل} {العميل} {الفاتورة} {التاريخ} {البنود} {الإجمالي} {المدفوع} {المتبقي} {الخصم}</div>
     <label style="margin-top:6px">رسالة الدفعة</label><textarea id="tplPay" rows="4"></textarea><div class="mute">{المحل} {العميل} {المبلغ} {الحساب} {التاريخ} {الخصم}</div>
     <label style="margin-top:6px">رسالة تذكير الدين</label><textarea id="tplRem" rows="4"></textarea><div class="mute">{المحل} {العميل} {الحساب} {مدة_الشراء} {مدة_بدون_دفع}</div>
     <label style="margin-top:6px">رسالة تذكير المتأخرين (عدّى ميعاد سدادهم)</label><textarea id="tplOvd" rows="5"></textarea><div class="mute">{المحل} {العميل} {الحساب} {الميعاد} {التأخير} {مدة_الشراء} {مدة_بدون_دفع}</div>
     <div class="btns"><button class="alt b-red" id="tplReset">رجوع للصيغ الأصلية</button></div></details>
-  <div class="sec-h">🔐 البيانات والأمان</div>
-  <details class="card" id="trD"><summary>🗑 سلة المحذوفات <span id="trCnt"></span></summary>
-    <div class="mute" style="margin:6px 0">الفواتير المحذوفة بتتحفظ 30 يوم على الجهاز ده. اضغطي استرجاع ترجّعيها.</div>
-    <div id="trList"></div><div class="info" id="trMsg"></div></details>
-  <div class="card"><b>🔒 قفل التطبيق</b>
+  <div class="card sgp" data-sg="wa"><b>الإرسال</b>
+    <label style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);margin-top:6px"><input type="checkbox" id="autoWa"> بعد حفظ الفاتورة افتح الإرسال للعميل تلقائياً</label></div>
+  <div class="card sgp" data-sg="debt"><b>⏰ تنبيهات المديونين</b>
+    <div class="mute" style="margin:4px 0 6px">حدّد "موعد السداد" لكل عميل (من الفاتورة أو من بيانات العميل). قبل الميعاد بيوم بيظهر "فلان معاده بكره"، ويوم الميعاد "فلان معاده النهارده". لو العميل سدّد كامل التنبيه بيختفي.</div>
+    <label class="opt"><input type="checkbox" id="dueBanChk"> إظهار التنبيه فوق الصفحة</label>
+    <label class="opt"><input type="checkbox" id="bulkRemChk"> تذكير كل المديونين مرة واحدة</label>
+  </div>
+  <div class="card sgp" data-sg="look"><b>خيارات</b>
+    <label class="opt"><input type="checkbox" id="calcOn"> إظهار الآلة الحاسبة</label>
+    <label class="opt"><input type="checkbox" id="themeChk"> الوضع الليلي</label>
+    <label class="opt"><input type="checkbox" id="rndChk"> تقريب المبالغ لأقرب جنيه (من غير قروش)</label></div>
+  <details class="card sgp" data-sg="look" id="thmD"><summary>🎨 ألوان التطبيق</summary>
+    <div class="mute" style="margin:6px 0">اختار ثيم جاهز أو غيّر كل لون بنفسك، للوضع العادي والليلي كل واحد لوحده. التغيير بيظهر فوراً، وتحت كل وضع معاينة صغيرة.</div>
+    <div id="thmBody"></div>
+    <div class="btns"><button class="alt b-red" id="thmReset">رجوع للألوان الأصلية</button></div></details>
+  <div class="card sgp" data-sg="look"><label style="display:flex;align-items:center;gap:8px;margin:0;font-size:14px;font-weight:700"><input type="checkbox" id="xlChk"> نمط إكسل في شاشة الفاتورة (جدول للبنود)</label></div>
+  <div class="card sgp" data-sg="noti"><b>🔔 الإشعارات</b>
+    <label class="opt"><input type="checkbox" id="dueNotiChk"> إشعار على الموبايل (لما تفتح التطبيق)</label>
+    <div class="ro" style="gap:8px;color:var(--ink)"><button type="button" class="ab" id="notiAsk">اسمح بالإشعارات</button><span class="mute" id="notiSt"></span></div>
+    <div class="mute" style="margin-top:6px">⚠ التطبيق مبيقدرش يصحى لوحده وهو مقفول. علشان التنبيه يرن في وقته حتى لو التطبيق مقفول، دوس 📅 جنب العميل لإضافة الميعاد في تقويم الموبايل.</div>
+  </div>
+  <div class="card sgp" data-sg="lock"><b>🔒 قفل التطبيق</b>
     <label class="opt"><input type="checkbox" id="lkChk"> قفل التطبيق برقم سري</label>
     <div id="lkSet" class="hide"><div class="g2" style="margin-top:6px"><input id="lkP1" type="password" inputmode="numeric" maxlength="6" placeholder="رقم سري (4 إلى 6 أرقام)"><input id="lkP2" type="password" inputmode="numeric" maxlength="6" placeholder="أعيدي كتابته"></div>
       <div class="btns"><button class="main" id="lkSave">تفعيل القفل</button></div></div>
     <label class="opt hide" id="lkBioBox"><input type="checkbox" id="lkBio"> الفتح بالبصمة</label>
     <div class="info" id="lkMsg"></div></div>
-  <div class="card"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.66 · تحديث 14 نوفمبر 2026 · باركود الفاتورة والمسح بالكاميرا وتثبيت التطبيق</div></div>
-  <div class="card"><b>حالة الحفظ</b><div id="stor" style="margin-top:4px;font-size:14px"></div></div>
-  <div class="card"><label style="display:flex;align-items:center;gap:8px;margin:0;font-size:14px;font-weight:700"><input type="checkbox" id="xlChk"> نمط إكسل في شاشة الفاتورة (جدول للبنود)</label></div>
-  <div class="card"><b>مساحة التخزين على الجهاز</b><div id="stoBox" style="margin-top:4px;font-size:14px">جاري القراءة…</div><button class="alt" id="stoPersist" style="margin-top:8px">فعّل التخزين الدائم</button></div>
-  <div class="card"><b>الإرسال</b>
-    <label style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);margin-top:6px"><input type="checkbox" id="autoWa"> بعد حفظ الفاتورة افتح الإرسال للعميل تلقائياً</label></div>
-  <div class="card"><b>النسخة الاحتياطية</b><div class="mute" id="bkInfo" style="margin-top:4px"></div>
+  <details class="card sgp" data-sg="save" id="trD"><summary>🗑 سلة المحذوفات <span id="trCnt"></span></summary>
+    <div class="mute" style="margin:6px 0">الفواتير المحذوفة بتتحفظ 30 يوم على الجهاز ده. اضغطي استرجاع ترجّعيها.</div>
+    <div id="trList"></div><div class="info" id="trMsg"></div></details>
+  <div class="card sgp" data-sg="save"><b>🗑 السلة والتنبيهات</b>
+    <label class="opt"><input type="checkbox" id="trashOn"> سلة المحذوفات (الفاتورة المحذوفة تتحفظ 30 يوم)</label>
+    <label class="opt"><input type="checkbox" id="bkAl"> تنبيه النسخة الاحتياطية (لو عدّى أسبوع)</label>
+  </div>
+  <div class="card sgp" data-sg="save"><b>حالة الحفظ</b><div id="stor" style="margin-top:4px;font-size:14px"></div></div>
+  <div class="card sgp" data-sg="save"><b>مساحة التخزين على الجهاز</b><div id="stoBox" style="margin-top:4px;font-size:14px">جاري القراءة…</div><button class="alt" id="stoPersist" style="margin-top:8px">فعّل التخزين الدائم</button></div>
+  <div class="card sgp" data-sg="save"><b>النسخة الاحتياطية</b><div class="mute" id="bkInfo" style="margin-top:4px"></div>
     <div style="margin-top:8px"><div class="mute" style="font-size:12px">🗂️ نسخ تلقائية على الجهاز (بتتاخد مرة كل يوم، آخر 7 أيام)</div><div id="snapList" style="margin-top:4px"></div><div class="info" id="snapMsg"></div></div>
     <div class="btns"><button class="main" id="bkSave">حفظ نسخة</button><button class="alt" id="bkLoad">استرجاع نسخة</button><input type="file" id="bkFile" accept=".json,application/json" class="hide"></div><div class="info" id="bkMsg"></div></div>
-  <div class="card"><b>المزامنة السحابية</b><div id="fbStat" style="margin:4px 0 8px;font-size:14px">غير مربوطة.</div>
+  <div class="card sgp" data-sg="save"><b>المزامنة السحابية</b><div id="fbStat" style="margin:4px 0 8px;font-size:14px">غير مربوطة.</div>
     <div class="btns" style="margin:0"><button class="main" id="fbGoogle">دخول بحساب Google</button><button class="alt b-red" id="fbOff">فصل</button></div>
     <a href="#" id="fbMore" style="display:inline-block;margin-top:10px;font-size:14px">دخول بالإيميل بدلاً من Google</a>
     <div id="fbMail" class="hide"><div class="g2" style="margin-top:6px"><input id="fbEmail" type="email" placeholder="الإيميل" style="direction:ltr"><input id="fbPass" type="password" placeholder="كلمة السر" style="direction:ltr"></div>
     <div class="btns" style="margin-top:6px"><button class="alt" id="fbConnect">دخول بالإيميل</button></div></div></div>
+  <div class="card sgp" data-sg="wh"><b>📦 المخزن</b>
+    <label class="opt"><input type="checkbox" id="whAlOn"> إظهار تنبيه نقص المخزن في السجل</label>
+    <label class="opt"><input type="checkbox" id="whWdOn"> إظهار أمتار الخشب (زان/سويد) في السجل</label>
+    <label style="margin-top:6px">أنواع خشب تتحسب لوحدها (مثال: زان). باقي الأصناف بتتحسب سويد</label>
+    <textarea id="woodsT" rows="2" style="direction:rtl;text-align:right;font-size:14px"></textarea></div>
+  <div class="card sgh"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.69 · تحديث 15 نوفمبر 2026 · شكل الإعدادات الجديد بالمربعات</div></div>
 </section>
 
 <div id="calcModal" class="calc-modal hide">
@@ -883,17 +943,64 @@ $('bnav').onclick=e=>{const b=e.target.closest('button[data-t]');if(!b)return;co
 const C128="212222 222122 222221 121223 121322 131222 122213 122312 132212 221213 221312 231212 112232 122132 122231 113222 123122 123221 223211 221132 221231 213212 223112 312131 311222 321122 321221 312212 322112 322211 212123 212321 232121 111323 131123 131321 112313 132113 132311 211313 231113 231311 112133 112331 132131 113123 113321 133121 313121 211331 231131 213113 213311 213131 311123 311321 331121 312113 312311 332111 314111 221411 431111 111224 111422 121124 121421 141122 141221 112214 112412 122114 122411 142112 142211 241211 221114 413111 241112 134111 111242 121142 121241 114212 124112 124211 411212 421112 421211 212141 214121 412121 111143 111341 131141 114113 114311 411113 411311 113141 114131 311141 411131 211412 211214 211232 2331112".split(' ');
 function c128(t){t=String(t);let v;if(/^\d+$/.test(t)&&t.length%2===0){v=[105];for(let i=0;i<t.length;i+=2)v.push(+t.slice(i,i+2))}else{v=[104];for(const ch of t)v.push(Math.max(0,Math.min(94,ch.charCodeAt(0)-32)))}
   let cs=v[0];for(let i=1;i<v.length;i++)cs+=i*v[i];v.push(cs%103,106);return v.map(i=>C128[i]).join('')}
-function addBar(cv,o){const code=o&&o.bar;if(!code||!pget('barOn',true))return cv;
-  const m=2,w=c128(code);let tot=0;for(const d of w)tot+=+d;const bw=(tot+20)*m,bh=46,ex=bh+44,W=cv.width,H=cv.height;
+function qrMake(text){
+  const bytes=Array.from(new TextEncoder().encode(text));
+  const T=[null,[26,10,1,16],[44,16,1,28],[70,26,1,44],[100,18,2,32],[134,24,2,43],[172,16,4,27]];
+  let ver=0;for(let v=1;v<=6;v++){const t=T[v];if(bytes.length<=t[2]*t[3]-2){ver=v;break}}
+  if(!ver)return null;
+  const [tot,ecl,nb,dpb]=T[ver],dcw=nb*dpb,size=17+4*ver;
+  const bits=[],put=(val,n)=>{for(let i=n-1;i>=0;i--)bits.push((val>>>i)&1)};
+  put(4,4);put(bytes.length,8);bytes.forEach(b=>put(b,8));put(0,Math.min(4,dcw*8-bits.length));
+  while(bits.length%8)bits.push(0);
+  const data=[];for(let i=0;i<bits.length;i+=8){let b=0;for(let j=0;j<8;j++)b=b<<1|bits[i+j];data.push(b)}
+  for(let p=0xEC;data.length<dcw;p^=0xEC^0x11)data.push(p);
+  const ex=[],lg=[];let xv=1;for(let i=0;i<255;i++){ex[i]=xv;lg[xv]=i;xv<<=1;if(xv&256)xv^=0x11D}
+  const mul=(a,b)=>a&&b?ex[(lg[a]+lg[b])%255]:0;
+  let g=[1];for(let i=0;i<ecl;i++){const n=Array(g.length+1).fill(0);for(let j=0;j<g.length;j++){n[j]^=g[j];n[j+1]^=mul(g[j],ex[i])}g=n}
+  const blocks=[],ecs=[];
+  for(let b=0;b<nb;b++){const d=data.slice(b*dpb,(b+1)*dpb);blocks.push(d);const r=Array(ecl).fill(0);
+    for(const x of d){const f=x^r.shift();r.push(0);for(let k=0;k<ecl;k++)r[k]^=mul(g[k+1],f)}ecs.push(r)}
+  const all=[];for(let i=0;i<dpb;i++)blocks.forEach(b=>all.push(b[i]));for(let i=0;i<ecl;i++)ecs.forEach(e=>all.push(e[i]));
+  const M=Array.from({length:size},()=>Array(size).fill(0)),F=Array.from({length:size},()=>Array(size).fill(false));
+  const set=(r,c,v)=>{M[r][c]=v?1:0;F[r][c]=true};
+  for(let i=0;i<size;i++){set(6,i,i%2===0);set(i,6,i%2===0)}
+  const finder=(r0,c0)=>{for(let dr=-1;dr<=7;dr++)for(let dc=-1;dc<=7;dc++){const r=r0+dr,c=c0+dc;if(r<0||c<0||r>=size||c>=size)continue;const d=Math.max(Math.abs(dr-3),Math.abs(dc-3));set(r,c,d!==2&&d!==4)}};
+  finder(0,0);finder(0,size-7);finder(size-7,0);
+  if(ver>=2){const a=[0,0,18,22,26,30,34][ver];for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)set(a+dy,a+dx,Math.max(Math.abs(dx),Math.abs(dy))!==1)}
+  const drawFormat=mask=>{const dd=mask;let rem=dd;for(let i=0;i<10;i++)rem=(rem<<1)^((rem>>>9)*0x537);
+    const fb=((dd<<10)|rem)^0x5412,gb=i=>((fb>>>i)&1)!==0;
+    for(let i=0;i<=5;i++)set(i,8,gb(i));set(7,8,gb(6));set(8,8,gb(7));set(8,7,gb(8));
+    for(let i=9;i<15;i++)set(8,14-i,gb(i));
+    for(let i=0;i<8;i++)set(8,size-1-i,gb(i));
+    for(let i=8;i<15;i++)set(size-15+i,8,gb(i));
+    set(size-8,8,true)};
+  drawFormat(0);
+  let k=0;for(let right=size-1;right>=1;right-=2){if(right===6)right=5;for(let vert=0;vert<size;vert++)for(let j=0;j<2;j++){const x=right-j,up=((right+1)&2)===0,y=up?size-1-vert:vert;if(!F[y][x]&&k<all.length*8){M[y][x]=(all[k>>>3]>>>(7-(k&7)))&1;k++}}}
+  const mf=[(x,y)=>(x+y)%2===0,(x,y)=>y%2===0,(x,y)=>x%3===0,(x,y)=>(x+y)%3===0,(x,y)=>(Math.floor(x/3)+Math.floor(y/2))%2===0,(x,y)=>x*y%2+x*y%3===0,(x,y)=>(x*y%2+x*y%3)%2===0,(x,y)=>((x+y)%2+x*y%3)%2===0];
+  const applyM=m=>{for(let y=0;y<size;y++)for(let x=0;x<size;x++)if(!F[y][x]&&mf[m](x,y))M[y][x]^=1};
+  const pen=()=>{let p=0;
+    for(let a=0;a<2;a++)for(let i=0;i<size;i++){let run=1;for(let j=1;j<size;j++){const c=a?M[j][i]:M[i][j],pc=a?M[j-1][i]:M[i][j-1];if(c===pc){run++;if(run===5)p+=3;else if(run>5)p++}else run=1}}
+    for(let y=0;y<size-1;y++)for(let x=0;x<size-1;x++){const c=M[y][x];if(c===M[y][x+1]&&c===M[y+1][x]&&c===M[y+1][x+1])p+=3}
+    const pa=[1,0,1,1,1,0,1,0,0,0,0],pb=[0,0,0,0,1,0,1,1,1,0,1];
+    for(let a=0;a<2;a++)for(let i=0;i<size;i++)for(let j=0;j<=size-11;j++){let m1=true,m2=true;for(let q=0;q<11;q++){const c=a?M[j+q][i]:M[i][j+q];if(c!==pa[q])m1=false;if(c!==pb[q])m2=false}if(m1||m2)p+=40}
+    let d=0;for(const r of M)for(const c of r)d+=c;const t=size*size;p+=(Math.ceil(Math.abs(d*20-t*10)/t)-1)*10;return p};
+  let best=0,bp=1e9;for(let m=0;m<8;m++){applyM(m);drawFormat(m);const p=pen();if(p<bp){bp=p;best=m}applyM(m)}
+  applyM(best);drawFormat(best);
+  return{size,M,ver}}
+
+function qrUrl(code){return (/^https?:$/.test(location.protocol)?location.href.split('#')[0].split('?')[0]+'#inv=':'inv=')+code}
+function addBar(cv,o){const code=o&&o.bar;if(!code)return cv;
+  let q=qrMake(qrUrl(code));if(!q)q=qrMake(String(code));if(!q)return cv;
+  const ms=5,qz=4,n0=q.size+qz*2,qs=n0*ms,ex=qs+44,W=cv.width,H=cv.height;
   const n=document.createElement('canvas');n.width=W;n.height=H+ex;const x=n.getContext('2d');
   let bg='#ffffff';try{const p=cv.getContext('2d').getImageData(Math.min(6,W-1),H-6,1,1).data;bg='rgb('+p[0]+','+p[1]+','+p[2]+')'}catch(e){}
   x.fillStyle=bg;x.fillRect(0,0,W,H+ex);x.drawImage(cv,0,0);
-  x.fillStyle='#fff';const px=Math.round((W-bw)/2),py=H+6;x.fillRect(px,py,bw,bh+34);
-  x.fillStyle='#000';let cx=px+10*m;for(let i=0;i<w.length;i++){const k=+w[i]*m;if(i%2===0)x.fillRect(cx,py+6,k,bh);cx+=k}
-  x.font='bold 15px Tahoma, Arial, sans-serif';x.textAlign='center';x.fillStyle='#000';x.direction='ltr';x.fillText(code,W/2,py+bh+26);
+  const px=Math.round((W-qs)/2),py=H+4;x.fillStyle='#fff';x.fillRect(px,py,qs,qs);x.fillStyle='#000';
+  for(let r=0;r<q.size;r++)for(let c=0;c<q.size;c++)if(q.M[r][c])x.fillRect(px+(c+qz)*ms,py+(r+qz)*ms,ms,ms);
+  x.font='bold 15px Tahoma, Arial, sans-serif';x.textAlign='center';x.fillStyle='#000';x.direction='rtl';x.fillText('امسح لفتح الفاتورة · '+code,W/2,py+qs+22);
   return n}
-{const _s0=sheet;sheet=function(o){const cv=_s0(o);try{return addBar(cv,o)}catch(e){return cv}}}
-function openByCode(v){const t=a2e(v).trim().replace(/^[#\s]+/,'');if(!/^\d+$/.test(t))return false;
+{const _s0=sheet;sheet=function(o){const cv=_s0(o);window._baseCv=(o&&o.bar)?cv:null;try{return pget('qrWa',false)?addBar(cv,o):cv}catch(e){return cv}}}
+function openByCode(v){const mm=String(v).match(/inv=(\d+)/);const t=a2e(mm?mm[1]:v).trim().replace(/^[#\s]+/,'');if(!/^\d+$/.test(t))return false;
   const r=S.invoices.find(x=>x.type==='inv'&&x.code&&+x.code===+t)||S.invoices.find(x=>x.code&&+x.code===+t);if(!r)return false;showRec(r,false,'');return true}
 (function(){
   let stream=null,timer=null;
@@ -902,15 +1009,15 @@ function openByCode(v){const t=a2e(v).trim().replace(/^[#\s]+/,'');if(!/^\d+$/.t
   $('hCam').onclick=async()=>{
     if($('scanOv'))return;
     const o=document.createElement('div');o.id='scanOv';
-    o.innerHTML='<button class="sx" type="button" aria-label="إغلاق">×</button><video playsinline muted></video><div id="scanMsg">وجّه الكاميرا على باركود الفاتورة</div><input id="scanIn" inputmode="numeric" placeholder="أو اكتب كود الفاتورة (مثلاً 0045)"><button class="main" type="button" id="scanGo">فتح</button>';
+    o.innerHTML='<button class="sx" type="button" aria-label="إغلاق">×</button><video playsinline muted></video><div id="scanMsg">وجّه الكاميرا على QR الفاتورة</div><input id="scanIn" inputmode="numeric" placeholder="أو اكتب كود الفاتورة (مثلاً 0045)"><button class="main" type="button" id="scanGo">فتح</button>';
     document.body.appendChild(o);
     o.querySelector('.sx').onclick=stop;
     const go=()=>{const v=$('scanIn').value;if(!v)return;if(openByCode(v))stop();else $('scanMsg').textContent='مفيش فاتورة بالكود ده'};
     $('scanGo').onclick=go;$('scanIn').onkeydown=e=>{if(e.key==='Enter')go()};
     const vid=o.querySelector('video');
-    if(!('BarcodeDetector' in window)||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){vid.style.display='none';$('scanMsg').textContent='المتصفح مش بيدعم مسح الباركود هنا. اكتب كود الفاتورة يدويًا.';return}
+    if(!('BarcodeDetector' in window)||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){vid.style.display='none';$('scanMsg').textContent='المتصفح مش بيدعم المسح هنا. اكتب كود الفاتورة يدويًا.';return}
     try{
-      const det=new BarcodeDetector({formats:['code_128']});
+      const det=new BarcodeDetector({formats:['qr_code','code_128']});
       stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
       vid.srcObject=stream;await vid.play();
       timer=setInterval(async()=>{try{const r=await det.detect(vid);if(r&&r.length)found(r[0].rawValue)}catch(e){}},300);
@@ -922,6 +1029,46 @@ function openByCode(v){const t=a2e(v).trim().replace(/^[#\s]+/,'');if(!/^\d+$/.t
   $('instBtn').onclick=async()=>{if(!dip)return;dip.prompt();try{await dip.userChoice}catch(e){}dip=null;$('instBtn').classList.add('hide')};
   window.addEventListener('appinstalled',()=>{const b=$('instBtn');if(b)b.classList.add('hide')});
   if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})})}
+})();
+
+/* فتح الفاتورة لما التطبيق يتفتح من رابط الـQR */
+(function(){const m=String(location.hash).match(/inv=(\d+)/);if(!m)return;let tries=0;
+  const t=setInterval(()=>{tries++;let ok=false;try{ok=openByCode(m[1])}catch(e){}
+    if(ok||tries>40){clearInterval(t);if(ok){try{history.replaceState(history.state,'',location.href.split('#')[0])}catch(e){}}}},500)})();
+
+/* ---------- الإعدادات: شاشة المربعات ---------- */
+(function(){
+  const st=$('t-st');if(!st)return;
+  const TT={shop:'بيانات المحل',design:'تصميم الفاتورة',opts:'خيارات وطباعة',notes:'ملاحظات وسطور ثابتة',pay:'طرق الدفع',close:'الإقفال والتقارير',wa:'رسائل الواتساب',debt:'تذكير المديونين',look:'شكل البرنامج',noti:'الإشعارات',lock:'القفل والأمان',save:'الحفظ والنسخ',wh:'المخزن'};
+  const ck=id=>{const e=$(id);return !!(e&&e.checked)},vl=id=>{const e=$(id);return e?e.value:''};
+  const subs=()=>{const S2={};
+    S2.shop=(typeof lsv==='function'?lsv('shop','ابو حامد لتجارة الاخشاب'):'')||'—';
+    S2.design='شكل وألوان · ورق '+(typeof lsv==='function'?lsv('prW','80'):'80')+' مم';
+    S2.opts=[ck('editInv')&&'تعديل',ck('dupInv')&&'تكرار',ck('prOn')&&'طباعة',(ck('qrWa')||ck('qrPr'))&&'QR'].filter(Boolean).join(' · ')||'—';
+    const nn=(ck('gnRedOn')?1:0)+(ck('gnOn')?1:0);S2.notes=nn?nn+(nn>2?' ملاحظات':' ملاحظة مفعّلة'):'مقفولة';
+    S2.pay='محفظة '+(vl('vfVal')||'0')+(vl('vfMode')==='pct'?'%':' ج');
+    S2.close=[ck('dayCl')&&'يومي',ck('monCl')&&'شهري'].filter(Boolean).join(' · ')||'مقفول';
+    S2.wa='فاتورة · دفعة · تذكير';
+    S2.debt=ck('dueBanChk')?'التنبيه شغال'+(ck('bulkRemChk')?' · تذكير الكل':''):'التنبيه مقفول';
+    S2.look=(ck('themeChk')?'ليلي':'نهاري')+(ck('xlChk')?' · نمط إكسل':'');
+    S2.noti=(ck('dueNotiChk')&&typeof Notification!=='undefined'&&Notification.permission==='granted')?'مفعّلة':'مقفولة';
+    S2.lock=ck('lkChk')?'مقفول برقم سري':'من غير قفل';
+    S2.save='نسخ · سلة · مزامنة';
+    S2.wh=[ck('whAlOn')&&'تنبيه النقص',ck('whWdOn')&&'أمتار الخشب'].filter(Boolean).join(' · ')||'—';
+    for(const k in S2){const e=$('sgs_'+k);if(e)e.textContent=S2[k]}};
+  const cards=[...st.querySelectorAll('.sgp')];
+  const show=key=>{st.dataset.cur=key||'';cards.forEach(c=>c.classList.toggle('sgshow',!!key&&c.dataset.sg===key));
+    st.querySelectorAll('.sgh').forEach(e=>e.classList.toggle('hide',!!key));
+    $('sgHead').classList.toggle('hide',!key);$('sgTitle').textContent=TT[key]||'';
+    if(key){['ivD','msgD','trD'].forEach(id=>{const d=$(id);if(d&&d.closest('.sgshow'))d.open=true})}else subs();
+    try{window.scrollTo(0,0)}catch(e){}};
+  st.addEventListener('click',e=>{const b=e.target.closest('.sgt');if(!b)return;const k=b.dataset.go;show(k);
+    try{history.replaceState({t:'st',sg:''},'');history.pushState({t:'st',sg:k},'')}catch(x){}});
+  $('sgBack').onclick=()=>{if(history.state&&history.state.sg){history.back()}else show('')};
+  window.addEventListener('popstate',e=>{const s0=e.state;if(s0&&s0.t==='st')setTimeout(()=>{if(!st.classList.contains('hide'))show(s0.sg||'')},0)});
+  let was=st.classList.contains('hide');
+  new MutationObserver(()=>{const h=st.classList.contains('hide');if(was&&!h)show('');was=h}).observe(st,{attributes:true,attributeFilter:['class']});
+  st.addEventListener('change',()=>{if(!st.dataset.cur)subs()});
 })();
 
 /* ---------- رسم الصورة (بدون مكتبات) ---------- */
@@ -1109,13 +1256,14 @@ function invSheet(r){const V=IV(),base={name:r.cname,date:stamp(r.ts),note:r.not
   return{...base,bar:r.code?fc(r):'',sub:+V.showSub?((lsv('docw','إذن صرف')?lsv('docw','إذن صرف')+' ':'')+'رقم '+r.no+(r.code?' · كود '+fc(r):'')):'',wa:1,owe:(+r.rest>0.5)?1:0,mini:1,pm:(+(r.paidRaw||r.paid||0)>0?r.pm||'':''),pmx:(+(r.paidRaw||r.paid||0)>0?r.pmx||(r.pm?null:{c:+(r.paidRaw||r.paid),w:0,i:0}):null),tables,gs,sum,gnote:[offNote(r),pget('gnOn',true)?(r.gnote||''):''].filter(Boolean).join('\n'),gnoteRed:pget('gnRedOn',true)?(r.gnoteRed||''):''}}
 
 /* ---------- عرض/حفظ/مشاركة الصورة ---------- */
-let curBlob=null,curName='',curPhone='',baseMsg='',curRec=null,delArm=false;
+let curCv=null,curBase=null,curBlob=null,curName='',curPhone='',baseMsg='',curRec=null,delArm=false;
 async function dl(blob,name){let d=null;try{d=window.claude?await claude.use('downloads'):null}catch(e){}
   if(d){try{await d.save({filename:name,data:blob});return'ok'}catch(e){if(e&&e.code==='declined')return'declined'}}
   try{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();return'anchor'}catch(e){return'fail'}}
 async function downloadCur(){if(!curBlob)return;const s=await dl(curBlob,curName);
   $('resm').textContent=baseMsg+({ok:' · تم حفظ الصورة ✓',anchor:' · تم تنزيل الصورة ✓',declined:' · تم الإلغاء',fail:' · اضغط مطولاً على الصورة لحفظها'}[s]||'')}
 async function showImg(cv,name,msg,auto,phone,rec){
+  curCv=cv;curBase=window._baseCv||null;
   curBlob=await new Promise(x=>cv.toBlob(x,'image/png'));curName=name;curPhone=phone||'';baseMsg=msg||'';curRec=rec||null;delArm=false;
   $('resdel').classList.toggle('hide',!rec);$('resedit').classList.toggle('hide',!(rec&&!rec.ret&&!rec.dep&&!rec.chq&&!rec.refund&&pget('editInv',true)&&!(rec.rows||[]).some(x=>x.cols)));$('resdup').classList.toggle('hide',!(rec&&rec.type==='inv'&&pget('dupInv',true)&&!(rec.rows||[]).some(x=>x.cols)));$('resdel').textContent='حذف';$('restx').classList.toggle('hide',!rec);$('resret').classList.toggle('hide',!(rec&&rec.type==='inv'&&!(rec.rows||[]).some(x=>x.cols)));$('resq2inv').classList.add('hide');if(rec)$('restx').href=txtLink(rec);
   let canS=false;try{canS=!!(navigator.canShare&&navigator.canShare({files:[new File([curBlob],name,{type:'image/png'})]}))}catch(e){}
@@ -2050,7 +2198,7 @@ async function lockInit(){bioOK=await bioAvail();
 /* ---------- بداية ---------- */
 /* ---------- المخزن ---------- */
 var _wm=null,selWh=null,prNext=0,whAlOpen=false,whTotOpen=false,whOpenG=new Set();
-function printCur(){if(!curBlob)return;const w=lsv('prW','80'),pw=w==='58'?48:72,url=URL.createObjectURL(curBlob);
+function printCur(bl){bl=bl||curBlob;if(!bl)return;const w=lsv('prW','80'),pw=w==='58'?48:72,url=URL.createObjectURL(bl);
   const f=document.createElement('iframe');f.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0';document.body.appendChild(f);
   const d=f.contentWindow.document;d.open();d.write('<!doctype html><html><head><meta charset="utf-8"><style>@page{size:'+w+'mm auto;margin:0}html,body{margin:0;padding:0;background:#fff}img{display:block;width:'+pw+'mm;margin:0 auto}</style></head><body><img src="'+url+'"></body></html>');d.close();
   const img=d.querySelector('img'),go=()=>{try{f.contentWindow.focus();f.contentWindow.print()}catch(e){$('resm').textContent='تعذر فتح الطباعة على الجهاز ده'}setTimeout(()=>{f.remove();URL.revokeObjectURL(url)},60000)};
@@ -2076,8 +2224,10 @@ async function btChar(){if(btCh&&btDev&&btDev.gatt.connected)return btCh;
   throw new Error('مش لاقي قناة كتابة في الطابعة دي')}
 async function btSend(u8){let sz=100;for(let t=0;t<2;t++){const ch=await btChar();try{for(let i=0;i<u8.length;i+=sz){const part=u8.slice(i,i+sz);if(ch.properties.writeWithoutResponse)await ch.writeValueWithoutResponse(part);else await ch.writeValue(part);await new Promise(r=>setTimeout(r,10))}return}catch(e){if(t||sz===20)throw e;sz=20;btCh=null}}}
 function rawbtSend(u8){let bin='';for(let i=0;i<u8.length;i+=8192)bin+=String.fromCharCode.apply(null,u8.subarray(i,i+8192));location.href='rawbt:base64,'+btoa(bin)}
-async function printDirect(blob){blob=(blob&&blob.size)?blob:curBlob;if(!blob)return;const m=lsv('prM','bt');
-  if(m==='dlg'){printCur();return}
+async function prBlob(){try{if(curRec&&curRec.type==='inv'&&curRec.code&&curBase){const want=!!pget('qrPr',true),has=!!pget('qrWa',false);
+    if(want!==has){const c2=want?addBar(curBase,{bar:fc(curRec)}):curBase,bb=await new Promise(r=>c2.toBlob(r,'image/png'));if(bb)return bb}}}catch(e){}return curBlob}
+async function printDirect(blob){blob=(blob&&blob.size)?blob:await prBlob();if(!blob)return;const m=lsv('prM','bt');
+  if(m==='dlg'){printCur(blob);return}
   if(prBusy)return;prBusy=true;
   try{prMsg('جارٍ الطباعة...');const u8=await escRaster(blob,lsv('prW','80')==='58'?384:576);
     if(m==='raw')rawbtSend(u8);else await btSend(u8);prMsg('تمت الطباعة ✓')}
@@ -2092,6 +2242,8 @@ $('prTest').onclick=async()=>{const cv=document.createElement('canvas');cv.width
   const b=await new Promise(r=>cv.toBlob(r,'image/png'));printDirect(b)};
 
 $('prOn').checked=pget('prOn',false);$('prOn').onchange=()=>{pset('prOn',$('prOn').checked);$('resprint').classList.toggle('hide',!$('prOn').checked||!curBlob)};
+$('qrWa').checked=pget('qrWa',false);$('qrWa').onchange=()=>pset('qrWa',$('qrWa').checked);
+$('qrPr').checked=pget('qrPr',true);$('qrPr').onchange=()=>pset('qrPr',$('qrPr').checked);
 $('prAuto').checked=pget('prAuto',false);$('prAuto').onchange=()=>pset('prAuto',$('prAuto').checked);
 $('prW').value=lsv('prW','80');$('prW').onchange=()=>svk('prW',$('prW').value);
 $('whWdOn').checked=pget('whWdOn',true);$('whWdOn').onchange=()=>{pset('whWdOn',$('whWdOn').checked);drawWh()};
