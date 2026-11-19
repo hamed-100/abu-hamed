@@ -485,7 +485,7 @@ thmApply();
 <div id="res" class="res-ov hide"><div class="card res-in">
   <div class="ro" style="color:var(--ink)"><b id="resm"></b><button class="del" id="resx" aria-label="إغلاق">×</button></div>
   <img id="resimg" alt="الصورة">
-  <div class="btns"><button class="main b-green" id="ressh">إرسال للعميل</button><a class="main b-green" id="reswa" target="_blank" rel="noopener" href="#">إرسال للعميل</a><button class="alt" id="resdl">حفظ الصورة</button><button class="alt hide" id="resprint">🖨️ طباعة</button></div>
+  <div class="btns"><button class="main b-green" id="ressh">إرسال للعميل</button><a class="main b-green" id="reswa" target="_blank" rel="noopener" href="#">إرسال للعميل</a><button class="alt" id="restg" type="button">✈️ تليجرام</button><button class="alt" id="resdl">حفظ الصورة</button><button class="alt hide" id="resprint">🖨️ طباعة</button></div>
   <div class="btns" style="margin-top:2px"><a class="lnk hide" id="restx" target="_blank" rel="noopener" href="#">نص فقط</a><button class="lnk hide" id="resedit">✏️ تعديل</button><button class="lnk hide" id="resdup">🔁 تكرار</button><button class="lnk hide" id="resret">↩️ مرتجع</button><button class="lnk hide" id="resq2inv">🧾 حوّل لفاتورة</button><button class="lnk hide" id="resdel" style="color:var(--danger)">حذف</button></div>
   <div class="mute" id="reshint"></div>
 </div></div>
@@ -517,7 +517,7 @@ thmApply();
     <div class="hsrch"><input id="hq" placeholder="ابحث: اسم · كود · مبلغ (700 · 600-800) · صنف · موقع" autocomplete="off"><button type="button" class="hcam" id="hCam" aria-label="مسح QR">📷</button><button type="button" class="hchev" id="hOpt" aria-label="خيارات">⌄</button></div>
     <div class="hpanel hide" id="hPanel">
       <div class="seg s" id="hPer" style="margin:8px 0 6px"><button data-p="w" class="on">الأسبوع</button><button data-p="d">اليوم</button><button data-p="m">الشهر</button><button data-p="all">الكل</button></div>
-      <div class="hbtns"><button class="ab" id="cashBtn">💵 الخزنة</button><button class="ab hide" id="dayClose">🧾 إقفال اليوم</button><button class="ab hide" id="monRep">📊 تقرير الشهر</button><button class="ab" id="cmpBtn">📈 مقارنة</button><button class="ab" id="daySum">📲 ملخص اليوم</button><button class="ab hide" id="instBtn">📲 تثبيت التطبيق</button></div>
+      <div class="hbtns"><button class="ab" id="cashBtn">💵 الخزنة</button><button class="ab hide" id="dayClose">🧾 إقفال اليوم</button><button class="ab hide" id="monRep">📊 تقرير الشهر</button><button class="ab" id="cmpBtn">📈 مقارنة</button><button class="ab" id="daySum">📲 ملخص اليوم</button><button class="ab" id="daySumTg">✈️ ملخص تليجرام</button><button class="ab hide" id="instBtn">📲 تثبيت التطبيق</button></div>
     </div>
     <span class="mute" id="hTot"></span>
   </div>
@@ -664,6 +664,7 @@ thmApply();
    <div class="sgl">العملاء</div>
    <div class="sgg">
     <button type="button" class="sgt" data-go="wa"><span class="sgi">💬</span><span class="sgx"><b>رسائل الواتساب</b><small id="sgs_wa"></small></span></button>
+    <button type="button" class="sgt" data-go="tg"><span class="sgi">✈️</span><span class="sgx"><b>تليجرام</b><small id="sgs_tg"></small></span></button>
     <button type="button" class="sgt" data-go="debt"><span class="sgi">🔔</span><span class="sgx"><b>تذكير المديونين</b><small id="sgs_debt"></small></span></button>
    </div>
    <div class="sgl">البرنامج</div>
@@ -804,6 +805,21 @@ thmApply();
       <div class="btns"><button class="main" id="lkSave">تفعيل القفل</button></div></div>
     <label class="opt hide" id="lkBioBox"><input type="checkbox" id="lkBio"> الفتح بالبصمة</label>
     <div class="info" id="lkMsg"></div></div>
+  <div class="card sgp" data-sg="tg"><b>✈️ تليجرام</b>
+    <div class="mute" style="margin:4px 0 6px">ابعت لنفسك على تليجرام تلقائي: نسخة احتياطية يومية وملخص اليوم وصورة كل فاتورة. محتاج بوت (دقيقتين، مرة واحدة):</div>
+    <ol style="margin:0 0 8px;padding-inline-start:20px;font-size:13px;line-height:1.9">
+      <li>في تليجرام دوّر على <b>@BotFather</b> وابعتله <b>/newbot</b> واختار اسم. هيديك <b>توكن</b>، انسخه.</li>
+      <li>افتح البوت اللي عملته وابعتله أي رسالة (مثلًا /start).</li>
+      <li>الصق التوكن تحت ودوس «هات Chat ID».</li>
+    </ol>
+    <label>توكن البوت</label><input id="tgTok" type="password" autocomplete="off" placeholder="123456789:AAH...">
+    <label>Chat ID</label><input id="tgChat" inputmode="numeric" placeholder="بيتملّي لوحده">
+    <div class="btns"><button class="alt" id="tgGet" type="button">🔎 هات Chat ID</button><button class="main" id="tgTest" type="button">🧪 اختبار</button></div>
+    <label class="opt"><input type="checkbox" id="tgBk"> نسخة احتياطية تلقائية على تليجرام كل يوم</label>
+    <label class="opt"><input type="checkbox" id="tgInv"> ابعتلي صورة كل فاتورة بعد ما تتحفظ</label>
+    <div class="info" id="tgMsg" style="white-space:pre-line"></div>
+    <div class="mute" style="font-size:12px;margin-top:6px">التوكن بيتخزّن على الجهاز ده بس (مش في السحابة ومش في النسخ الاحتياطية). ماتبعتوش لحد وماتصوّرش الشاشة وهو ظاهر.</div>
+  </div>
   <div class="card sgp" data-sg="lock"><b>🔐 رقم سري للحاجات الحساسة</b>
     <div class="mute" style="margin:4px 0 6px">رقم تاني غير قفل التطبيق، بيتطلب قبل الحذف وتعديل الفواتير وفتح الربح. بعد ما تدخله صح بيفضل مفتوح 5 دقايق.</div>
     <label class="opt"><input type="checkbox" id="secOn"> تفعيل الرقم السري الحساس</label>
@@ -833,7 +849,7 @@ thmApply();
   <div class="card sgp" data-sg="save"><b>مساحة التخزين على الجهاز</b><div id="stoBox" style="margin-top:4px;font-size:14px">جاري القراءة…</div><button class="alt" id="stoPersist" style="margin-top:8px">فعّل التخزين الدائم</button></div>
   <div class="card sgp" data-sg="save"><b>النسخة الاحتياطية</b><div class="mute" id="bkInfo" style="margin-top:4px"></div>
     <div style="margin-top:8px"><div class="mute" style="font-size:12px">🗂️ نسخ تلقائية على الجهاز (بتتاخد مرة كل يوم، آخر 7 أيام)</div><div id="snapList" style="margin-top:4px"></div><div class="info" id="snapMsg"></div></div>
-    <div class="btns"><button class="main" id="bkSave">حفظ نسخة</button><button class="alt" id="bkShare">📤 مشاركة النسخة (واتس / درايف)</button><button class="alt" id="bkLoad">استرجاع نسخة</button><button class="alt" id="bkChk">🩺 فحص سلامة البيانات</button><input type="file" id="bkFile" accept=".json,application/json" class="hide"></div><div class="info" id="bkMsg"></div></div>
+    <div class="btns"><button class="main" id="bkSave">حفظ نسخة</button><button class="alt" id="bkShare">📤 مشاركة النسخة (واتس / درايف)</button><button class="alt" id="bkTg">✈️ نسخة على تليجرام</button><button class="alt" id="bkLoad">استرجاع نسخة</button><button class="alt" id="bkChk">🩺 فحص سلامة البيانات</button><input type="file" id="bkFile" accept=".json,.txt,application/json,text/plain" class="hide"></div><div class="info" id="bkMsg"></div></div>
   <div class="card sgp" data-sg="save"><b>المزامنة السحابية</b><div id="fbStat" style="margin:4px 0 8px;font-size:14px">غير مربوطة.</div>
     <div class="btns" style="margin:0"><button class="main" id="fbGoogle">دخول بحساب Google</button><button class="alt b-red" id="fbOff">فصل</button></div>
     <a href="#" id="fbMore" style="display:inline-block;margin-top:10px;font-size:14px">دخول بالإيميل بدلاً من Google</a>
@@ -844,7 +860,7 @@ thmApply();
     <label class="opt"><input type="checkbox" id="whWdOn"> إظهار أمتار الخشب (زان/سويد) في السجل</label>
     <label style="margin-top:6px">أنواع خشب تتحسب لوحدها (مثال: زان). باقي الأصناف بتتحسب سويد</label>
     <textarea id="woodsT" rows="2" style="direction:rtl;text-align:right;font-size:14px"></textarea></div>
-  <div class="card sgh"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.77 · تحديث 17 نوفمبر 2026 · رسائل الواتساب: أسلوب واحد + مفاتيح + معاينة (والتعديل اليدوي في «متقدم»)</div></div>
+  <div class="card sgh"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.80 · تحديث 19 نوفمبر 2026 · مشاركة النسخة بصيغة txt (تفتح في واتساب) + رسالة واضحة لو المشاركة مش متاحة</div></div>
 </section>
 
 <div id="calcModal" class="calc-modal hide">
@@ -1153,7 +1169,7 @@ function openByCode(v){const mi=String(v).match(/item=([\w-]+)/);
 /* ---------- الإعدادات: شاشة المربعات ---------- */
 (function(){
   const st=$('t-st');if(!st)return;
-  const TT={shop:'بيانات المحل',design:'تصميم الفاتورة',opts:'خيارات وطباعة',notes:'ملاحظات وسطور ثابتة',pay:'طرق الدفع',close:'الإقفال والتقارير',wa:'رسائل الواتساب',debt:'تذكير المديونين',look:'شكل البرنامج',noti:'الإشعارات',lock:'القفل والأمان',save:'الحفظ والنسخ',wh:'المخزن'};
+  const TT={shop:'بيانات المحل',design:'تصميم الفاتورة',opts:'خيارات وطباعة',notes:'ملاحظات وسطور ثابتة',pay:'طرق الدفع',close:'الإقفال والتقارير',wa:'رسائل الواتساب',tg:'تليجرام',debt:'تذكير المديونين',look:'شكل البرنامج',noti:'الإشعارات',lock:'القفل والأمان',save:'الحفظ والنسخ',wh:'المخزن'};
   const ck=id=>{const e=$(id);return !!(e&&e.checked)},vl=id=>{const e=$(id);return e?e.value:''};
   const subs=()=>{const S2={};
     S2.shop=(typeof lsv==='function'?lsv('shop','ابو حامد لتجارة الاخشاب'):'')||'—';
@@ -1162,7 +1178,7 @@ function openByCode(v){const mi=String(v).match(/item=([\w-]+)/);
     const nn=(ck('gnRedOn')?1:0)+(ck('gnOn')?1:0);S2.notes=nn?nn+(nn>2?' ملاحظات':' ملاحظة مفعّلة'):'مقفولة';
     S2.pay='محفظة '+(vl('vfVal')||'0')+(vl('vfMode')==='pct'?'%':' ج');
     S2.close=[ck('dayCl')&&'يومي',ck('monCl')&&'شهري'].filter(Boolean).join(' · ')||'مقفول';
-    S2.wa='فاتورة · دفعة · تذكير';
+    S2.wa='فاتورة · دفعة · تذكير';S2.tg=(lsv('tgTok','')&&lsv('tgChat',''))?'مربوط ✓'+(ck('tgBk')?' · نسخة يومية':''):'مش مربوط';
     S2.debt=ck('dueBanChk')?'التنبيه شغال'+(ck('bulkRemChk')?' · تذكير الكل':''):'التنبيه مقفول';
     S2.look=(ck('themeChk')?'ليلي':'نهاري')+(ck('xlChk')?' · نمط إكسل':'');
     S2.noti=(ck('dueNotiChk')&&typeof Notification!=='undefined'&&Notification.permission==='granted')?'مفعّلة':'مقفولة';
@@ -1213,10 +1229,13 @@ $('sumRem').checked=pget('sumRem',false);$('sumRem').onchange=()=>{pset('sumRem'
 setInterval(()=>{try{sumBan()}catch(e){}},600000);
 
 const bkObj=()=>({app:'ElTabakha',v:1,at:Date.now(),items:S.items,customers:S.customers,invoices:S.invoices,expenses:S.expenses,quotes:S.quotes,cash:S.cash,reservations:S.reservations,cheques:S.cheques,recurring:S.recurring,purchases:S.purchases});
-$('bkShare').onclick=async()=>{const name='نسخة-ابو-حامد-'+dshort(Date.now()).replace(/\//g,'-')+'.json',file=new File([new Blob([JSON.stringify(bkObj())],{type:'application/json'})],name,{type:'application/json'});
-  try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name});try{localStorage.setItem('lastBackup',Date.now())}catch(e){}bkInfo();bkBan();$('bkMsg').textContent='تم إرسال النسخة ✓';return}}
-  catch(e){if(e&&e.name==='AbortError'){$('bkMsg').textContent='تم الإلغاء';return}}
-  $('bkSave').click()};
+$('bkShare').onclick=async()=>{const base='نسخة-ابو-حامد-'+dshort(Date.now()).replace(/\//g,'-'),json=JSON.stringify(bkObj()),file=new File([new Blob([json],{type:'text/plain'})],base+'.txt',{type:'text/plain'}),m=$('bkMsg');
+  const done=()=>{try{localStorage.setItem('lastBackup',Date.now())}catch(e){}bkInfo();bkBan()};
+  try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:base});done();m.textContent='تم إرسال النسخة ✓';return}
+    m.textContent='المشاركة بالملفات مش متاحة هنا (غالبًا لأن البرنامج مفتوح من معاينة Claude أو متصفح داخلي). افتحه من أيقونة التطبيق المثبّتة أو من Chrome مباشرة. جاري حفظ الملف بدلًا منها...'}
+  catch(e){if(e&&e.name==='AbortError'){m.textContent='تم الإلغاء';return}m.textContent='تعذرت المشاركة ('+((e&&e.name)||'خطأ')+'). جاري حفظ الملف بدلًا منها...'}
+  const r=await dl(new Blob([json],{type:'application/json'}),base+'.json');
+  m.textContent+=' '+({ok:'✓ اتحفظ الملف',anchor:'✓ اتنزّل الملف في Download',declined:'اتلغى',fail:'تعذر الحفظ'}[r]||'');if(r==='ok'||r==='anchor')done()};
 $('bkChk').onclick=async()=>{const out=[],ok=t=>out.push('✅ '+t),bad=t=>out.push('⚠ '+t);
   const rd=k=>new Promise(res=>{try{if(!LIDB)return res(undefined);const rq=LIDB.transaction('d').objectStore('d').get(k);rq.onsuccess=()=>res(rq.result);rq.onerror=()=>res(null)}catch(e){res(null)}});
   for(const [k,lab] of [['invoices','الفواتير والدفعات'],['customers','العملاء']]){const raw=await rd(k);
@@ -1408,6 +1427,52 @@ new MutationObserver(()=>{if(document.querySelector('#t-st.sgshow,#t-st:not(.hid
   $('msgD').addEventListener('toggle',()=>{if($('msgD').open)simple()});
   setTimeout(simple,150);
 })();
+
+/* ---------- تليجرام ---------- */
+const tgCfg=()=>({t:lsv('tgTok',''),c:lsv('tgChat','')});
+const tgOk=()=>{const c=tgCfg();return !!(c.t&&c.c)};
+async function tgCall(m,body){const {t}=tgCfg();if(!t)throw new Error('مفيش توكن');
+  let r;try{r=await fetch('https://api.telegram.org/bot'+t+'/'+m,body?{method:'POST',body}:undefined)}catch(e){throw new Error('تعذر الاتصال بتليجرام (النت أو الشبكة بتحجبه)')}
+  let j;try{j=await r.json()}catch(e){throw new Error('رد غير مفهوم من تليجرام')}
+  if(!j.ok)throw new Error(j.description||'فشل الإرسال');return j.result}
+function tgFd(o){const fd=new FormData();fd.append('chat_id',tgCfg().c);for(const k in o){if(o[k]==null)continue;if(Array.isArray(o[k]))fd.append(k,o[k][0],o[k][1]);else fd.append(k,o[k])}return fd}
+const tgText=t=>tgCall('sendMessage',tgFd({text:String(t).slice(0,4000)}));
+const tgDoc=(blob,name,cap)=>tgCall('sendDocument',tgFd({document:[blob,name],caption:cap?String(cap).slice(0,1000):null}));
+const tgPhoto=(blob,name,cap)=>tgCall('sendPhoto',tgFd({photo:[blob,name],caption:cap?String(cap).slice(0,1000):null}));
+const tgSay=t=>{const e=$('tgMsg');if(e)e.textContent=t};
+async function tgBackup(auto){if(!tgOk()){tgSay('اربط التليجرام الأول (الإعدادات ← تليجرام).');return false}
+  const name='نسخة-ابو-حامد-'+dshort(Date.now()).replace(/\//g,'-')+'.json';
+  try{await tgDoc(new Blob([JSON.stringify(bkObj())],{type:'application/json'}),name,'📦 نسخة احتياطية '+(auto?'تلقائية ':'')+stamp(Date.now())+'\n'+S.customers.length+' عميل · '+S.invoices.length+' فاتورة/دفعة');
+    try{localStorage.setItem('tgLastBk',Date.now());localStorage.setItem('lastBackup',Date.now())}catch(e){}try{bkInfo();bkBan()}catch(e){}
+    tgSay('✅ اتبعتت النسخة على تليجرام ('+stamp(Date.now())+')');return true}
+  catch(e){tgSay('⚠ '+e.message);return false}}
+async function tgAuto(r){if(!tgOk()||!pget('tgInv',false)||!curBlob)return;
+  try{await tgPhoto(curBlob,curName||'invoice.png','🧾 '+(r.type==='pay'?'دفعة':'فاتورة #'+r.no)+' — '+(r.cname||'')+' — '+f(r.type==='pay'?r.amount:val(r)))}catch(e){tgSay('⚠ فاتورة ماتبعتتش: '+e.message)}}
+$('daySumTg').onclick=async()=>{const t=daySummary(Date.now());
+  if(tgOk()){try{await tgText(t);$('daySumTg').textContent='✅ اتبعت';setTimeout(()=>{$('daySumTg').textContent='✈️ ملخص تليجرام'},2500)}catch(e){alert('تليجرام: '+e.message)}}
+  else window.open('https://t.me/share/url?url=&text='+encodeURIComponent(t),'_blank')};
+$('bkTg').onclick=async()=>{const m=$('bkMsg');m.textContent='جاري الإرسال لتليجرام...';
+  if(!tgOk()){m.textContent='اربط التليجرام الأول: الإعدادات ← تليجرام.';return}
+  const ok=await tgBackup(false);m.textContent=ok?'✅ اتبعتت النسخة على تليجرام':'⚠ '+($('tgMsg')?$('tgMsg').textContent:'فشل')};
+$('restg').onclick=async()=>{if(!curBlob)return;const ph=waNum(curPhone),file=new File([curBlob],curName||'invoice.png',{type:'image/png'});
+  if(!ph&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:curName||''});return}catch(e){if(e&&e.name==='AbortError')return}}
+  let copied=false;try{await navigator.clipboard.write([new ClipboardItem({'image/png':curBlob})]);copied=true}catch(e){}
+  $('resm').textContent=baseMsg+(copied?' · الصورة اتنسخت: افتح الشات والصقها (اضغط مطولًا ثم لصق)':' · احفظ الصورة وارفقها في تليجرام');
+  window.open(ph?'https://t.me/+'+ph:'https://t.me/','_blank')};
+$('tgGet').onclick=async()=>{const t=$('tgTok').value.trim();if(!/^\d{6,}:[\w-]{20,}$/.test(t)){tgSay('التوكن شكله غلط. انسخه كامل من BotFather.');return}
+  try{localStorage.setItem('tgTok',t)}catch(e){}tgSay('جاري البحث...');
+  try{const u=await tgCall('getUpdates');let id=null;for(let i=u.length-1;i>=0&&!id;i--){const x=u[i],c=(x.message&&x.message.chat)||(x.my_chat_member&&x.my_chat_member.chat)||(x.channel_post&&x.channel_post.chat);if(c)id=c.id}
+    if(id){$('tgChat').value=id;try{localStorage.setItem('tgChat',String(id))}catch(e){}tgSay('✅ لقيت الـChat ID. دوس «اختبار».')}else tgSay('مالقيتش رسايل. افتح البوت في تليجرام وابعتله /start وجرّب تاني.')}
+  catch(e){tgSay('⚠ '+e.message)}};
+$('tgTest').onclick=async()=>{const t=$('tgTok').value.trim(),c=$('tgChat').value.trim();try{localStorage.setItem('tgTok',t);localStorage.setItem('tgChat',c)}catch(e){}
+  if(!tgOk()){tgSay('اكتب التوكن والـChat ID (أو دوس «هات Chat ID»).');return}tgSay('جاري الاختبار...');
+  try{await tgText('✅ تمام! البرنامج اتربط بتليجرام.\n'+shopN());tgSay('✅ وصلت رسالة تجربة على تليجرام.')}catch(e){tgSay('⚠ '+e.message)}};
+setTimeout(()=>{$('tgTok').value=lsv('tgTok','');$('tgChat').value=lsv('tgChat','');
+  $('tgTok').onchange=()=>{try{localStorage.setItem('tgTok',$('tgTok').value.trim())}catch(e){}};$('tgChat').onchange=()=>{try{localStorage.setItem('tgChat',$('tgChat').value.trim())}catch(e){}};
+  $('tgBk').checked=pget('tgBk',false);$('tgBk').onchange=()=>{pset('tgBk',$('tgBk').checked);if($('tgBk').checked&&tgOk())tgBackup(false)};
+  $('tgInv').checked=pget('tgInv',false);$('tgInv').onchange=()=>pset('tgInv',$('tgInv').checked)},0);
+function tgDaily(){try{if(pget('tgBk',false)&&tgOk()&&Date.now()-(+localStorage.getItem('tgLastBk')||0)>20*36e5)tgBackup(true)}catch(e){}}
+setTimeout(tgDaily,12000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(tgDaily,3000)});
 
 /* ---------- رسم الصورة (بدون مكتبات) ---------- */
 const IVD={ttl:'العميل /',nPre:'ملاحظة:',hBayan:'البيان',hSize:'المقاس',hCnt:'العدد',hQty:'الكمية',hPrice:'السعر',hVal:'القيمة',
@@ -1688,7 +1753,8 @@ async function showImg(cv,name,msg,auto,phone,rec){
   curCv=cv;curBase=window._baseCv||null;curBlob=null;
   try{const rs=$('res'),im0=$('resimg');let pv=$('resPrev');if(!pv){pv=document.createElement('canvas');pv.id='resPrev';pv.style.cssText='width:100%;border-radius:6px;border:1px solid var(--line);background:var(--card);margin-top:6px;display:block';im0.insertAdjacentElement('beforebegin',pv)}
     pv.width=cv.width;pv.height=cv.height;pv.getContext('2d').drawImage(cv,0,0);pv.style.display='block';im0.style.display='none';$('resm').textContent=msg||'';rs.classList.add('busyRes');rs.classList.remove('hide');rs.scrollIntoView({block:'start'})}catch(e){}
-  curBlob=await new Promise(x=>cv.toBlob(x,'image/png'));$('res').classList.remove('busyRes');curName=name;curPhone=phone||'';baseMsg=msg||'';curRec=rec||null;delArm=false;
+  curBlob=await new Promise(x=>cv.toBlob(x,'image/png'));$('res').classList.remove('busyRes');
+  try{if(window._tgNew&&rec&&window._tgNew===rec.id){window._tgNew=null;setTimeout(()=>{try{tgAuto(rec)}catch(e){}},0)}}catch(e){}curName=name;curPhone=phone||'';baseMsg=msg||'';curRec=rec||null;delArm=false;
   $('resdel').classList.toggle('hide',!rec);$('resedit').classList.toggle('hide',!(rec&&!rec.ret&&!rec.dep&&!rec.chq&&!rec.refund&&pget('editInv',true)&&!(rec.rows||[]).some(x=>x.cols)));$('resdup').classList.toggle('hide',!(rec&&rec.type==='inv'&&pget('dupInv',true)&&!(rec.rows||[]).some(x=>x.cols)));$('resdel').textContent='حذف';$('restx').classList.toggle('hide',!rec);$('resret').classList.toggle('hide',!(rec&&rec.type==='inv'&&!(rec.rows||[]).some(x=>x.cols)));$('resq2inv').classList.add('hide');if(rec)$('restx').href=txtLink(rec);
   let canS=false;try{canS=!!(navigator.canShare&&navigator.canShare({files:[new File([curBlob],name,{type:'image/png'})]}))}catch(e){}
   const hasPh=!!waNum(curPhone);
@@ -1963,7 +2029,7 @@ async function doSave(img){const m=$('msg');m.textContent='';
     if(hasRows){const total=RN(TOT.sub+nyl-dsc+prev);
       r={id:uid(),code:nextCode(),type:'inv',cid:c.id,cname:name,phone:c.phone,no:nextNo(c),ts:Date.now(),rows:TOT.rows,tq:TOT.tq,tv:TOT.tv,sub:TOT.sub,wk:TOT.wk,mk:TOT.mk,xp:TOT.xp,nylon:nyl,disc:dsc,paidRaw:TOT.paidRaw,pf:TOT.pf,pfv:TOT.pfv,pfWhy:TOT.pfWhy,pm:TOT.pm,pmx:TOT.pmx,vfp:TOT.vfp,vfm:TOT.vfm,prev,total,paid:TOT.paid,rest:rd2(total-TOT.paid),note,gnote:getGN(),gnoteRed:getGR()}}
     else r={id:uid(),code:nextCode(),type:'pay',cid:c.id,cname:name,phone:c.phone,ts:Date.now(),amount:TOT.paid,amtRaw:TOT.paidRaw,pf:TOT.pf,pfv:TOT.pfv,pfWhy:TOT.pfWhy,pm:TOT.pm,pmx:TOT.pmx,vfp:TOT.vfp,vfm:TOT.vfm,prev,rest:rd2(prev-TOT.paid),note};
-    S.invoices.push(r);put('invoices',r);if(resLoad&&hasRows){resLoad.st=1;resLoad.inv=r.id;put('reservations',resLoad);rsUpd()}clearInv();setTimeout(()=>{try{drawCusts();drawDash()}catch(e){}},0);
+    S.invoices.push(r);put('invoices',r);window._tgNew=r.id;if(resLoad&&hasRows){resLoad.st=1;resLoad.inv=r.id;put('reservations',resLoad);rsUpd()}clearInv();setTimeout(()=>{try{drawCusts();drawDash()}catch(e){}},0);
     await showRec(r,img,hasRows?'تم حفظ الفاتورة ✓':'تم تسجيل الدفعة ✓');if(!img&&$('autoWa').checked){let can=false;try{can=!!(navigator.canShare&&navigator.canShare({files:[new File([curBlob],curName,{type:'image/png'})]}))}catch(e){}if(can)$('ressh').click();else if(waNum(r.phone))$('reswa').click()}}
   catch(e){m.textContent='حصل خطأ: '+(e&&e.message||e)}}
 $('save').onclick=()=>{prNext=Date.now();doSave(false)};$('saveImg').onclick=()=>{prNext=Date.now();doSave(true)};
@@ -2004,8 +2070,9 @@ function remLink(c){return 'https://wa.me/'+waNum(c.phone)+'?text='+encodeURICom
 /* ---------- النسخة الاحتياطية ---------- */
 function bkInfo(){let t=0;try{t=+localStorage.getItem('lastBackup')}catch(e){}$('bkInfo').textContent=db?'☁️ المزامنة السحابية شغالة، بياناتك متخزنة أونلاين'+(t?' · آخر نسخة ملف: '+stamp(t):''):t?'آخر نسخة: '+stamp(t)+(Date.now()-t>6048e5?' ⚠ عدّى أكتر من أسبوع، احفظ نسخة جديدة':''):'⚠ لم تحفظ نسخة احتياطية بعد. البيانات على هذا الجهاز فقط.'}
 $('bkSave').onclick=async()=>{const data={app:'ElTabakha',v:1,at:Date.now(),items:S.items,customers:S.customers,invoices:S.invoices,expenses:S.expenses,quotes:S.quotes,cash:S.cash,reservations:S.reservations,cheques:S.cheques,recurring:S.recurring,purchases:S.purchases};
-  const r=await dl(new Blob([JSON.stringify(data)],{type:'application/json'}),'نسخة-ابو-حامد-'+dshort(Date.now()).replace(/\//g,'-')+'.json');
-  $('bkMsg').textContent={ok:'تم حفظ النسخة ✓',anchor:'تم تنزيل النسخة ✓',declined:'تم الإلغاء',fail:'تعذر حفظ الملف'}[r]||'';
+  const fn='نسخة-ابو-حامد-'+dshort(Date.now()).replace(/\//g,'-')+'.json';
+  const r=await dl(new Blob([JSON.stringify(data)],{type:'application/json'}),fn);
+  $('bkMsg').textContent={ok:'تم حفظ النسخة ✓',anchor:'تم تنزيل النسخة ✓ باسم «'+fn+'» في فولدر Download. لو مش لاقيها: افتح تطبيق الملفات ← تبويب «الأخيرة» (أيقونة الساعة)، أو دوّر بكلمة «نسخة». ولو لسه مش ظاهرة استخدم «📤 مشاركة النسخة».',declined:'تم الإلغاء',fail:'تعذر حفظ الملف. استخدم «📤 مشاركة النسخة» وحفظها في الملفات أو درايف.'}[r]||'';
   if(r==='ok'||r==='anchor'){try{localStorage.setItem('lastBackup',Date.now())}catch(e){}bkInfo();bkBan()}};
 $('bkLoad').onclick=()=>$('bkFile').click();
 $('bkFile').onchange=async e=>{const fl=e.target.files[0];e.target.value='';if(!fl)return;
