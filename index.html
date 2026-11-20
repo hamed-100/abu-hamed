@@ -531,6 +531,7 @@ thmApply();
   <div class="card hide" id="chBan"></div>
   <div class="card hide" id="autoBan"></div>
   <div class="card hide" id="bkBanner" style="border-color:var(--danger)"><div class="ro" style="color:var(--ink)"><span>⚠ <span id="bkBTxt"></span></span><span style="display:flex;gap:6px"><button class="ab" id="bkNow">احفظ نسخة</button><button class="lnk" id="bkLater">لاحقاً</button></span></div></div>
+  <div class="card hide" id="bkDayBan" style="border-color:#1d9a5b"><div class="ro" style="color:var(--ink)"><span>📦 نسخة النهارده لسه ماتبعتتش على الواتس</span><span style="display:flex;gap:6px"><button class="ab" id="bkDayNow" type="button">📤 ابعتها</button><button class="lnk" id="bkDayLater" type="button">لاحقاً</button></span></div></div>
   <div class="card hide" id="editBar"><div class="ro" style="color:var(--ink)"><b id="editBarT"></b><button class="lnk" id="editCancel" style="color:var(--danger)">إلغاء التعديل</button></div></div>
   <div class="card">
     <label>العميل</label>
@@ -849,7 +850,8 @@ thmApply();
   <div class="card sgp" data-sg="save"><b>مساحة التخزين على الجهاز</b><div id="stoBox" style="margin-top:4px;font-size:14px">جاري القراءة…</div><button class="alt" id="stoPersist" style="margin-top:8px">فعّل التخزين الدائم</button></div>
   <div class="card sgp" data-sg="save"><b>النسخة الاحتياطية</b><div class="mute" id="bkInfo" style="margin-top:4px"></div>
     <div style="margin-top:8px"><div class="mute" style="font-size:12px">🗂️ نسخ تلقائية على الجهاز (بتتاخد مرة كل يوم، آخر 7 أيام)</div><div id="snapList" style="margin-top:4px"></div><div class="info" id="snapMsg"></div></div>
-    <div class="btns"><button class="main" id="bkSave">حفظ نسخة</button><button class="alt" id="bkShare">📤 مشاركة النسخة (واتس / درايف)</button><button class="alt" id="bkTg">✈️ نسخة على تليجرام</button><button class="alt" id="bkLoad">استرجاع نسخة</button><button class="alt" id="bkChk">🩺 فحص سلامة البيانات</button><input type="file" id="bkFile" accept=".json,.txt,application/json,text/plain" class="hide"></div><div class="info" id="bkMsg"></div></div>
+    <div class="btns"><button class="main" id="bkSave">حفظ نسخة</button><button class="alt" id="bkShare">📤 مشاركة النسخة (واتس / درايف)</button><button class="alt" id="bkTg">✈️ نسخة على تليجرام</button><button class="alt" id="bkLoad">استرجاع نسخة</button><button class="alt" id="bkChk">🩺 فحص سلامة البيانات</button><input type="file" id="bkFile" accept=".json,.txt,application/json,text/plain" class="hide"></div><label class="opt"><input type="checkbox" id="bkDay"> فكّرني كل يوم أبعت نسخة على الواتس (بدوسة واحدة)</label>
+    <div class="info" id="bkMsg"></div></div>
   <div class="card sgp" data-sg="save"><b>المزامنة السحابية</b><div id="fbStat" style="margin:4px 0 8px;font-size:14px">غير مربوطة.</div>
     <div class="btns" style="margin:0"><button class="main" id="fbGoogle">دخول بحساب Google</button><button class="alt b-red" id="fbOff">فصل</button></div>
     <a href="#" id="fbMore" style="display:inline-block;margin-top:10px;font-size:14px">دخول بالإيميل بدلاً من Google</a>
@@ -860,7 +862,7 @@ thmApply();
     <label class="opt"><input type="checkbox" id="whWdOn"> إظهار أمتار الخشب (زان/سويد) في السجل</label>
     <label style="margin-top:6px">أنواع خشب تتحسب لوحدها (مثال: زان). باقي الأصناف بتتحسب سويد</label>
     <textarea id="woodsT" rows="2" style="direction:rtl;text-align:right;font-size:14px"></textarea></div>
-  <div class="card sgh"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.80 · تحديث 19 نوفمبر 2026 · مشاركة النسخة بصيغة txt (تفتح في واتساب) + رسالة واضحة لو المشاركة مش متاحة</div></div>
+  <div class="card sgh"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.82 · تحديث 19 نوفمبر 2026 · زر تليجرام يفتح شات العميل مباشرة + تذكير يومي بنسخة الواتس</div></div>
 </section>
 
 <div id="calcModal" class="calc-modal hide">
@@ -1230,7 +1232,7 @@ setInterval(()=>{try{sumBan()}catch(e){}},600000);
 
 const bkObj=()=>({app:'ElTabakha',v:1,at:Date.now(),items:S.items,customers:S.customers,invoices:S.invoices,expenses:S.expenses,quotes:S.quotes,cash:S.cash,reservations:S.reservations,cheques:S.cheques,recurring:S.recurring,purchases:S.purchases});
 $('bkShare').onclick=async()=>{const base='نسخة-ابو-حامد-'+dshort(Date.now()).replace(/\//g,'-'),json=JSON.stringify(bkObj()),file=new File([new Blob([json],{type:'text/plain'})],base+'.txt',{type:'text/plain'}),m=$('bkMsg');
-  const done=()=>{try{localStorage.setItem('lastBackup',Date.now())}catch(e){}bkInfo();bkBan()};
+  const done=()=>{try{localStorage.setItem('lastBackup',Date.now());localStorage.setItem('bkDayAt',dshort(Date.now()))}catch(e){}bkInfo();bkBan();bkDayChk()};
   try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:base});done();m.textContent='تم إرسال النسخة ✓';return}
     m.textContent='المشاركة بالملفات مش متاحة هنا (غالبًا لأن البرنامج مفتوح من معاينة Claude أو متصفح داخلي). افتحه من أيقونة التطبيق المثبّتة أو من Chrome مباشرة. جاري حفظ الملف بدلًا منها...'}
   catch(e){if(e&&e.name==='AbortError'){m.textContent='تم الإلغاء';return}m.textContent='تعذرت المشاركة ('+((e&&e.name)||'خطأ')+'). جاري حفظ الملف بدلًا منها...'}
@@ -1452,13 +1454,22 @@ $('daySumTg').onclick=async()=>{const t=daySummary(Date.now());
   if(tgOk()){try{await tgText(t);$('daySumTg').textContent='✅ اتبعت';setTimeout(()=>{$('daySumTg').textContent='✈️ ملخص تليجرام'},2500)}catch(e){alert('تليجرام: '+e.message)}}
   else window.open('https://t.me/share/url?url=&text='+encodeURIComponent(t),'_blank')};
 $('bkTg').onclick=async()=>{const m=$('bkMsg');m.textContent='جاري الإرسال لتليجرام...';
-  if(!tgOk()){m.textContent='اربط التليجرام الأول: الإعدادات ← تليجرام.';return}
+  if(!tgOk()){m.textContent='لازم تربط بوت تليجرام الأول، جاري فتح صفحة الربط...';setTimeout(()=>{goT('st');setTimeout(()=>{const t=document.querySelector('.sgt[data-go="tg"]');if(t)t.click()},200)},700);return}
   const ok=await tgBackup(false);m.textContent=ok?'✅ اتبعتت النسخة على تليجرام':'⚠ '+($('tgMsg')?$('tgMsg').textContent:'فشل')};
-$('restg').onclick=async()=>{if(!curBlob)return;const ph=waNum(curPhone),file=new File([curBlob],curName||'invoice.png',{type:'image/png'});
-  if(!ph&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:curName||''});return}catch(e){if(e&&e.name==='AbortError')return}}
+function tgTarget(){const rec=(typeof curRec!=='undefined'&&curRec)?curRec:null;let c=null;
+  if(rec&&rec.cid)c=S.customers.find(x=>x.id===rec.cid);
+  if(!c&&curPhone){const p=waNum(curPhone);c=S.customers.find(x=>x.phone&&waNum(x.phone)===p)}
+  const us=((c&&c.tg)||'').trim().replace(/^https?:\/\/t\.me\//i,'').replace(/^@/,'').replace(/[\/?].*$/,''),ph=waNum((c&&c.phone)||curPhone||'');
+  if(us)return{deep:'tg://resolve?domain='+us,web:'https://t.me/'+us,who:'@'+us};
+  if(ph)return{deep:'tg://resolve?phone='+ph,web:'https://t.me/+'+ph,who:'رقم '+ph};
+  return null}
+window._tgOpen=(deep,web)=>{let left=false;const onv=()=>{if(document.hidden)left=true};document.addEventListener('visibilitychange',onv);location.href=deep;
+  setTimeout(()=>{document.removeEventListener('visibilitychange',onv);if(!left&&!document.hidden)window.open(web,'_blank')},1500)};
+$('restg').onclick=async()=>{if(!curBlob)return;const tg=tgTarget(),file=new File([curBlob],curName||'invoice.png',{type:'image/png'});
+  if(!tg&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:curName||''});return}catch(e){if(e&&e.name==='AbortError')return}}
   let copied=false;try{await navigator.clipboard.write([new ClipboardItem({'image/png':curBlob})]);copied=true}catch(e){}
-  $('resm').textContent=baseMsg+(copied?' · الصورة اتنسخت: افتح الشات والصقها (اضغط مطولًا ثم لصق)':' · احفظ الصورة وارفقها في تليجرام');
-  window.open(ph?'https://t.me/+'+ph:'https://t.me/','_blank')};
+  $('resm').textContent=baseMsg+(tg?' · ✈️ بفتح شات '+tg.who:'')+(copied?' · الصورة اتنسخت: اضغط مطولًا في الشات ثم «لصق»':' · احفظ الصورة وارفقها في تليجرام');
+  if(tg)window._tgOpen(tg.deep,tg.web);else window.open('https://t.me/','_blank')};
 $('tgGet').onclick=async()=>{const t=$('tgTok').value.trim();if(!/^\d{6,}:[\w-]{20,}$/.test(t)){tgSay('التوكن شكله غلط. انسخه كامل من BotFather.');return}
   try{localStorage.setItem('tgTok',t)}catch(e){}tgSay('جاري البحث...');
   try{const u=await tgCall('getUpdates');let id=null;for(let i=u.length-1;i>=0&&!id;i--){const x=u[i],c=(x.message&&x.message.chat)||(x.my_chat_member&&x.my_chat_member.chat)||(x.channel_post&&x.channel_post.chat);if(c)id=c.id}
@@ -1473,6 +1484,14 @@ setTimeout(()=>{$('tgTok').value=lsv('tgTok','');$('tgChat').value=lsv('tgChat',
   $('tgInv').checked=pget('tgInv',false);$('tgInv').onchange=()=>pset('tgInv',$('tgInv').checked)},0);
 function tgDaily(){try{if(pget('tgBk',false)&&tgOk()&&Date.now()-(+localStorage.getItem('tgLastBk')||0)>20*36e5)tgBackup(true)}catch(e){}}
 setTimeout(tgDaily,12000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(tgDaily,3000)});
+
+/* تذكير يومي بنسخة الواتس */
+function bkDayChk(){let last='',snz='';try{last=localStorage.getItem('bkDayAt')||'';snz=localStorage.getItem('bkDaySnz')||''}catch(e){}
+  const k=dshort(Date.now()),show=pget('bkDay',true)&&last!==k&&snz!==k&&(S.invoices.length+S.customers.length)>0,b=$('bkDayBan');if(b)b.classList.toggle('hide',!show)}
+$('bkDayNow').onclick=()=>$('bkShare').click();
+$('bkDayLater').onclick=()=>{try{localStorage.setItem('bkDaySnz',dshort(Date.now()))}catch(e){}bkDayChk()};
+setTimeout(()=>{$('bkDay').checked=pget('bkDay',true);$('bkDay').onchange=()=>{pset('bkDay',$('bkDay').checked);bkDayChk()};bkDayChk()},3000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(bkDayChk,2000)});setInterval(bkDayChk,600000);
 
 /* ---------- رسم الصورة (بدون مكتبات) ---------- */
 const IVD={ttl:'العميل /',nPre:'ملاحظة:',hBayan:'البيان',hSize:'المقاس',hCnt:'العدد',hQty:'الكمية',hPrice:'السعر',hVal:'القيمة',
@@ -1833,7 +1852,7 @@ function drawDet(){const c=getC(selC),l=rowsOf(c);
   <div class="card"><div class="ro" style="margin-bottom:8px"><input data-f="name" value="${esc(c.name)}" style="font-weight:700;font-size:17px;flex:1"><span class="cb ${bcls(c)} num">${bal(c)}</span></div>
    ${balOf(c)>0?`<a class="ab" data-lnk="1" target="_blank" rel="noopener" href="${remLinkAny(c)}" style="display:block;text-align:center;margin-bottom:8px">تذكير بالواتساب</a>`:''}
    <div class="g2"><div><label>${waIcon()}واتساب</label><input data-f="phone" value="${esc(c.phone||'')}"></div><div><label>رصيد افتتاحي</label>${editOpen?`<input data-f="open" type="number" inputmode="decimal" value="${c.open||''}" placeholder="0">`:`<div class="ro" style="color:var(--ink);height:34px;border:1px dashed var(--line);border-radius:7px;padding:0 8px"><b class="num">${f(c.open||0)}</b><button class="lnk" data-eo="1">تعديل</button></div>`}</div></div>
-   <div class="g2"><div><label>العنوان</label><input data-f="addr" value="${esc(c.addr||'')}"></div><div><label>ملاحظات</label><input data-f="note" value="${esc(c.note||'')}"></div></div>
+   <div class="g2"><div><label>العنوان</label><input data-f="addr" value="${esc(c.addr||'')}"></div><div><label>ملاحظات</label><input data-f="note" value="${esc(c.note||'')}"></div></div><div class="g2"><div><label>✈️ يوزر تليجرام (اختياري)</label><input data-f="tg" value="${esc(c.tg||'')}" placeholder="@username"></div><div><label>&nbsp;</label><div class="mute" style="min-height:34px;display:flex;align-items:center">زر ✈️ بيفتح شاته مباشرة</div></div></div>
    <div class="g2"><div><label>🚦 حد المديونية</label><input data-f="limit" type="number" inputmode="decimal" value="${c.limit||''}" placeholder="بدون حد"></div><div><label>&nbsp;</label><div class="mute" style="min-height:34px;display:flex;align-items:center">${limTxt(c)}</div></div></div>
    <div class="g2"><div><label>📅 موعد السداد</label><input data-f="due" type="date" value="${esc(c.due||'')}"></div><div><label>&nbsp;</label>${c.due&&balOf(c)>0?'<button class="ab" data-ics="'+c.id+'" style="width:100%">📅 تقويم الموبايل</button>':''}</div></div>
    <div class="seg s" id="payM" style="margin:0 0 6px"><button type="button" data-pmt="c" class="${payMeth==='c'?'on':''}">💵 كاش</button><button type="button" data-pmt="w" class="${payMeth==='w'?'on':''}">📱 محفظة</button><button type="button" data-pmt="i" class="${payMeth==='i'?'on':''}">🏦 انستاباي</button></div>
