@@ -153,6 +153,17 @@ table.st{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0}
 .wstog .gl{flex-basis:100%;font-size:11px;color:var(--mute);margin:4px 2px 0}
 .lnsum{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}.lnsum>div{background:var(--tot);border-radius:10px;padding:8px;text-align:center}.lnsum small{display:block;font-size:11px;color:var(--mute)}.lnsum b{font-size:16px}
 .lnp{border:1px solid var(--line);border-radius:12px;padding:10px;margin:8px 0;background:var(--card)}.lnp .lh{display:flex;justify-content:space-between;gap:8px;align-items:center}.lnp .lk{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;margin:8px 0;font-size:13px}.lnp .lk span{color:var(--mute)}.lnp .la{display:flex;flex-wrap:wrap;gap:6px}.lnp .la button{margin:0;width:auto;padding:6px 10px;font-size:12.5px;border-radius:999px;border:1px solid var(--line);background:var(--tot);color:var(--ink);box-shadow:none}
+.tgauto{margin:10px 0;border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--card)}
+.tgrow{display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.tgrow:last-of-type{border-bottom:0}
+.tgrow .tgt{font-size:14.5px}.tgrow .tgp{font-size:12px;color:var(--mute);grid-column:1}
+.tgrow .tgs{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;color:var(--mute)}
+.tgrow .ab{margin:0;width:auto;padding:5px 12px;font-size:12.5px}
+.sw{position:relative;width:46px;height:26px;display:inline-block;flex:none}
+.sw input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer;z-index:2}
+.sw i{position:absolute;inset:0;background:var(--line);border-radius:999px;transition:.2s}
+.sw i::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.sw input:checked+i{background:#1d9a5b}.sw input:checked+i::after{left:23px}
 /* ===== Header ===== */
 .app-header{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--hdr);border-bottom:3px solid var(--gold);color:var(--hdrInk,#fff);display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:52px;padding-top:env(safe-area-inset-top,0px);box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .app-header .app-title{font-size:18px;font-weight:700;letter-spacing:.5px}
@@ -842,8 +853,14 @@ thmApply();
     <label>توكن البوت</label><input id="tgTok" type="password" autocomplete="off" placeholder="123456789:AAH...">
     <label>Chat ID</label><input id="tgChat" inputmode="numeric" placeholder="بيتملّي لوحده">
     <div class="btns"><button class="alt" id="tgGet" type="button">🔎 هات Chat ID</button><button class="main" id="tgTest" type="button">🧪 اختبار</button></div>
-    <label class="opt"><input type="checkbox" id="tgBk"> نسخة احتياطية تلقائية على تليجرام كل يوم</label>
-    <label class="opt"><input type="checkbox" id="tgInv"> ابعتلي صورة كل فاتورة بعد ما تتحفظ</label>
+    <label class="opt"><input type="checkbox" id="tgShow"> إظهار التوكن (عشان تتأكد إنه اتلصق صح)</label>
+    <div class="mute" style="font-size:12.5px;margin:2px 0 6px">لو «هات Chat ID» ماشتغلش: ابعت أي رسالة للبوت <b>@userinfobot</b> وهيقولك رقمك، اكتبه في خانة Chat ID بإيدك. <a href="#" id="tgOpen">🔗 افتح اختبار التوكن في المتصفح</a></div>
+    <div class="tgauto"><b>📨 بيتبعت لوحده</b> <span class="mute" style="font-size:12.5px">أول ما تفتح البرنامج</span>
+      <div id="tgAutoList"></div>
+      <div class="tgrow"><span class="tgt">🧾 صورة كل فاتورة بعد ما تتحفظ</span><label class="sw"><input type="checkbox" id="tgInv"><i></i></label></div>
+      <div class="tgrow"><span class="tgt">🗑 تنبيه لو فاتورة أو دفعة اتمسحت أو اتعدّلت <small class="mute">ساعتها</small></span><label class="sw"><input type="checkbox" id="tgAlert"><i></i></label></div>
+      <div class="btns"><button class="alt" id="tgAll" type="button">✅ فعّل الكل</button><button class="alt" id="tgNone" type="button">إيقاف الكل</button></div>
+    </div>
     <div class="info" id="tgMsg" style="white-space:pre-line"></div>
     <div class="mute" style="font-size:12px;margin-top:6px">التوكن بيتخزّن على الجهاز ده بس (مش في السحابة ومش في النسخ الاحتياطية). ماتبعتوش لحد وماتصوّرش الشاشة وهو ظاهر.</div>
   </div>
@@ -888,7 +905,7 @@ thmApply();
     <label class="opt"><input type="checkbox" id="whWdOn"> إظهار أمتار الخشب (زان/سويد) في السجل</label>
     <label style="margin-top:6px">أنواع خشب تتحسب لوحدها (مثال: زان). باقي الأصناف بتتحسب سويد</label>
     <textarea id="woodsT" rows="2" style="direction:rtl;text-align:right;font-size:14px"></textarea></div>
-  <div class="card sgh"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.89 · تحديث 22 نوفمبر 2026 · اقتراح «بياخد عادةً» اتقفل (ومفتاحه في الإعدادات)</div></div>
+  <div class="card sgh"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.92 · تحديث 24 نوفمبر 2026 · ملخص اليوم بقى صورة (واتس وتليجرام) + كشف المديونين أنضف</div></div>
 </section>
 
 <div id="calcModal" class="calc-modal hide">
@@ -1246,9 +1263,17 @@ function daySummary(ts){const a=dayStart(ts),b=a+864e5,l=S.invoices.filter(r=>r.
   if(deb.length){t+='\n🔴 أكتر المديونين:\n';deb.slice(0,5).forEach((x,i)=>{t+=(i+1)+'. '+x.c.name+' — '+f(x.b)+'\n'})}
   return t.trim()}
 const sumKey=()=>dshort(Date.now());
-function sendSummary(){const num=waNum(lsv('sumPh',''));
-  try{localStorage.setItem('sumSent',sumKey())}catch(e){}
-  window.open('https://wa.me/'+(num||'')+'?text='+encodeURIComponent(daySummary(Date.now())),'_blank');sumBan()}
+function dayCanvas(ts){const a=dayStart(ts),b=a+864e5,st=periodStats(a,b),inv=S.invoices.filter(r=>r.ts>=a&&r.ts<b&&r.type==='inv'),rest=rd2(inv.reduce((x,r)=>x+Math.max(0,+r.rest||0),0));
+  const rows=[['عدد الفواتير',String(st.n)],['المبيعات',f(st.sales)],['المحصّل',f(st.paid)],['متبقي من فواتير اليوم',f(rest)]];
+  if(st.ret)rows.push(['مرتجع',f(rd2(st.ret))]);if(st.ex>0)rows.push(['مصروفات',f(st.ex)]);rows.push(['صافي ربح اليوم',f(st.net)]);
+  const deb=S.customers.map(c=>({c,b:balOf(c)})).filter(x=>x.b>0.5).sort((x,y)=>y.b-x.b),late=deb.filter(x=>x.c.due&&daysTo(x.c.due)<0).length;
+  const tables=[{th:['البند','القيمة'],w:[.6,.4],rows}];if(deb.length)tables.push({title:'أكتر المديونين',th:['العميل','المبلغ'],w:[.6,.4],rows:deb.slice(0,5).map(x=>[x.c.name,f(x.b)])});
+  const sum=[['إجمالي المديونيات',f(debtAll())+(late?'  ('+late+' متأخر)':''),1]];
+  try{if((S.lenders||[]).length){const cs=S.lenders.map(x=>lnCalc(x));sum.unshift(['فلوس شغالة: رأس المال',f(rd2(cs.reduce((t,x)=>t+x.P,0)))],['ربح مستحق للشركاء',f(rd2(cs.reduce((t,x)=>t+Math.max(0,x.due),0)))])}}catch(e){}
+  const dl=dayLabel(a);window._baseCv=null;return sheet({title:/^(اليوم|أمس)/.test(dl)?'ملخص '+dl:'ملخص يوم '+dl,name:'',sub:'',date:stamp(Date.now()),tables,sum})}
+function sendSummary(){try{localStorage.setItem('sumSent',sumKey())}catch(e){}
+  const ph=lsv('sumPh',''),cv=dayCanvas(Date.now());window._selfNext=true;window._baseCv=null;
+  showImg(cv,'ملخص-اليوم.png','ملخص اليوم'+(ph?'':' · (حط رقم الواتس بتاعك في الإعدادات ← الإقفال والتقارير عشان زر واتساب يفتح شاتك)'),false,ph,null);sumBan()}
 function sumBan(){const b=$('sumBan');if(!b)return;b.classList.toggle('hide',!(pget('sumRem',false)&&new Date().getHours()>=21&&lsv('sumSent','')!==sumKey()&&lsv('sumSnz','')!==sumKey()))}
 $('daySum').onclick=sendSummary;$('sumNow').onclick=sendSummary;
 $('sumLater').onclick=()=>{try{localStorage.setItem('sumSnz',sumKey())}catch(e){}sumBan()};
@@ -1290,7 +1315,8 @@ document.addEventListener('click',e=>{const b=e.target.closest('#resedit');if(b&
 $('bnav').addEventListener('click',e=>{const b=e.target.closest('button[data-t]');if(b&&b.dataset.t==='pf'&&secBlock('Pf')){e.stopImmediatePropagation();e.preventDefault()}},true);
 
 const auditLog=()=>{try{return JSON.parse(localStorage.getItem('auditLog')||'[]')}catch(e){return[]}};
-function audit(x){try{const l=auditLog();l.unshift({t:Date.now(),x});localStorage.setItem('auditLog',JSON.stringify(l.slice(0,300)))}catch(e){}}
+function audit(x){try{const l=auditLog();l.unshift({t:Date.now(),x});localStorage.setItem('auditLog',JSON.stringify(l.slice(0,300)))}catch(e){}
+  try{if(pget('tgAlert',false)&&tgOk()&&/^(🗑|✏️)/.test(x)&&/فاتورة|دفعة|مرتجع/.test(x))tgText('⚠ '+x+'\n🕐 '+stamp(Date.now())).catch(()=>{})}catch(e){}}
 function auditDesc(k,r){if(!r)return k;
   if(k==='invoices')return (r.type==='pay'?(r.ret?'مرتجع':'دفعة'):'فاتورة #'+r.no)+' — '+(r.cname||'')+' — '+f(r.type==='pay'?r.amount:val(r));
   if(k==='customers')return 'عميل: '+r.name;if(k==='items')return 'صنف: '+(r.name||'')+' '+szOf(r);
@@ -1460,10 +1486,14 @@ new MutationObserver(()=>{if(document.querySelector('#t-st.sgshow,#t-st:not(.hid
 /* ---------- تليجرام ---------- */
 const tgCfg=()=>({t:lsv('tgTok',''),c:lsv('tgChat','')});
 const tgOk=()=>{const c=tgCfg();return !!(c.t&&c.c)};
+window._tgTimeout=15000;
+const tgClean=t=>String(t||'').replace(/[^\x21-\x7E]/g,'');
 async function tgCall(m,body){const {t}=tgCfg();if(!t)throw new Error('مفيش توكن');
-  let r;try{r=await fetch('https://api.telegram.org/bot'+t+'/'+m,body?{method:'POST',body}:undefined)}catch(e){throw new Error('تعذر الاتصال بتليجرام (النت أو الشبكة بتحجبه)')}
-  let j;try{j=await r.json()}catch(e){throw new Error('رد غير مفهوم من تليجرام')}
-  if(!j.ok)throw new Error(j.description||'فشل الإرسال');return j.result}
+  const ac=new AbortController(),to=setTimeout(()=>ac.abort(),window._tgTimeout);let r;
+  try{r=await fetch('https://api.telegram.org/bot'+t+'/'+m,Object.assign(body?{method:'POST',body}:{},{signal:ac.signal}))}
+  catch(e){clearTimeout(to);throw new Error(e&&e.name==='AbortError'?'تليجرام مابيردش (النت بطيء أو الشبكة بتحجبه)':'تعذر الاتصال بتليجرام (النت أو الشبكة بتحجبه)')}
+  clearTimeout(to);let j;try{j=await r.json()}catch(e){throw new Error('رد غير مفهوم من تليجرام (كود '+r.status+')')}
+  if(!j.ok)throw new Error((j.error_code?j.error_code+': ':'')+(j.description||'فشل الإرسال'));return j.result}
 function tgFd(o){const fd=new FormData();fd.append('chat_id',tgCfg().c);for(const k in o){if(o[k]==null)continue;if(Array.isArray(o[k]))fd.append(k,o[k][0],o[k][1]);else fd.append(k,o[k])}return fd}
 const tgText=t=>tgCall('sendMessage',tgFd({text:String(t).slice(0,4000)}));
 const tgDoc=(blob,name,cap)=>tgCall('sendDocument',tgFd({document:[blob,name],caption:cap?String(cap).slice(0,1000):null}));
@@ -1477,9 +1507,10 @@ async function tgBackup(auto){if(!tgOk()){tgSay('اربط التليجرام ا�
   catch(e){tgSay('⚠ '+e.message);return false}}
 async function tgAuto(r){if(!tgOk()||!pget('tgInv',false)||!curBlob)return;
   try{await tgPhoto(curBlob,curName||'invoice.png','🧾 '+(r.type==='pay'?'دفعة':'فاتورة #'+r.no)+' — '+(r.cname||'')+' — '+f(r.type==='pay'?r.amount:val(r)))}catch(e){tgSay('⚠ فاتورة ماتبعتتش: '+e.message)}}
-$('daySumTg').onclick=async()=>{const t=daySummary(Date.now());
-  if(tgOk()){try{await tgText(t);$('daySumTg').textContent='✅ اتبعت';setTimeout(()=>{$('daySumTg').textContent='✈️ ملخص تليجرام'},2500)}catch(e){alert('تليجرام: '+e.message)}}
-  else window.open('https://t.me/share/url?url=&text='+encodeURIComponent(t),'_blank')};
+$('daySumTg').onclick=async()=>{
+  if(!tgOk()){sendSummary();return}
+  const bt=$('daySumTg');bt.disabled=true;try{await tgPhoto(await cvBlob(dayCanvas(Date.now())),'ملخص-اليوم.png','📊 ملخص اليوم — '+stamp(Date.now()));bt.textContent='✅ اتبعت'}catch(e){alert('تليجرام: '+e.message)}
+  setTimeout(()=>{bt.textContent='✈️ ملخص تليجرام';bt.disabled=false},2500)};
 $('bkTg').onclick=async()=>{const m=$('bkMsg');m.textContent='جاري الإرسال لتليجرام...';
   if(!tgOk()){m.textContent='لازم تربط بوت تليجرام الأول، جاري فتح صفحة الربط...';setTimeout(()=>{goT('st');setTimeout(()=>{const t=document.querySelector('.sgt[data-go="tg"]');if(t)t.click()},200)},700);return}
   const ok=await tgBackup(false);m.textContent=ok?'✅ اتبعتت النسخة على تليجرام':'⚠ '+($('tgMsg')?$('tgMsg').textContent:'فشل')};
@@ -1499,20 +1530,82 @@ $('restg').onclick=async()=>{if(!curBlob)return;
   let copied=false;try{await navigator.clipboard.write([new ClipboardItem({'image/png':curBlob})]);copied=true}catch(e){}
   $('resm').textContent=baseMsg+(tg?' · ✈️ بفتح شات '+tg.who:'')+(copied?' · الصورة اتنسخت: اضغط مطولًا في الشات ثم «لصق»':' · احفظ الصورة وارفقها في تليجرام');
   if(tg)window._tgOpen(tg.deep,tg.web);else window.open('https://t.me/','_blank')};
-$('tgGet').onclick=async()=>{const t=$('tgTok').value.trim();if(!/^\d{6,}:[\w-]{20,}$/.test(t)){tgSay('التوكن شكله غلط. انسخه كامل من BotFather.');return}
-  try{localStorage.setItem('tgTok',t)}catch(e){}tgSay('جاري البحث...');
-  try{const u=await tgCall('getUpdates');let id=null;for(let i=u.length-1;i>=0&&!id;i--){const x=u[i],c=(x.message&&x.message.chat)||(x.my_chat_member&&x.my_chat_member.chat)||(x.channel_post&&x.channel_post.chat);if(c)id=c.id}
-    if(id){$('tgChat').value=id;try{localStorage.setItem('tgChat',String(id))}catch(e){}tgSay('✅ لقيت الـChat ID. دوس «اختبار».')}else tgSay('مالقيتش رسايل. افتح البوت في تليجرام وابعتله /start وجرّب تاني.')}
-  catch(e){tgSay('⚠ '+e.message)}};
-$('tgTest').onclick=async()=>{const t=$('tgTok').value.trim(),c=$('tgChat').value.trim();try{localStorage.setItem('tgTok',t);localStorage.setItem('tgChat',c)}catch(e){}
+$('tgGet').onclick=async()=>{const t=tgClean($('tgTok').value);$('tgTok').value=t;
+  if(!/^\d{6,}:[\w-]{20,}$/.test(t)){tgSay('التوكن شكله غلط (طوله '+t.length+' حرف). انسخه كامل من BotFather، شكله: 123456789:AAH...');return}
+  try{localStorage.setItem('tgTok',t)}catch(e){}tgSay('1/2 جاري التأكد من التوكن...');
+  try{const me=await tgCall('getMe');tgSay('✅ التوكن سليم: البوت @'+me.username+'\n2/2 جاري البحث عن رسايلك...');
+    const u=await tgCall('getUpdates');let id=null;for(let i=u.length-1;i>=0&&!id;i--){const x=u[i],c=(x.message&&x.message.chat)||(x.my_chat_member&&x.my_chat_member.chat)||(x.channel_post&&x.channel_post.chat);if(c)id=c.id}
+    if(id){$('tgChat').value=id;try{localStorage.setItem('tgChat',String(id))}catch(e){}tgSay('✅ البوت @'+me.username+' ✓ والـChat ID اتملّى ('+id+'). دوس «اختبار».')}
+    else tgSay('✅ البوت @'+me.username+' شغال، بس لسه ماجاله ولا رسالة منك.\nافتح @'+me.username+' في تليجرام ودوس Start (أو ابعتله أي رسالة)، وارجع دوس «هات Chat ID» تاني.\nأو اكتب الـChat ID بإيدك: ابعت أي رسالة للبوت @userinfobot وهيقولك رقمك.')}
+  catch(e){tgSay('⚠ '+e.message+(/تعذر|مابيردش/.test(e.message)?'\nجرّب تدوس «افتح اختبار التوكن في المتصفح» تحت، لو الصفحة مافتحتش يبقى الشبكة بتحجب تليجرام.':'\nلو التوكن غلط اعمل واحد جديد من BotFather بـ /token.'))}};
+$('tgTest').onclick=async()=>{const t=tgClean($('tgTok').value),c=String($('tgChat').value).replace(/[^\d-]/g,'');$('tgTok').value=t;$('tgChat').value=c;try{localStorage.setItem('tgTok',t);localStorage.setItem('tgChat',c)}catch(e){}
   if(!tgOk()){tgSay('اكتب التوكن والـChat ID (أو دوس «هات Chat ID»).');return}tgSay('جاري الاختبار...');
   try{await tgText('✅ تمام! البرنامج اتربط بتليجرام.\n'+shopN());tgSay('✅ وصلت رسالة تجربة على تليجرام.')}catch(e){tgSay('⚠ '+e.message)}};
+$('tgShow').onchange=()=>{$('tgTok').type=$('tgShow').checked?'text':'password'};
+$('tgOpen').onclick=e=>{e.preventDefault();const t=tgClean($('tgTok').value);if(!t){tgSay('الصق التوكن الأول.');return}window.open('https://api.telegram.org/bot'+t+'/getMe','_blank')};
 setTimeout(()=>{$('tgTok').value=lsv('tgTok','');$('tgChat').value=lsv('tgChat','');
   $('tgTok').onchange=()=>{try{localStorage.setItem('tgTok',$('tgTok').value.trim())}catch(e){}};$('tgChat').onchange=()=>{try{localStorage.setItem('tgChat',$('tgChat').value.trim())}catch(e){}};
-  $('tgBk').checked=pget('tgBk',false);$('tgBk').onchange=()=>{pset('tgBk',$('tgBk').checked);if($('tgBk').checked&&tgOk())tgBackup(false)};
   $('tgInv').checked=pget('tgInv',false);$('tgInv').onchange=()=>pset('tgInv',$('tgInv').checked)},0);
-function tgDaily(){try{if(pget('tgBk',false)&&tgOk()&&Date.now()-(+localStorage.getItem('tgLastBk')||0)>20*36e5)tgBackup(true)}catch(e){}}
-setTimeout(tgDaily,12000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(tgDaily,3000)});
+/* ---------- تليجرام: بيتبعت لوحده (تقارير يومية/أسبوعية/شهرية + تنبيهات) ---------- */
+function tgCapture(fn){const _s=showImg,_a=window.alert,h=$('hTot'),ht=h?h.textContent:'';let cap=null;
+  showImg=function(cv,name,msg){cap={cv,name,msg};return Promise.resolve()};window.alert=()=>{};
+  try{fn()}catch(e){}finally{showImg=_s;window.alert=_a;window._selfNext=false;if(h)h.textContent=ht}return cap}
+const cvBlob=cv=>new Promise(r=>cv.toBlob(r,'image/png'));
+function periodStats(a,b){const l=S.invoices.filter(r=>r.ts>=a&&r.ts<b),inv=l.filter(r=>r.type==='inv'),rt=l.filter(r=>r.ret).reduce((x,r)=>x+(+r.amount||0),0);
+  const sales=rd2(inv.reduce((x,r)=>x+val(r),0)-rt),paid=rd2(inv.reduce((x,r)=>x+(+r.paid||0),0)+l.filter(r=>r.type==='pay'&&!r.ret).reduce((x,r)=>x+(+r.amount||0),0));
+  let nt={net:0,ex:0,g:{}};try{nt=netOf(a,b)}catch(e){}const cu={},it={};
+  inv.forEach(r=>{cu[r.cname]=(cu[r.cname]||0)+val(r);(r.rows||[]).forEach(x=>{it[x.n]=(it[x.n]||0)+(+x.v||0)})});
+  const top=o=>Object.entries(o).sort((x,y)=>y[1]-x[1]).slice(0,5).map(([n,v])=>[n,f(rd2(v))]);
+  return{n:inv.length,sales,paid,ret:rt,ex:nt.ex,net:nt.net,topC:top(cu),topI:top(it),empty:!l.length}}
+function periodCanvas(a,b,title,sub){const st=periodStats(a,b);if(st.empty)return null;
+  const rows=[['عدد الفواتير',String(st.n)],['المبيعات',f(st.sales)],['المحصّل',f(st.paid)]];if(st.ret)rows.push(['مرتجع',f(rd2(st.ret))]);if(st.ex>0)rows.push(['مصروفات',f(st.ex)]);rows.push(['صافي الربح',f(st.net)]);
+  const tables=[{th:['البند','القيمة'],w:[.6,.4],rows}];if(st.topC.length)tables.push({title:'أعلى العملاء',th:['العميل','المبيعات'],w:[.6,.4],rows:st.topC});if(st.topI.length)tables.push({title:'أعلى الأصناف',th:['الصنف','المبيعات'],w:[.6,.4],rows:st.topI});
+  window._baseCv=null;return sheet({title,name:'',sub:sub||'',date:stamp(Date.now()),tables,sum:[['إجمالي المديونيات الآن',f(debtAll()),1]]})}
+function supCanvas(){const l=supList().filter(g=>g.owe>0.5);if(!l.length)return null;
+  window._baseCv=null;return sheet({title:'الموردين اللي عليك ليهم',name:'',sub:'',date:stamp(Date.now()),tables:[{th:['م','المورد','عليك'],w:[.1,.5,.4],rows:l.map((g,i)=>[String(i+1),g.n,f(g.owe)])}],sum:[['إجمالي المستحق للموردين',f(rd2(l.reduce((t,g)=>t+g.owe,0))),1]]})}
+function stockCanvas(){const l=S.items.filter(i=>i.tr).map(i=>{const st=rd2(stockOf(i)),mn=+i.m||0;return{n:(i.name||'')+(szOf(i)?' '+szOf(i):''),st,mn,low:st<=0||(mn>0&&st<=mn)}}).sort((x,y)=>(y.low-x.low)||x.n.localeCompare(y.n)).slice(0,150);
+  if(!l.length)return null;const nl=l.filter(x=>x.low).length;
+  window._baseCv=null;return sheet({title:'المخزن والجرد',name:'',sub:nl?'⚠ '+nl+' صنف ناقص أو خلص':'كل الأصناف تمام',date:stamp(Date.now()),tables:[{th:['الصنف','المتاح','الحد الأدنى','الحالة'],w:[.42,.18,.2,.2],rows:l.map(x=>[x.n,String(x.st),x.mn?String(x.mn):'-',x.low?'⚠ ناقص':'تمام'])}],sum:[['عدد الأصناف',String(l.length)],['الأصناف الناقصة',String(nl),1]]})}
+const TGA=[
+ {k:'bk',ic:'💾',t:'النسخة الاحتياطية',per:'كل يوم',fr:'d',pk:'tgBk'},
+ {k:'debt',ic:'📒',t:'صورة المديونين',per:'كل يوم',fr:'d',pk:'tgA_debt'},
+ {k:'close',ic:'🧾',t:'إقفال اليوم اللي فات',per:'كل يوم',fr:'d',pk:'tgA_close'},
+ {k:'week',ic:'📊',t:'تقرير الأسبوع',per:'كل أسبوع',fr:'w',pk:'tgA_week'},
+ {k:'sup',ic:'🚚',t:'الموردين اللي عليك ليهم',per:'كل أسبوع',fr:'w',pk:'tgA_sup'},
+ {k:'stock',ic:'🏭',t:'المخزن والجرد',per:'كل أسبوع',fr:'w',pk:'tgA_stock'},
+ {k:'month',ic:'📈',t:'تقرير الشهر',per:'أول كل شهر',fr:'m',pk:'tgA_month'}];
+const tgPer=fr=>{const n=new Date();return fr==='d'?dshort(n.getTime()):fr==='w'?String(wkStart(n.getTime())):n.getFullYear()+'-'+n.getMonth()};
+const tgLast=k=>{try{return localStorage.getItem('tgL_'+k)||''}catch(e){return''}};
+const tgMark=(k,fr)=>{try{localStorage.setItem('tgL_'+k,tgPer(fr));localStorage.setItem('tgLT_'+k,String(Date.now()))}catch(e){}};
+async function tgItem(k){const now=Date.now(),td=dayStart(now);let cv=null,name='',cap='';
+  if(k==='bk')return (await tgBackup(true))?'sent':'fail';
+  if(k==='debt'){const c=tgCapture(debtImg);if(!c)return'skip';cv=c.cv;name='كشف-المديونين.png';cap='📒 كشف المديونين — '+stamp(now)}
+  else if(k==='close'){const y=td-864e5,c=tgCapture(()=>showClose(y));if(!c)return'skip';cv=c.cv;name='إقفال-أمس.png';cap='🧾 إقفال '+dayLabel(y)}
+  else if(k==='week'){const w=wkStart(now),a=new Date(w);a.setDate(a.getDate()-7);cv=periodCanvas(a.getTime(),w,'تقرير الأسبوع','من '+dshort(a.getTime())+' إلى '+dshort(w-864e5));name='تقرير-الأسبوع.png';cap='📊 تقرير الأسبوع اللي فات'}
+  else if(k==='sup'){cv=supCanvas();name='الموردين.png';cap='🚚 الموردين اللي عليك ليهم — '+stamp(now)}
+  else if(k==='stock'){cv=stockCanvas();name='المخزن.png';cap='🏭 المخزن والجرد — '+stamp(now)}
+  else if(k==='month'){const d=new Date(now),pm=new Date(d.getFullYear(),d.getMonth()-1,15).getTime(),c=tgCapture(()=>showMonth(pm));if(!c)return'skip';cv=c.cv;name='تقرير-الشهر.png';cap='📈 تقرير شهر '+(new Date(pm).getMonth()+1)+'/'+new Date(pm).getFullYear()}
+  if(!cv)return'skip';
+  try{const bl=await cvBlob(cv);await tgPhoto(bl,name,cap);return'sent'}catch(e){tgSay('⚠ '+e.message);return'fail'}}
+let tgBusy=false;
+async function tgSched(){if(tgBusy||!tgOk())return;tgBusy=true;
+  try{for(const a of TGA){if(!pget(a.pk,false)||tgLast(a.k)===tgPer(a.fr))continue;
+    const r=await tgItem(a.k);if(r==='sent'||r==='skip')tgMark(a.k,a.fr);if(r==='sent')tgSay('✅ اتبعت على تليجرام: '+a.t+' ('+stamp(Date.now())+')');await new Promise(z=>setTimeout(z,700))}}
+  finally{tgBusy=false;try{tgDrawAuto()}catch(e){}}}
+function tgDrawAuto(){const b=$('tgAutoList');if(!b)return;
+  b.innerHTML=TGA.map(a=>{const lt=+(localStorage.getItem('tgLT_'+a.k)||0);return '<div class="tgrow"><span class="tgt">'+a.ic+' '+a.t+'</span><label class="sw"><input type="checkbox" data-tga="'+a.k+'"'+(pget(a.pk,false)?' checked':'')+'><i></i></label>'+
+    '<span class="tgs"><span>'+a.per+(lt?' · آخر إرسال '+stamp(lt):'')+'</span><button class="ab" type="button" data-tgn="'+a.k+'">ابعت دلوقتي</button></span></div>'}).join('')}
+$('tgAutoList').addEventListener('change',e=>{const c=e.target.closest('[data-tga]');if(!c)return;const a=TGA.find(x=>x.k===c.dataset.tga);pset(a.pk,c.checked);if(c.checked&&tgOk())tgSched()});
+$('tgAutoList').addEventListener('click',async e=>{const b=e.target.closest('[data-tgn]');if(!b)return;const a=TGA.find(x=>x.k===b.dataset.tgn);
+  if(!tgOk()){tgSay('اربط البوت الأول (التوكن والـChat ID فوق).');return}
+  b.disabled=true;const old=b.textContent;b.textContent='جاري...';const r=await tgItem(a.k);
+  if(r==='sent'){tgMark(a.k,a.fr);tgSay('✅ اتبعت على تليجرام: '+a.t)}else if(r==='skip')tgSay('مفيش بيانات في '+a.t+' تتبعت دلوقتي.');
+  b.disabled=false;b.textContent=old;tgDrawAuto()});
+$('tgAll').onclick=()=>{TGA.forEach(a=>pset(a.pk,true));pset('tgAlert',true);$('tgAlert').checked=true;tgDrawAuto();if(tgOk())tgSched()};
+$('tgNone').onclick=()=>{TGA.forEach(a=>pset(a.pk,false));pset('tgAlert',false);$('tgAlert').checked=false;tgDrawAuto()};
+setTimeout(()=>{$('tgAlert').checked=pget('tgAlert',false);$('tgAlert').onchange=()=>pset('tgAlert',$('tgAlert').checked);tgDrawAuto()},0);
+setTimeout(tgSched,12000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(tgSched,3000)});setInterval(tgSched,1800000);
+
 
 /* تذكير يومي بنسخة الواتس */
 function bkDayChk(){let last='',snz='';try{last=localStorage.getItem('bkDayAt')||'';snz=localStorage.getItem('bkDaySnz')||''}catch(e){}
@@ -1530,8 +1623,8 @@ function payInvTxt(r){try{return(pget('payOnInv',true)&&r&&r.type==='inv'&&(+r.r
 function lastBuyTs(c){let m=0;ledger(c).forEach(r=>{if(r.type==='inv'&&!r.ret&&r.ts>m)m=r.ts});return m}
 function debtImg(){const now=Date.now(),L=S.customers.map(c=>({c,b:balOf(c),lb:lastBuyTs(c)})).filter(x=>x.b>0.5).sort((x,y)=>y.b-x.b);
   if(!L.length){alert('مفيش مديونين 👌');return}
-  const tot=rd2(L.reduce((t,x)=>t+x.b,0)),dd=t=>dshort(t)+' ('+Math.max(0,Math.floor((now-t)/864e5))+' يوم)';
-  const cv=sheet({wa:0,title:'كشف المديونين',name:'كشف المديونين',sub:'',date:dshort(now),tables:[{th:['م','الاسم','المبلغ','آخر شراء'],w:[.08,.40,.22,.30],rows:L.map((x,i)=>[String(i+1),x.c.name,f(x.b),x.lb?dd(x.lb):'—'])}],sum:[['عدد المديونين',String(L.length)],['إجمالي المديونيات',f(tot),1]]});
+  const tot=rd2(L.reduce((t,x)=>t+x.b,0)),ago=t=>Math.max(0,Math.floor((now-t)/864e5))+' يوم';
+  const cv=sheet({wa:0,title:'كشف المديونين',name:'كشف المديونين',sub:'',date:dshort(now),tables:[{th:['م','الاسم','المبلغ','آخر شراء','منذ'],w:[.07,.33,.2,.25,.15],rows:L.map((x,i)=>[String(i+1),x.c.name,f(x.b),x.lb?dshort(x.lb):'—',x.lb?ago(x.lb):'—'])}],sum:[['عدد المديونين',String(L.length)],['إجمالي المديونيات',f(tot),1]]});
   window._selfNext=true;window._baseCv=null;
   showImg(cv,'كشف-المديونين-'+dshort(now).replace(/\//g,'-')+'.png','كشف المديونين: '+L.length+' عميل · '+f(tot)+(lsv('sumPh','')?'':' · (حط رقم الواتس بتاعك في الإعدادات ← الإقفال والتقارير عشان زر واتساب يفتح شاتك)'),false,lsv('sumPh',''),null)}
 document.addEventListener('click',e=>{if(e.target.closest('.dbImgBtn'))debtImg()});
