@@ -1,5 +1,5 @@
-/* ابو حامد - service worker (v1.0.94) */
-const CACHE='abuhamed-1.0.94';
+/* ابو حامد - service worker (v1.0.95) */
+const CACHE='abuhamed-1.0.95';
 const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>Promise.all(CORE.map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});

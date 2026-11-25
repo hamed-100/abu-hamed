@@ -906,7 +906,7 @@ thmApply();
     <label class="opt"><input type="checkbox" id="whWdOn"> إظهار أمتار الخشب (زان/سويد) في السجل</label>
     <label style="margin-top:6px">أنواع خشب تتحسب لوحدها (مثال: زان). باقي الأصناف بتتحسب سويد</label>
     <textarea id="woodsT" rows="2" style="direction:rtl;text-align:right;font-size:14px"></textarea></div>
-  <div class="card sgh"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.94 · تحديث 24 نوفمبر 2026 · خانة «تكعيب الإذن» ظاهرة قبل الحفظ</div></div>
+  <div class="card sgh"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.95 · تحديث 24 نوفمبر 2026 · خانة «تكعيب الإذن» ظاهرة قبل الحفظ</div></div>
 </section>
 
 <div id="calcModal" class="calc-modal hide">
@@ -1508,10 +1508,10 @@ async function tgThread0(k){
   if(m[k])return m[k];
   if(m._no&&Date.now()-m._no<36e5)return null;
   try{const ch=await tgCall('getChat',tgFd({}));
-    if(!ch||!ch.is_forum){m._no=Date.now();tgTpSet(all);return null}
+    if(!ch||!ch.is_forum){window._tgErr='الجروب مش متفعّل فيه Topics';m._no=Date.now();tgTpSet(all);return null}
     const r=await tgCall('createForumTopic',tgFd({name:TG_TOP[k]}));
     m[k]=r.message_thread_id;delete m._no;tgTpSet(all);return m[k]}
-  catch(e){m._no=Date.now();tgTpSet(all);return null}}
+  catch(e){window._tgErr=e.message;m._no=Date.now();tgTpSet(all);return null}}
 function tgThread(k){const p=_tgLock.then(()=>tgThread0(k));_tgLock=p.catch(()=>{});return p}
 async function tgSend(meth,o,tp){
   let th=await tgThread(tp);const go=()=>tgCall(meth,tgFd(o,th));
@@ -1564,7 +1564,7 @@ $('tgGet').onclick=async()=>{const t=tgClean($('tgTok').value);$('tgTok').value=
   catch(e){tgSay('⚠ '+e.message+(/تعذر|مابيردش/.test(e.message)?'\nجرّب تدوس «افتح اختبار التوكن في المتصفح» تحت، لو الصفحة مافتحتش يبقى الشبكة بتحجب تليجرام.':'\nلو التوكن غلط اعمل واحد جديد من BotFather بـ /token.'))}};
 $('tgTest').onclick=async()=>{const t=tgClean($('tgTok').value),c=String($('tgChat').value).replace(/[^\d-]/g,'');$('tgTok').value=t;$('tgChat').value=c;try{localStorage.setItem('tgTok',t);localStorage.setItem('tgChat',c)}catch(e){}
   if(!tgOk()){tgSay('اكتب التوكن والـChat ID (أو دوس «هات Chat ID»).');return}tgSay('جاري الاختبار...');
-  try{const _a=tgTpGet(),_c=String(tgCfg().c);if(_a[_c])delete _a[_c]._no;tgTpSet(_a);await tgText('✅ تمام! البرنامج اتربط بتليجرام.\n'+shopN(),'inv');let n=0;for(const k of Object.keys(TG_TOP)){if(await tgThread(k))n++}tgSay(n?'✅ اتعملت '+n+' خانات في الجروب ووصلت رسالة تجربة.':'✅ وصلت رسالة تجربة. (الجروب مش مفعّل فيه Topics أو البوت مش أدمن بصلاحية إدارة الخانات، فالرسايل هتنزل في شات واحد)')}catch(e){tgSay('⚠ '+e.message)}};
+  try{const _a=tgTpGet(),_c=String(tgCfg().c);if(_a[_c])delete _a[_c]._no;tgTpSet(_a);window._tgErr='';await tgText('✅ تمام! البرنامج اتربط بتليجرام.\n'+shopN(),'inv');let n=0;for(const k of Object.keys(TG_TOP)){if(await tgThread(k))n++}tgSay(n?'✅ اتعملت '+n+' خانات في الجروب ووصلت رسالة تجربة.':'✅ وصلت رسالة تجربة. (الجروب مش مفعّل فيه Topics أو البوت مش أدمن بصلاحية إدارة الخانات، فالرسايل هتنزل في شات واحد)'+(window._tgErr?'\nالسبب من تليجرام: '+window._tgErr:''))}catch(e){tgSay('⚠ '+e.message)}};
 $('tgShow').onchange=()=>{$('tgTok').type=$('tgShow').checked?'text':'password'};
 $('tgOpen').onclick=e=>{e.preventDefault();const t=tgClean($('tgTok').value);if(!t){tgSay('الصق التوكن الأول.');return}window.open('https://api.telegram.org/bot'+t+'/getMe','_blank')};
 setTimeout(()=>{$('tgTok').value=lsv('tgTok','');$('tgChat').value=lsv('tgChat','');
