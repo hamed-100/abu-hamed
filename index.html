@@ -906,7 +906,7 @@ thmApply();
     <label class="opt"><input type="checkbox" id="whWdOn"> إظهار أمتار الخشب (زان/سويد) في السجل</label>
     <label style="margin-top:6px">أنواع خشب تتحسب لوحدها (مثال: زان). باقي الأصناف بتتحسب سويد</label>
     <textarea id="woodsT" rows="2" style="direction:rtl;text-align:right;font-size:14px"></textarea></div>
-  <div class="card sgh"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.95 · تحديث 24 نوفمبر 2026 · خانة «تكعيب الإذن» ظاهرة قبل الحفظ</div></div>
+  <div class="card sgh"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.96 · تحديث 24 نوفمبر 2026 · خانة «تكعيب الإذن» ظاهرة قبل الحفظ</div></div>
 </section>
 
 <div id="calcModal" class="calc-modal hide">
@@ -1591,20 +1591,21 @@ function stockCanvas(){const l=S.items.filter(i=>i.tr).map(i=>{const st=rd2(stoc
   if(!l.length)return null;const nl=l.filter(x=>x.low).length;
   window._baseCv=null;return sheet({title:'المخزن والجرد',name:'',sub:nl?'⚠ '+nl+' صنف ناقص أو خلص':'كل الأصناف تمام',date:stamp(Date.now()),tables:[{th:['الصنف','المتاح','الحد الأدنى','الحالة'],w:[.42,.18,.2,.2],rows:l.map(x=>[x.n,String(x.st),x.mn?String(x.mn):'-',x.low?'⚠ ناقص':'تمام'])}],sum:[['عدد الأصناف',String(l.length)],['الأصناف الناقصة',String(nl),1]]})}
 const TGA=[
- {k:'bk',ic:'💾',t:'النسخة الاحتياطية',per:'كل يوم',fr:'d',pk:'tgBk'},
- {k:'debt',ic:'📒',t:'صورة المديونين',per:'كل يوم',fr:'d',pk:'tgA_debt'},
- {k:'close',ic:'🧾',t:'إقفال اليوم اللي فات',per:'كل يوم',fr:'d',pk:'tgA_close'},
- {k:'week',ic:'📊',t:'تقرير الأسبوع',per:'كل أسبوع',fr:'w',pk:'tgA_week'},
- {k:'sup',ic:'🚚',t:'الموردين اللي عليك ليهم',per:'كل أسبوع',fr:'w',pk:'tgA_sup'},
- {k:'stock',ic:'🏭',t:'المخزن والجرد',per:'كل أسبوع',fr:'w',pk:'tgA_stock'},
- {k:'month',ic:'📈',t:'تقرير الشهر',per:'أول كل شهر',fr:'m',pk:'tgA_month'}];
+ {k:'bk',ic:'💾',t:'النسخة الاحتياطية',per:'كل يوم 9 م',fr:'d',pk:'tgBk'},
+ {k:'debt',ic:'📒',t:'صورة المديونين',per:'كل يوم 9 م',fr:'d',pk:'tgA_debt'},
+ {k:'close',ic:'🧾',t:'إقفال اليوم',per:'كل يوم 9 م',fr:'d',pk:'tgA_close'},
+ {k:'week',ic:'📊',t:'تقرير الأسبوع',per:'كل أسبوع 9 م',fr:'w',pk:'tgA_week'},
+ {k:'sup',ic:'🚚',t:'الموردين اللي عليك ليهم',per:'كل أسبوع 9 م',fr:'w',pk:'tgA_sup'},
+ {k:'stock',ic:'🏭',t:'المخزن والجرد',per:'كل أسبوع 9 م',fr:'w',pk:'tgA_stock'},
+ {k:'month',ic:'📈',t:'تقرير الشهر',per:'أول كل شهر 9 م',fr:'m',pk:'tgA_month'}];
+const TG_HOUR=21; /* الساعة اللي التقارير بتتبعت بعدها (9 بليل) */
 const tgPer=fr=>{const n=new Date();return fr==='d'?dshort(n.getTime()):fr==='w'?String(wkStart(n.getTime())):n.getFullYear()+'-'+n.getMonth()};
 const tgLast=k=>{try{return localStorage.getItem('tgL_'+k)||''}catch(e){return''}};
 const tgMark=(k,fr)=>{try{localStorage.setItem('tgL_'+k,tgPer(fr));localStorage.setItem('tgLT_'+k,String(Date.now()))}catch(e){}};
 async function tgItem(k){const now=Date.now(),td=dayStart(now);let cv=null,name='',cap='';
   if(k==='bk')return (await tgBackup(true))?'sent':'fail';
   if(k==='debt'){const c=tgCapture(debtImg);if(!c)return'skip';cv=c.cv;name='كشف-المديونين.png';cap='📒 كشف المديونين — '+stamp(now)}
-  else if(k==='close'){const y=td-864e5,c=tgCapture(()=>showClose(y));if(!c)return'skip';cv=c.cv;name='إقفال-أمس.png';cap='🧾 إقفال '+dayLabel(y)}
+  else if(k==='close'){const y=td,c=tgCapture(()=>showClose(y));if(!c)return'skip';cv=c.cv;name='إقفال-اليوم.png';cap='🧾 إقفال اليوم · '+dayLabel(y)}
   else if(k==='week'){const w=wkStart(now),a=new Date(w);a.setDate(a.getDate()-7);cv=periodCanvas(a.getTime(),w,'تقرير الأسبوع','من '+dshort(a.getTime())+' إلى '+dshort(w-864e5));name='تقرير-الأسبوع.png';cap='📊 تقرير الأسبوع اللي فات'}
   else if(k==='sup'){cv=supCanvas();name='الموردين.png';cap='🚚 الموردين اللي عليك ليهم — '+stamp(now)}
   else if(k==='stock'){cv=stockCanvas();name='المخزن.png';cap='🏭 المخزن والجرد — '+stamp(now)}
@@ -1613,7 +1614,7 @@ async function tgItem(k){const now=Date.now(),td=dayStart(now);let cv=null,name=
   try{const bl=await cvBlob(cv);await tgPhoto(bl,name,cap,({debt:'debt',close:'close',stock:'stock'})[k]||'rep');return'sent'}catch(e){tgSay('⚠ '+e.message);return'fail'}}
 let tgBusy=false;
 async function tgSched(){if(tgBusy||!tgOk())return;tgBusy=true;
-  try{for(const a of TGA){if(!pget(a.pk,false)||tgLast(a.k)===tgPer(a.fr))continue;
+  try{if(new Date().getHours()<TG_HOUR)return;for(const a of TGA){if(!pget(a.pk,false)||tgLast(a.k)===tgPer(a.fr))continue;
     const r=await tgItem(a.k);if(r==='sent'||r==='skip')tgMark(a.k,a.fr);if(r==='sent')tgSay('✅ اتبعت على تليجرام: '+a.t+' ('+stamp(Date.now())+')');await new Promise(z=>setTimeout(z,700))}}
   finally{tgBusy=false;try{tgDrawAuto()}catch(e){}}}
 function tgDrawAuto(){const b=$('tgAutoList');if(!b)return;
@@ -1628,7 +1629,7 @@ $('tgAutoList').addEventListener('click',async e=>{const b=e.target.closest('[da
 $('tgAll').onclick=()=>{TGA.forEach(a=>pset(a.pk,true));pset('tgAlert',true);$('tgAlert').checked=true;tgDrawAuto();if(tgOk())tgSched()};
 $('tgNone').onclick=()=>{TGA.forEach(a=>pset(a.pk,false));pset('tgAlert',false);$('tgAlert').checked=false;tgDrawAuto()};
 setTimeout(()=>{$('tgAlert').checked=pget('tgAlert',false);$('tgAlert').onchange=()=>pset('tgAlert',$('tgAlert').checked);tgDrawAuto()},0);
-setTimeout(tgSched,12000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(tgSched,3000)});setInterval(tgSched,1800000);
+setTimeout(tgSched,12000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(tgSched,3000)});setInterval(tgSched,600000);
 
 
 /* تذكير يومي بنسخة الواتس */
