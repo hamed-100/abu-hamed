@@ -581,6 +581,7 @@ thmApply();
         </div>
       </div>
       <div class="pst">
+        <div class="psr"><label>📐 التكعيب</label><b class="num" id="cubeT">0</b></div>
         <div class="psr"><label>🔨 ثمن الإذن</label><input id="wk" class="pwk" type="number" inputmode="decimal" placeholder="0"></div>
         <div class="psr"><label>📒 سابق</label><b class="num" id="prevv">0</b></div>
         <div class="psr"><label>الإجمالي</label><b class="num" id="grand">0.00</b></div>
@@ -905,7 +906,7 @@ thmApply();
     <label class="opt"><input type="checkbox" id="whWdOn"> إظهار أمتار الخشب (زان/سويد) في السجل</label>
     <label style="margin-top:6px">أنواع خشب تتحسب لوحدها (مثال: زان). باقي الأصناف بتتحسب سويد</label>
     <textarea id="woodsT" rows="2" style="direction:rtl;text-align:right;font-size:14px"></textarea></div>
-  <div class="card sgh"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.92 · تحديث 24 نوفمبر 2026 · ملخص اليوم بقى صورة (واتس وتليجرام) + كشف المديونين أنضف</div></div>
+  <div class="card sgh"><b>رقم النسخة</b><div id="appVer" style="margin-top:4px;font-size:14px">الإصدار 1.0.93 · تحديث 24 نوفمبر 2026 · خانة «تكعيب الإذن» ظاهرة قبل الحفظ</div></div>
 </section>
 
 <div id="calcModal" class="calc-modal hide">
@@ -1316,7 +1317,7 @@ $('bnav').addEventListener('click',e=>{const b=e.target.closest('button[data-t]'
 
 const auditLog=()=>{try{return JSON.parse(localStorage.getItem('auditLog')||'[]')}catch(e){return[]}};
 function audit(x){try{const l=auditLog();l.unshift({t:Date.now(),x});localStorage.setItem('auditLog',JSON.stringify(l.slice(0,300)))}catch(e){}
-  try{if(pget('tgAlert',false)&&tgOk()&&/^(🗑|✏️)/.test(x)&&/فاتورة|دفعة|مرتجع/.test(x))tgText('⚠ '+x+'\n🕐 '+stamp(Date.now())).catch(()=>{})}catch(e){}}
+  try{if(pget('tgAlert',false)&&tgOk()&&/^(🗑|✏️)/.test(x)&&/فاتورة|دفعة|مرتجع/.test(x))tgText('⚠ '+x+'\n🕐 '+stamp(Date.now()),'inv').catch(()=>{})}catch(e){}}
 function auditDesc(k,r){if(!r)return k;
   if(k==='invoices')return (r.type==='pay'?(r.ret?'مرتجع':'دفعة'):'فاتورة #'+r.no)+' — '+(r.cname||'')+' — '+f(r.type==='pay'?r.amount:val(r));
   if(k==='customers')return 'عميل: '+r.name;if(k==='items')return 'صنف: '+(r.name||'')+' '+szOf(r);
@@ -1494,22 +1495,45 @@ async function tgCall(m,body){const {t}=tgCfg();if(!t)throw new Error('مفيش 
   catch(e){clearTimeout(to);throw new Error(e&&e.name==='AbortError'?'تليجرام مابيردش (النت بطيء أو الشبكة بتحجبه)':'تعذر الاتصال بتليجرام (النت أو الشبكة بتحجبه)')}
   clearTimeout(to);let j;try{j=await r.json()}catch(e){throw new Error('رد غير مفهوم من تليجرام (كود '+r.status+')')}
   if(!j.ok)throw new Error((j.error_code?j.error_code+': ':'')+(j.description||'فشل الإرسال'));return j.result}
-function tgFd(o){const fd=new FormData();fd.append('chat_id',tgCfg().c);for(const k in o){if(o[k]==null)continue;if(Array.isArray(o[k]))fd.append(k,o[k][0],o[k][1]);else fd.append(k,o[k])}return fd}
-const tgText=t=>tgCall('sendMessage',tgFd({text:String(t).slice(0,4000)}));
-const tgDoc=(blob,name,cap)=>tgCall('sendDocument',tgFd({document:[blob,name],caption:cap?String(cap).slice(0,1000):null}));
-const tgPhoto=(blob,name,cap)=>tgCall('sendPhoto',tgFd({photo:[blob,name],caption:cap?String(cap).slice(0,1000):null}));
+function tgFd(o,th){const fd=new FormData();fd.append('chat_id',tgCfg().c);if(th)fd.append('message_thread_id',th);for(const k in o){if(o[k]==null)continue;if(Array.isArray(o[k]))fd.append(k,o[k][0],o[k][1]);else fd.append(k,o[k])}return fd}
+/* ===== خانات (Topics) في جروب تليجرام: كل نوع رسايل في خانة لوحده ===== */
+const TG_TOP={inv:'🧾 الفواتير',debt:'📒 المديونين',close:'🔒 الإقفال',stock:'🏭 المخزن',rep:'📊 التقارير',bk:'📦 النسخ الاحتياطي'};
+const tgTopFor=t=>/مديون|كشف|حساب/.test(t)?'debt':/مخزن|جرد/.test(t)?'stock':/إقفال|اقفال/.test(t)?'close':/فاتور|دفع/.test(t)?'inv':'rep';
+const tgTpGet=()=>{try{return JSON.parse(localStorage.getItem('tgTopics')||'{}')||{}}catch(e){return{}}};
+const tgTpSet=o=>{try{localStorage.setItem('tgTopics',JSON.stringify(o))}catch(e){}};
+let _tgLock=Promise.resolve();
+async function tgThread0(k){
+  if(!k||!TG_TOP[k])return null;
+  const cid=String(tgCfg().c),all=tgTpGet(),m=all[cid]||(all[cid]={});
+  if(m[k])return m[k];
+  if(m._no&&Date.now()-m._no<36e5)return null;
+  try{const ch=await tgCall('getChat',tgFd({}));
+    if(!ch||!ch.is_forum){m._no=Date.now();tgTpSet(all);return null}
+    const r=await tgCall('createForumTopic',tgFd({name:TG_TOP[k]}));
+    m[k]=r.message_thread_id;delete m._no;tgTpSet(all);return m[k]}
+  catch(e){m._no=Date.now();tgTpSet(all);return null}}
+function tgThread(k){const p=_tgLock.then(()=>tgThread0(k));_tgLock=p.catch(()=>{});return p}
+async function tgSend(meth,o,tp){
+  let th=await tgThread(tp);const go=()=>tgCall(meth,tgFd(o,th));
+  try{return await go()}
+  catch(e){if(th&&/thread not found|TOPIC_ID_INVALID|TOPIC_DELETED/i.test(e.message)){
+      const all=tgTpGet(),m=all[String(tgCfg().c)]||{};delete m[tp];tgTpSet(all);th=await tgThread(tp);return await go()}
+    throw e}}
+const tgText=(t,tp)=>tgSend('sendMessage',{text:String(t).slice(0,4000)},tp);
+const tgDoc=(blob,name,cap,tp)=>tgSend('sendDocument',{document:[blob,name],caption:cap?String(cap).slice(0,1000):null},tp);
+const tgPhoto=(blob,name,cap,tp)=>tgSend('sendPhoto',{photo:[blob,name],caption:cap?String(cap).slice(0,1000):null},tp);
 const tgSay=t=>{const e=$('tgMsg');if(e)e.textContent=t};
 async function tgBackup(auto){if(!tgOk()){tgSay('اربط التليجرام الأول (الإعدادات ← تليجرام).');return false}
   const name='نسخة-ابو-حامد-'+dshort(Date.now()).replace(/\//g,'-')+'.json';
-  try{await tgDoc(new Blob([JSON.stringify(bkObj())],{type:'application/json'}),name,'📦 نسخة احتياطية '+(auto?'تلقائية ':'')+stamp(Date.now())+'\n'+S.customers.length+' عميل · '+S.invoices.length+' فاتورة/دفعة');
+  try{await tgDoc(new Blob([JSON.stringify(bkObj())],{type:'application/json'}),name,'📦 نسخة احتياطية '+(auto?'تلقائية ':'')+stamp(Date.now())+'\n'+S.customers.length+' عميل · '+S.invoices.length+' فاتورة/دفعة','bk');
     try{localStorage.setItem('tgLastBk',Date.now());localStorage.setItem('lastBackup',Date.now())}catch(e){}try{bkInfo();bkBan()}catch(e){}
     tgSay('✅ اتبعتت النسخة على تليجرام ('+stamp(Date.now())+')');return true}
   catch(e){tgSay('⚠ '+e.message);return false}}
 async function tgAuto(r){if(!tgOk()||!pget('tgInv',false)||!curBlob)return;
-  try{await tgPhoto(curBlob,curName||'invoice.png','🧾 '+(r.type==='pay'?'دفعة':'فاتورة #'+r.no)+' — '+(r.cname||'')+' — '+f(r.type==='pay'?r.amount:val(r)))}catch(e){tgSay('⚠ فاتورة ماتبعتتش: '+e.message)}}
+  try{await tgPhoto(curBlob,curName||'invoice.png','🧾 '+(r.type==='pay'?'دفعة':'فاتورة #'+r.no)+' — '+(r.cname||'')+' — '+f(r.type==='pay'?r.amount:val(r)),'inv')}catch(e){tgSay('⚠ فاتورة ماتبعتتش: '+e.message)}}
 $('daySumTg').onclick=async()=>{
   if(!tgOk()){sendSummary();return}
-  const bt=$('daySumTg');bt.disabled=true;try{await tgPhoto(await cvBlob(dayCanvas(Date.now())),'ملخص-اليوم.png','📊 ملخص اليوم — '+stamp(Date.now()));bt.textContent='✅ اتبعت'}catch(e){alert('تليجرام: '+e.message)}
+  const bt=$('daySumTg');bt.disabled=true;try{await tgPhoto(await cvBlob(dayCanvas(Date.now())),'ملخص-اليوم.png','📊 ملخص اليوم — '+stamp(Date.now()),'rep');bt.textContent='✅ اتبعت'}catch(e){alert('تليجرام: '+e.message)}
   setTimeout(()=>{bt.textContent='✈️ ملخص تليجرام';bt.disabled=false},2500)};
 $('bkTg').onclick=async()=>{const m=$('bkMsg');m.textContent='جاري الإرسال لتليجرام...';
   if(!tgOk()){m.textContent='لازم تربط بوت تليجرام الأول، جاري فتح صفحة الربط...';setTimeout(()=>{goT('st');setTimeout(()=>{const t=document.querySelector('.sgt[data-go="tg"]');if(t)t.click()},200)},700);return}
@@ -1524,7 +1548,7 @@ function tgTarget(){const rec=(typeof curRec!=='undefined'&&curRec)?curRec:null;
 window._tgOpen=(deep,web)=>{let left=false;const onv=()=>{if(document.hidden)left=true};document.addEventListener('visibilitychange',onv);location.href=deep;
   setTimeout(()=>{document.removeEventListener('visibilitychange',onv);if(!left&&!document.hidden)window.open(web,'_blank')},1500)};
 $('restg').onclick=async()=>{if(!curBlob)return;
-  if(curSelf&&tgOk()){$('resm').textContent='جاري الإرسال لتليجرام...';try{await tgPhoto(curBlob,curName||'list.png','📋 '+(baseMsg||''));$('resm').textContent=baseMsg+' · ✅ اتبعت على تليجرام بتاعك'}catch(e){$('resm').textContent='⚠ '+e.message}return}
+  if(curSelf&&tgOk()){$('resm').textContent='جاري الإرسال لتليجرام...';try{await tgPhoto(curBlob,curName||'list.png','📋 '+(baseMsg||''),tgTopFor((curName||'')+' '+(baseMsg||'')));$('resm').textContent=baseMsg+' · ✅ اتبعت على تليجرام بتاعك'}catch(e){$('resm').textContent='⚠ '+e.message}return}
   const tg=curSelf?null:tgTarget(),file=new File([curBlob],curName||'invoice.png',{type:'image/png'});
   if(!tg&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:curName||''});return}catch(e){if(e&&e.name==='AbortError')return}}
   let copied=false;try{await navigator.clipboard.write([new ClipboardItem({'image/png':curBlob})]);copied=true}catch(e){}
@@ -1540,7 +1564,7 @@ $('tgGet').onclick=async()=>{const t=tgClean($('tgTok').value);$('tgTok').value=
   catch(e){tgSay('⚠ '+e.message+(/تعذر|مابيردش/.test(e.message)?'\nجرّب تدوس «افتح اختبار التوكن في المتصفح» تحت، لو الصفحة مافتحتش يبقى الشبكة بتحجب تليجرام.':'\nلو التوكن غلط اعمل واحد جديد من BotFather بـ /token.'))}};
 $('tgTest').onclick=async()=>{const t=tgClean($('tgTok').value),c=String($('tgChat').value).replace(/[^\d-]/g,'');$('tgTok').value=t;$('tgChat').value=c;try{localStorage.setItem('tgTok',t);localStorage.setItem('tgChat',c)}catch(e){}
   if(!tgOk()){tgSay('اكتب التوكن والـChat ID (أو دوس «هات Chat ID»).');return}tgSay('جاري الاختبار...');
-  try{await tgText('✅ تمام! البرنامج اتربط بتليجرام.\n'+shopN());tgSay('✅ وصلت رسالة تجربة على تليجرام.')}catch(e){tgSay('⚠ '+e.message)}};
+  try{const _a=tgTpGet(),_c=String(tgCfg().c);if(_a[_c])delete _a[_c]._no;tgTpSet(_a);await tgText('✅ تمام! البرنامج اتربط بتليجرام.\n'+shopN(),'inv');let n=0;for(const k of Object.keys(TG_TOP)){if(await tgThread(k))n++}tgSay(n?'✅ اتعملت '+n+' خانات في الجروب ووصلت رسالة تجربة.':'✅ وصلت رسالة تجربة. (الجروب مش مفعّل فيه Topics أو البوت مش أدمن بصلاحية إدارة الخانات، فالرسايل هتنزل في شات واحد)')}catch(e){tgSay('⚠ '+e.message)}};
 $('tgShow').onchange=()=>{$('tgTok').type=$('tgShow').checked?'text':'password'};
 $('tgOpen').onclick=e=>{e.preventDefault();const t=tgClean($('tgTok').value);if(!t){tgSay('الصق التوكن الأول.');return}window.open('https://api.telegram.org/bot'+t+'/getMe','_blank')};
 setTimeout(()=>{$('tgTok').value=lsv('tgTok','');$('tgChat').value=lsv('tgChat','');
@@ -1586,7 +1610,7 @@ async function tgItem(k){const now=Date.now(),td=dayStart(now);let cv=null,name=
   else if(k==='stock'){cv=stockCanvas();name='المخزن.png';cap='🏭 المخزن والجرد — '+stamp(now)}
   else if(k==='month'){const d=new Date(now),pm=new Date(d.getFullYear(),d.getMonth()-1,15).getTime(),c=tgCapture(()=>showMonth(pm));if(!c)return'skip';cv=c.cv;name='تقرير-الشهر.png';cap='📈 تقرير شهر '+(new Date(pm).getMonth()+1)+'/'+new Date(pm).getFullYear()}
   if(!cv)return'skip';
-  try{const bl=await cvBlob(cv);await tgPhoto(bl,name,cap);return'sent'}catch(e){tgSay('⚠ '+e.message);return'fail'}}
+  try{const bl=await cvBlob(cv);await tgPhoto(bl,name,cap,({debt:'debt',close:'close',stock:'stock'})[k]||'rep');return'sent'}catch(e){tgSay('⚠ '+e.message);return'fail'}}
 let tgBusy=false;
 async function tgSched(){if(tgBusy||!tgOk())return;tgBusy=true;
   try{for(const a of TGA){if(!pget(a.pk,false)||tgLast(a.k)===tgPer(a.fr))continue;
@@ -2185,7 +2209,8 @@ function calc(){_wm=null;let sub=0,tq=0,tv=0;const rows=[];
       if(S.items.some(i=>i.tr))g('.qq').innerHTML+=tg?(tg.tr?' <span style="color:#1d9a5b;font-size:12px">✅ بيتخصم من المخزن: '+esc(tg.name)+'</span>':' <span class="mute" style="font-size:12px">(صنف غير متتبَّع في المخزن)</span>'):' <span style="color:var(--danger);font-size:12px">⚠ مش مربوط بالمخزن (مش هيتخصم) — اختار الصنف من القايمة</span>';
       const oe=g('.oe').value||'';try{const lk=lastC&&FAVP[[nm(nmv).trim(),+t||0,+w||0,+h||0].join('|')],pw=g('.pw');if(pw){if(lk&&lk.p>0&&p>0&&Math.abs(lk.p-p)>0.001){pw.textContent=(p>lk.p?'⬆ أعلى':'⬇ أقل')+' من آخر مرة: خده بـ '+f(lk.p)+' ('+dmy(lk.ts)+')';pw.classList.remove('hide')}else pw.classList.add('hide')}}catch(_){}g('.ofh').textContent=op>0&&p0>0?'بدل '+f(p0)+' · توفير '+f(RN((vol?qraw:area?q:c)*(p0-op))):'';rows.push({t:d.dataset.t,n:nmv,w,h,th:t,u,c,q,p,...(op>0&&p0>0?{po:p0,oe}:{}),v,iid:tg?tg.id:'',cp:(tg&&+tg.cp)||grpCost(nmv),cv:RN((vol?qraw:area?q:c)*((tg&&+tg.cp)||grpCost(nmv)))});sub+=v;if(vol)tv+=q;else if(!lm)tq+=q}});
   const I0=sub,wE=$('wk');if(!wkMan)wE.value=I0>0?rd2(I0):'';const wk=wkMan?rd2(nv(wE.value)-I0):0;sub+=wk;const mk=nv($('mak').value);sub+=mk;const xp=nv($('xpn').value);sub+=xp;const prev=nv($('prev').value),pf=nv($('dp').value),total=RN(sub+nv($('nylon').value)-nv($('disc').value)+prev),PY=payCalc(total,pf),paidRaw=PY.paidRaw,pfv=PY.pfv,paid=PY.paid;
-  $('tqw').textContent=qtyTxt(tq,tv);$('sub').textContent=f(sub-wk-mk-xp);$('grand').textContent=f(total);$('rest').textContent=f(total-paid);$('prevv').textContent=f(prev);$('netp').textContent=f(paid);$('prest').classList.toggle('ok',total-paid<=0&&(total>0||paid>0));
+  $('tqw').textContent=qtyTxt(tq,tv);
+  {const pc=rows.reduce((t,r)=>t+(+r.c||0),0),pt=[];if(tv>0)pt.push(fv(tv)+' م³');if(tq>0)pt.push(fq(tq)+' م²');$('cubeT').textContent=pt.length?pt.join(' + '):'0';$('cubeT').title=pc>0?fq(pc)+' حتة':''}$('sub').textContent=f(sub-wk-mk-xp);$('grand').textContent=f(total);$('rest').textContent=f(total-paid);$('prevv').textContent=f(prev);$('netp').textContent=f(paid);$('prest').classList.toggle('ok',total-paid<=0&&(total>0||paid>0));
   $('r_sub').classList.toggle('hide',['r_nylon','r_mak','r_xp','r_disc','r_dp','r_prev'].every(i=>$(i).classList.contains('hide')));
   $('dpAmt').textContent=rd2(pfv-PY.wf)?' = '+f(rd2(pfv-PY.wf)):'';TOT={rows,sub,wk,mk,xp,tq:rd2(tq),tv:Math.round(tv*1000)/1000,prev,pf,pfv,pfWhy:PY.wal>0?'سحب فودافون كاش':$('pfWhy').value.trim(),pm:PM,pmx:{c:PY.cash,w:PY.wal,i:PY.ins},vfp:PY.wal>0?PY.v:0,vfm:vfMode(),paidRaw,total,paid,rest:total-paid};pmUI(PY);
   $('dueRow').classList.toggle('hide',!($('cust').value.trim()&&(total-paid)>0));const pay=!rows.length&&paid>0;$('save').textContent=editId?'حفظ التعديل':pay?'تسجيل دفعة':'حفظ الفاتورة';$('saveImg').textContent=pay?'دفعة كصورة':'حفظ كصورة';limChk();rowHints();xlBlank()}
